@@ -3,25 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kemiverktyg — gymnasiekemi GLP2019</title>
-<meta name="description" content="Interaktiva räknetränare för gymnasiekemi: KE01 Moltränaren och KE04 Stökiometritränaren.">
+<meta name="theme-color" content="#0B6E5F">
+<title>Kemiverktyg · gymnasiekemi GLP2019</title>
+<meta name="description" content="Interaktiva räknetränare och formelsamling för gymnasiekemi: KE01 Moltränaren och KE04 Stökiometritränaren.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%97%EF%B8%8F%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#F7F8F6;
-    --grid:#DEE6E0;
-    --grid-major:#CFDAD2;
-    --ink:#17241E;
-    --soft:#4C5B53;
-    --ke01:#1D5FA8;  --ke01-soft:#E4EEF9;
-    --ke04:#0B6E5F;  --ke04-soft:#E3F1ED;
-    --neutral:#8A968E;
-    --card:#FFFFFF;
+    --paper:#F7F8F6; --grid:#DEE6E0; --grid-major:#CFDAD2;
+    --ink:#17241E; --soft:#4C5B53;
+    --ke01:#1D5FA8; --ke01-soft:#E4EEF9; --ke01-hover:#174C86;
+    --ke04:#0B6E5F; --ke04-soft:#E3F1ED; --ke04-hover:#095C50;
+    --neutral:#8A968E; --card:#FFFFFF; --linje:#CFDAD2; --varning:#B25A0B;
     --mono:'IBM Plex Mono',ui-monospace,monospace;
     --sans:'IBM Plex Sans',system-ui,sans-serif;
   }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#131B17; --grid:#1B241F; --grid-major:#222E27;
+      --ink:#E8EEEA; --soft:#9FB0A6;
+      --ke01:#6FA5E3; --ke01-soft:#1A2836; --ke01-hover:#8AB6E9;
+      --ke04:#4FB3A1; --ke04-soft:#152823; --ke04-hover:#6BC4B4;
+      --neutral:#6E7D74; --card:#1A231E; --linje:#2C3A32;
+    }
+  }
   *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
   body{
     font-family:var(--sans);color:var(--ink);
     background-color:var(--paper);
@@ -32,64 +40,116 @@
       linear-gradient(90deg, var(--grid) 1px, transparent 1px);
     background-size:100px 100px,100px 100px,20px 20px,20px 20px;
     min-height:100vh;line-height:1.55;
-    padding:40px 18px 72px;
+    padding:48px 18px 72px;
   }
   .wrap{max-width:760px;margin:0 auto}
 
-  header{margin-bottom:36px}
+  /* hero med bensenring-signatur */
+  header{position:relative;margin-bottom:48px;padding-right:120px}
+  .molekyl{
+    position:absolute;top:-14px;right:0;width:110px;height:110px;
+    opacity:.5;pointer-events:none;
+  }
+  .molekyl svg{width:100%;height:100%;animation:sväv 9s ease-in-out infinite}
+  @keyframes sväv{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-7px) rotate(4deg)}}
   .eyebrow{
     font-family:var(--mono);font-size:12px;letter-spacing:.16em;
     text-transform:uppercase;color:var(--soft);font-weight:600;margin-bottom:8px;
   }
   h1{font-size:clamp(30px,6vw,44px);font-weight:700;letter-spacing:-.015em;line-height:1.08}
-  .sub{color:var(--soft);font-size:16px;margin-top:10px;max-width:56ch}
+  .sub{color:var(--soft);font-size:16px;margin-top:10px;max-width:52ch}
+  a.ner{
+    display:inline-block;margin-top:18px;
+    font-family:var(--mono);font-size:14px;font-weight:600;
+    color:var(--ke04);text-decoration:none;
+  }
+  a.ner:hover{text-decoration:underline}
+  a.ner:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 
-  .kurs{
-    background:var(--card);border:1px solid var(--grid-major);
-    border-radius:12px;margin-bottom:20px;overflow:hidden;
-    box-shadow:0 1px 3px rgba(23,36,30,.06);
-    transition:transform .15s ease, box-shadow .15s ease;
+  .sektionsrubrik{
+    font-family:var(--mono);font-size:13px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--soft);font-weight:700;margin:0 0 12px;
   }
-  .kurs:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(23,36,30,.10)}
-  .kurs-head{
-    display:flex;align-items:baseline;gap:14px;
-    padding:18px 22px 14px;border-left:6px solid;
+  .kort-bas{
+    background:var(--card);border:1px solid var(--linje);
+    border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.07);
   }
+  .om{margin-bottom:48px}
+  .om-kort{padding:22px 24px}
+  .om-kort p{margin-bottom:10px;max-width:64ch}
+  .om-kort p:last-child{margin-bottom:0}
+  .platshallare{
+    border:1.5px dashed var(--varning);border-radius:8px;
+    padding:12px 14px;color:var(--varning);font-size:14.5px;
+  }
+  .kontakt{font-family:var(--mono);font-size:14px;color:var(--soft)}
+
+  .kurs{margin-bottom:20px;overflow:hidden;transition:transform .15s ease, box-shadow .15s ease}
+  .kurs:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.12)}
+  .kurs-head{display:flex;align-items:baseline;gap:14px;padding:18px 22px 14px;border-left:6px solid}
   .kurs.ke01 .kurs-head{border-color:var(--ke01);background:var(--ke01-soft)}
   .kurs.ke04 .kurs-head{border-color:var(--ke04);background:var(--ke04-soft)}
-  .kurskod{
-    font-family:var(--mono);font-weight:700;font-size:26px;letter-spacing:.02em;
-  }
+  .kurskod{font-family:var(--mono);font-weight:700;font-size:26px;letter-spacing:.02em}
   .ke01 .kurskod{color:var(--ke01)} .ke04 .kurskod{color:var(--ke04)}
   .kursnamn{font-size:16px;font-weight:600;color:var(--ink)}
-  .kurs-body{padding:16px 22px 20px;border-left:6px solid transparent}
-  .verktyg{
-    display:flex;align-items:center;justify-content:space-between;gap:14px;
-    flex-wrap:wrap;
+  .kurs-body{padding:16px 22px 18px;border-left:6px solid transparent}
+  .verktygsrad{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  .verktygsrad h3{font-size:18px;font-weight:600}
+  .verktygsrad p{font-size:14px;color:var(--soft);margin-top:2px;max-width:44ch}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .chip{
+    font-family:var(--mono);font-size:11px;font-weight:600;color:var(--soft);
+    border:1px solid var(--linje);border-radius:999px;padding:3px 10px;
   }
-  .verktyg-info h2{font-size:18px;font-weight:600}
-  .verktyg-info p{font-size:14px;color:var(--soft);margin-top:2px;max-width:44ch}
   a.knapp{
     font-family:var(--sans);font-weight:600;font-size:15px;
     text-decoration:none;color:#fff;
-    padding:11px 22px;border-radius:8px;white-space:nowrap;
-    display:inline-block;
+    padding:11px 22px;border-radius:8px;white-space:nowrap;display:inline-block;
   }
-  .ke01 a.knapp{background:var(--ke01)} .ke01 a.knapp:hover{background:#174C86}
-  .ke04 a.knapp{background:var(--ke04)} .ke04 a.knapp:hover{background:#095C50}
+  .ke01 a.knapp{background:var(--ke01)} .ke01 a.knapp:hover{background:var(--ke01-hover)}
+  .ke04 a.knapp{background:var(--ke04)} .ke04 a.knapp:hover{background:var(--ke04-hover)}
+  @media (prefers-color-scheme: dark){
+    a.knapp{color:#0E1512}
+  }
   a.knapp:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 
+  .resurs{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+    padding:16px 22px;margin-bottom:20px;
+  }
+  .resurs h3{font-size:17px;font-weight:600}
+  .resurs p{font-size:14px;color:var(--soft);max-width:46ch}
+  a.knapp-sekundar{
+    font-weight:600;font-size:15px;text-decoration:none;
+    color:var(--ke04);border:1.5px solid var(--ke04);
+    padding:10px 20px;border-radius:8px;white-space:nowrap;
+  }
+  a.knapp-sekundar:hover{background:var(--ke04);color:var(--card)}
+  a.knapp-sekundar:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+
   .kommande{
-    border:1.5px dashed var(--grid-major);border-radius:12px;
-    padding:18px 22px;color:var(--neutral);
-    display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+    border:1.5px dashed var(--linje);border-radius:12px;
+    padding:16px 22px;color:var(--neutral);
+    display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:44px;
   }
   .kommande .kurskod{color:var(--neutral);font-size:18px}
   .kommande p{font-size:14px}
 
+  .smart{margin-bottom:44px}
+  .smart-kort{padding:18px 22px}
+  .smart-kort ul{list-style:none}
+  .smart-kort li{
+    padding-left:26px;position:relative;margin-bottom:9px;font-size:14.5px;
+  }
+  .smart-kort li:last-child{margin-bottom:0}
+  .smart-kort li::before{
+    content:'\2192';position:absolute;left:0;color:var(--ke04);
+    font-family:var(--mono);font-weight:700;
+  }
+
   .tips{
-    margin-top:34px;font-size:13.5px;color:var(--soft);
-    background:var(--card);border:1px solid var(--grid-major);
+    font-size:13.5px;color:var(--soft);
+    background:var(--card);border:1px solid var(--linje);
     border-radius:10px;padding:14px 18px;
   }
   .tips b{color:var(--ink)}
@@ -97,66 +157,125 @@
     margin-top:40px;text-align:center;
     font-family:var(--mono);font-size:12px;color:var(--neutral);line-height:1.8;
   }
+  @media (max-width:560px){
+    header{padding-right:0}
+    .molekyl{width:70px;height:70px;top:-30px;opacity:.3}
+  }
   @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
     .kurs{transition:none}
     .kurs:hover{transform:none}
+    .molekyl svg{animation:none}
   }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
+    <div class="molekyl" aria-hidden="true">
+      <svg viewBox="0 0 100 100" fill="none" stroke="var(--ke04)" stroke-width="2.4">
+        <polygon points="50,10 84,30 84,70 50,90 16,70 16,30"/>
+        <circle cx="50" cy="50" r="21"/>
+        <line x1="50" y1="10" x2="50" y2="0"/>
+        <line x1="84" y1="30" x2="93" y2="25"/>
+        <line x1="84" y1="70" x2="93" y2="75"/>
+      </svg>
+    </div>
     <div class="eyebrow">Gymnasiekemi · GLP2019</div>
     <h1>Kemiverktyg</h1>
-    <p class="sub">Interaktiva räknetränare med slumpade uppgifter, stegvisa lösningar och rätt hantering av gällande siffror. Välj din kurs — färgen följer med i verktyget.</p>
+    <p class="sub">Interaktiva räknetränare med slumpade uppgifter, stegvisa lösningar och rätt hantering av gällande siffror. Ingen inloggning behövs.</p>
+    <a class="ner" href="#verktyg">&#8595; Till verktygen</a>
   </header>
 
-  <section class="kurs ke01" aria-labelledby="ke01-rubrik">
-    <div class="kurs-head">
-      <span class="kurskod">KE01</span>
-      <span class="kursnamn" id="ke01-rubrik">Kemi och jag</span>
-    </div>
-    <div class="kurs-body">
-      <div class="verktyg">
-        <div class="verktyg-info">
-          <h2>Moltränaren</h2>
-          <p>Substansmängd i tre riktningar: n = m/M, n = N/Nₐ och c = n/V. Tre svårighetsgrader — på svår väljer du formlerna själv.</p>
-        </div>
-        <a class="knapp" href="moltranaren-ke01.html">Öppna tränaren</a>
-      </div>
+  <!-- REDIGERA: ersätt platshållartexten nedan med din egen presentation,
+       och ta sedan bort class="platshallare" från stycket. -->
+  <section class="om" id="om" aria-labelledby="om-rubrik">
+    <h2 class="sektionsrubrik" id="om-rubrik">Om mig</h2>
+    <div class="om-kort kort-bas">
+      <p class="platshallare">[Skriv några rader om dig själv här: vem du är, vilka kurser du
+      undervisar och hur du vill att verktygen används. Öppna index.html i en textredigerare,
+      ersätt den här texten och ta bort class="platshallare" från stycket.]</p>
+      <p class="kontakt">[Namn] &middot; [E-post eller Wilma-meddelande]</p>
     </div>
   </section>
 
-  <section class="kurs ke04" aria-labelledby="ke04-rubrik">
-    <div class="kurs-head">
-      <span class="kurskod">KE04</span>
-      <span class="kursnamn" id="ke04-rubrik">Kemisk reaktion</span>
-    </div>
-    <div class="kurs-body">
-      <div class="verktyg">
-        <div class="verktyg-info">
-          <h2>Stökiometritränaren</h2>
-          <p>Massa–mol–massa, begränsande faktor, utbyte och koncentration — med reaktionsformler ur en verklig reaktionsbank.</p>
-        </div>
-        <a class="knapp" href="stokiometritranaren-ke04.html">Öppna tränaren</a>
+  <section id="verktyg" aria-labelledby="verktyg-rubrik">
+    <h2 class="sektionsrubrik" id="verktyg-rubrik">Verktyg</h2>
+
+    <div class="kurs kort-bas ke01">
+      <div class="kurs-head">
+        <span class="kurskod">KE01</span>
+        <span class="kursnamn">Kemi och jag</span>
       </div>
+      <div class="kurs-body">
+        <div class="verktygsrad">
+          <div>
+            <h3>Moltränaren</h3>
+            <p>Substansmängd i tre riktningar: n = m/M, n = N/N&#8342; och c = n/V. På svår nivå väljer du formlerna själv.</p>
+          </div>
+          <a class="knapp" href="moltranaren-ke01.html">Öppna tränaren</a>
+        </div>
+        <div class="chips">
+          <span class="chip">3 nivåer</span><span class="chip">stegvisa lösningar</span>
+          <span class="chip">historik</span><span class="chip">uppdaterad juli 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="kurs kort-bas ke04">
+      <div class="kurs-head">
+        <span class="kurskod">KE04</span>
+        <span class="kursnamn">Kemisk reaktion</span>
+      </div>
+      <div class="kurs-body">
+        <div class="verktygsrad">
+          <div>
+            <h3>Stökiometritränaren</h3>
+            <p>Massaberäkningar, begränsande faktor, utbyte och koncentration, med reaktionsformler ur en verklig reaktionsbank.</p>
+          </div>
+          <a class="knapp" href="stokiometritranaren-ke04.html">Öppna tränaren</a>
+        </div>
+        <div class="chips">
+          <span class="chip">3 nivåer</span><span class="chip">stegvisa lösningar</span>
+          <span class="chip">gasvolymer</span><span class="chip">uppdaterad juli 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="resurs kort-bas">
+      <div>
+        <h3>Formelsamling</h3>
+        <p>Sambanden, arbetsgångarna, gällande siffror och atommassor. Samma värden som i tränarna. Kan skrivas ut.</p>
+      </div>
+      <a class="knapp-sekundar" href="formler.html">Öppna formelsamlingen</a>
+    </div>
+
+    <div class="kommande">
+      <span class="kurskod">KE02&ndash;KE06</span>
+      <p>Fler verktyg är på väg. Sidan uppdateras under läsåret.</p>
     </div>
   </section>
 
-  <div class="kommande">
-    <span class="kurskod">KE02–KE06</span>
-    <p>Fler verktyg är på väg. Sidan uppdateras under läsåret.</p>
-  </div>
+  <section class="smart" aria-labelledby="smart-rubrik">
+    <h2 class="sektionsrubrik" id="smart-rubrik">Träna smart</h2>
+    <div class="smart-kort kort-bas">
+      <ul>
+        <li><b>Lite och ofta slår mycket och sällan.</b> Tio uppgifter tre gånger i veckan ger mer än en lång kvällssession före provet.</li>
+        <li><b>Försök själv innan du visar lösningen.</b> Skriv ner ditt försök på papper, kontrollera svaret, och visa sedan lösningen steg för steg bara till det steg där det gick fel.</li>
+        <li><b>Klar för prov?</b> Kör Blandat på medel eller svår nivå. Där får du inte veta uppgiftstypen, precis som på provet.</li>
+      </ul>
+    </div>
+  </section>
 
   <div class="tips">
-    <b>Tips:</b> tränarna fungerar på mobil, dator och pekplatta och kräver ingen inloggning.
-    Framstegen sparas under sessionen — historiken rensas när sidan laddas om.
+    <b>Bra att veta:</b> tränarna fungerar på mobil, dator och pekplatta.
+    Framstegen sparas under sessionen och historiken rensas när sidan laddas om.
     Skriv decimaler med komma eller punkt, båda fungerar.
   </div>
 
   <footer>
-    Kemiundervisning · gymnasiet · GLP2019<br>
-    Byggd med verifierade uppgiftsgeneratorer — varje svar är automatiskt kontrollräknat.
+    Kemiundervisning &middot; gymnasiet &middot; GLP2019<br>
+    Byggd med verifierade uppgiftsgeneratorer. Varje svar är automatiskt kontrollräknat.
   </footer>
 </div>
 </body>

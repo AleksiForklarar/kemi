@@ -1,40 +1,41 @@
-GITHUB PAGES — SÅ HÄR PUBLICERAR DU (en gång, ca 15 min)
-=========================================================
+OM WEBBPLATSEN
+==============
 
-1. Skapa konto: github.com → "Sign up" (gratis).
+Det här är en samlingssida med interaktiva verktyg för gymnasiekemi
+enligt läroplanen GLP2019. Allt fungerar direkt i webbläsaren, på
+mobil, dator och pekplatta, utan inloggning och utan att några
+personuppgifter sparas.
 
-2. Skapa ett arkiv (repository):
-   - Klicka på "+" uppe till höger → "New repository"
-   - Namn: kemi   (eller vad du vill — blir en del av adressen)
-   - Välj "Public"
-   - Klicka "Create repository"
+INNEHÅLL
+--------
+index.html
+    Startsidan: presentation av läraren, länkar till verktygen,
+    formelsamlingen och studietips.
 
-3. Ladda upp filerna:
-   - Klicka "uploading an existing file" (eller Add file → Upload files)
-   - Dra in ALLA fyra filerna från den här mappen:
-       index.html
-       moltranaren-ke01.html
-       stokiometritranaren-ke04.html
-       LASMIG.txt   (valfri — kan utelämnas)
-   - Klicka "Commit changes"
+moltranaren-ke01.html
+    Moltränaren (KE01 Kemi och jag). Slumpade uppgifter om
+    substansmängd: n = m/M, n = N/NA och c = n/V. Tre
+    svårighetsgrader med stegvisa lösningar. På svår nivå
+    kombineras flera formler och studeranden väljer själv
+    lösningsvägen.
 
-4. Slå på Pages:
-   - Settings → Pages (i vänstermenyn)
-   - Under "Branch": välj "main" och "/ (root)" → Save
+stokiometritranaren-ke04.html
+    Stökiometritränaren (KE04 Kemisk reaktion). Massaberäkningar,
+    begränsande faktor, utbyte och koncentration, byggda på en
+    bank av verkliga reaktionsformler.
 
-5. Vänta 1–2 minuter. Din sida finns nu på:
-   https://DITTANVÄNDARNAMN.github.io/kemi/
-   (adressen visas överst på Pages-sidan)
+formler.html
+    Formelsamling med samband, arbetsgångar, regler för gällande
+    siffror och atommassor. Kan skrivas ut.
 
-6. Dela adressen i Wilma/Teams — studerandena behöver ingen inloggning.
+404.html
+    Visas automatiskt om någon skriver in en adress som inte finns.
 
-UPPDATERA ETT VERKTYG SENARE
-----------------------------
-Ladda upp den nya filen med SAMMA filnamn (Add file → Upload files)
-→ den gamla ersätts, adressen ändras inte.
-
-VIKTIGT
--------
-- Allt i arkivet är OFFENTLIGT. Ladda ALDRIG upp facitversioner,
-  provunderlag eller något med studerandenamn.
-- Statiska sidor utan inloggning = inga personuppgifter hanteras.
+BRA ATT VETA
+------------
+- Tränarna kontrollerar svaren med korrekt antal gällande siffror
+  och accepterar både decimalkomma och decimalpunkt.
+- Varje uppgift genereras slumpmässigt och varje facitsvar är
+  automatiskt kontrollräknat.
+- Historiken i tränarna sparas bara under sessionen och rensas
+  när sidan laddas om.

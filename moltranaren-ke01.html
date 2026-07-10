@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Moltränaren — KE01</title>
+<title>Moltränaren · KE01</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -45,6 +45,11 @@
     line-height:1.5;
   }
   .wrap{max-width:840px;margin:0 auto}
+
+  .hem{display:inline-block;font-family:var(--mono);font-size:13px;font-weight:600;
+    color:var(--ink-soft);text-decoration:none;margin-bottom:10px;padding:4px 0}
+  .hem:hover{color:var(--accent)}
+  .hem:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
   header{margin-bottom:20px}
   .eyebrow{
@@ -181,6 +186,7 @@
 </head>
 <body>
 <div class="wrap">
+  <a class="hem" href="index.html">← Startsidan</a>
   <header>
     <div class="eyebrow">KE01 · Kemi och jag · GLP2019</div>
     <h1>Moltränaren</h1>
@@ -252,7 +258,7 @@
 <script>
 'use strict';
 /* ================================================================
-   LOGIK — ren och testbar (körs även i Node av testsviten)
+   LOGIK: ren och testbar (körs även i Node av testsviten)
    ================================================================ */
 
 /* Atommassor exakt enligt det periodiska systemet (tabellbok) */
@@ -714,7 +720,7 @@ if(typeof module!=='undefined' && module.exports){
 }
 
 /* ================================================================
-   UI — körs endast i webbläsaren
+   UI: körs endast i webbläsaren
    ================================================================ */
 if(typeof document!=='undefined'){
 
@@ -732,7 +738,7 @@ const DIFFS = [
 let curType='mM', curDiff='latt';
 let problem=null, answered=false, revealed=false, stepIdx=0;
 let score={ok:0,tot:0,streak:0};
-let history=[];            /* endast i minnet — rensas vid omladdning */
+let history=[];            /* endast i minnet, rensas vid omladdning */
 let histCounter=0;
 let currentEntry=null;
 let reviewing=false, savedState=null;
@@ -830,7 +836,7 @@ function openReview(entry){
   $('backBtn').style.display='inline-block';
   const fb=$('feedback');
   fb.className='feedback '+(entry.status==='ok'?'ok':entry.status==='fel'?'fel':'warn');
-  fb.innerHTML=`Resultat: ${STATUS_LABEL[entry.status]} — rätt svar: <b>${fmtSig(entry.problem.answer,entry.problem.sf)} ${entry.problem.unit}</b>.<br>Klicka <b>← Fortsätt träna</b> för att återgå till din pågående uppgift, eller <b>Ny uppgift</b> för att börja en ny.`;
+  fb.innerHTML=`Resultat: ${STATUS_LABEL[entry.status]}. Rätt svar: <b>${fmtSig(entry.problem.answer,entry.problem.sf)} ${entry.problem.unit}</b>.<br>Klicka <b>← Fortsätt träna</b> för att återgå till din pågående uppgift, eller <b>Ny uppgift</b> för att börja en ny.`;
   $('solution').className='solution open';
   const st=$('steps'); st.innerHTML='';
   entry.problem.steps.forEach((s,i)=>{
@@ -866,7 +872,7 @@ function check(){
   const raw = $('answer').value;
   const res = evaluate(raw, problem.answer, problem.sf);
   const fb = $('feedback');
-  if(res.status==='invalid'){ fb.className='feedback fel'; fb.innerHTML='Skriv in ett tal, t.ex. 12,5 — eller med tiopotens: 3,01e23'; return; }
+  if(res.status==='invalid'){ fb.className='feedback fel'; fb.innerHTML='Skriv in ett tal, t.ex. 12,5, eller med tiopotens: 3,01e23'; return; }
   const correct = res.status==='ok'||res.status==='warn';
   if(!answered && !revealed){
     score.tot++;
@@ -886,13 +892,13 @@ function check(){
     fb.innerHTML=`Rätt! ✓ Svar: ${ansStr} (${problem.sf} gällande siffror)`;
   } else if(res.status==='warn' && res.reason==='sf'){
     fb.className='feedback warn';
-    fb.innerHTML=`Rätt beräknat — men ange svaret med <b>${problem.sf} gällande siffror</b>: ${ansStr}. Räknas som rätt.`;
+    fb.innerHTML=`Rätt beräknat, men ange svaret med <b>${problem.sf} gällande siffror</b>: ${ansStr}. Räknas som rätt.`;
   } else if(res.status==='warn'){
     fb.className='feedback warn';
-    fb.innerHTML=`Mycket nära — kontrollera att du inte avrundat i mellanstegen. Räkna med fulla värden och avrunda först i slutsvaret: ${ansStr}. Räknas som rätt.`;
+    fb.innerHTML=`Mycket nära! Kontrollera att du inte avrundat i mellanstegen. Räkna med fulla värden och avrunda först i slutsvaret: ${ansStr}. Räknas som rätt.`;
   } else {
     fb.className='feedback fel';
-    fb.textContent='Inte riktigt — kontrollera dina mellansteg eller visa lösningen.';
+    fb.textContent='Inte riktigt. Kontrollera dina mellansteg eller visa lösningen.';
   }
 }
 
