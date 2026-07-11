@@ -24,6 +24,16 @@ stokiometritranaren-ke04.html
     begränsande faktor, utbyte och koncentration, byggda på en
     bank av verkliga reaktionsformler.
 
+gastranaren-ke04.html
+    Gastränaren (KE04). Allmänna gaslagen pV = nRT, molvolymen
+    och deltryck enligt Daltons lag, med enhetsomvandlingar och
+    okända molmassor på svår nivå.
+
+balanseringstranaren-ke04.html
+    Balanseringstränaren (KE04). Justera koefficienterna med
+    plus och minus och se atomräkningen uppdateras i realtid
+    på båda sidor av reaktionsformeln.
+
 formler.html
     Formelsamling med samband, arbetsgångar, regler för gällande
     siffror och atommassor. Kan skrivas ut.
@@ -39,3 +49,10 @@ BRA ATT VETA
   automatiskt kontrollräknat.
 - Historiken i tränarna sparas bara under sessionen och rensas
   när sidan laddas om.
+- Startsidan visar dagens kemivits ur en bank på över hundra
+  vitsar. Vitsen byts automatiskt varje dygn.
+- Knappen "Hittade du ett fel?" finns på alla sidor. Den samlar
+  automatiskt ihop sidans namn och den aktuella uppgiften och
+  skickar rapporten via e-post eller kopierar den till urklipp.
+  VIKTIGT: öppna varje html-fil i en textredigerare, sök efter
+  ANDRA-MIG och byt ut adressen mot lärarens riktiga e-post.

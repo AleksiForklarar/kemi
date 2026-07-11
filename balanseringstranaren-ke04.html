@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balanseringstränaren · KE04</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F9F8FC;
+    --grid:#E9E5F1;
+    --grid-major:#DED7EB;
+    --ink:#1E1826;
+    --ink-soft:#5A5168;
+    --accent:#7A4FA0;
+    --accent-hover:#634083;
+    --accent-soft:#F0EAF8;
+    --green:#1D7A33;
+    --green-soft:#E4F3E6;
+    --amber:#B2590B;
+    --amber-soft:#FBEFE0;
+    --red:#A8332C;
+    --red-soft:#F8E7E5;
+    --card:#FFFFFF;
+    --line:#D8CFE6;
+    --radius:10px;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sans:'IBM Plex Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:var(--sans);color:var(--ink);
+    background-color:var(--paper);
+    background-image:
+      linear-gradient(var(--grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:100px 100px,100px 100px,20px 20px,20px 20px;
+    min-height:100vh;padding:24px 16px 64px;line-height:1.5;
+  }
+  .wrap{max-width:840px;margin:0 auto}
+  .hem{display:inline-block;font-family:var(--mono);font-size:13px;font-weight:600;
+    color:var(--ink-soft);text-decoration:none;margin-bottom:10px;padding:4px 0}
+  .hem:hover{color:var(--accent)}
+  .hem:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  header{margin-bottom:20px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-size:clamp(26px,5vw,36px);font-weight:700;letter-spacing:-.01em;line-height:1.15}
+  .sub{color:var(--ink-soft);font-size:15px;margin-top:4px}
+
+  .panel{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:16px;margin-bottom:14px;
+    box-shadow:0 1px 3px rgba(30,24,38,.06);
+  }
+  .controls{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+  .ctrl-group{display:flex;flex-direction:column;gap:6px}
+  .ctrl-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-family:var(--sans);font-size:14px;font-weight:500;
+    padding:7px 13px;border-radius:999px;border:1.5px solid var(--line);
+    background:var(--card);color:var(--ink);cursor:pointer;transition:all .12s}
+  .chip:hover{border-color:var(--accent)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .chip:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .scorebar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;
+    font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+  .scorebar b{color:var(--ink);font-weight:600}
+  .streak{color:var(--amber);font-weight:600}
+
+  .qtype-tag{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;
+    color:var(--accent);background:var(--accent-soft);
+    padding:3px 10px;border-radius:6px;margin-bottom:14px;letter-spacing:.04em}
+  .review-tag{background:var(--amber-soft);color:var(--amber)}
+
+  .ekvation{
+    display:flex;align-items:flex-end;justify-content:center;
+    flex-wrap:wrap;gap:8px;row-gap:18px;
+    padding:18px 8px 14px;margin-bottom:14px;
+  }
+  .art{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .stepper{display:flex;align-items:center;gap:4px}
+  .stepper button{
+    width:30px;height:30px;border-radius:8px;font-size:17px;font-weight:700;
+    border:1.5px solid var(--line);background:var(--card);color:var(--accent);
+    cursor:pointer;line-height:1;padding:0;
+  }
+  .stepper button:hover{border-color:var(--accent)}
+  .stepper button:disabled{opacity:.35;cursor:default}
+  .koef{
+    font-family:var(--mono);font-size:22px;font-weight:600;min-width:34px;
+    text-align:center;color:var(--accent);
+  }
+  .koef.ett{color:var(--line)}
+  .formel{
+    font-family:var(--mono);font-size:clamp(17px,3.6vw,22px);font-weight:600;
+    background:var(--accent-soft);padding:8px 12px;border-radius:8px;
+  }
+  .formel sub{font-size:.68em}
+  .op{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--ink-soft);padding-bottom:12px}
+
+  .raknetabell{overflow-x:auto;margin-bottom:4px}
+  table{border-collapse:collapse;margin:0 auto;font-family:var(--mono);font-size:14.5px}
+  th,td{padding:6px 16px;text-align:center;border-bottom:1px solid var(--line)}
+  th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-family:var(--sans);font-weight:600}
+  tr:last-child td{border-bottom:none}
+  td.el{font-weight:700}
+  td.status-ok{color:var(--green);font-weight:700}
+  td.status-fel{color:var(--red);font-weight:700}
+
+  .answer-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+  button{font-family:var(--sans);font-size:15px;font-weight:600;
+    padding:10px 18px;border-radius:8px;cursor:pointer;border:1.5px solid transparent;transition:all .12s}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-hover)}
+  .btn-ghost{background:var(--card);border-color:var(--line);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+
+  .feedback{margin-top:12px;padding:12px 14px;border-radius:8px;font-size:15px;display:none;font-weight:500}
+  .feedback.ok{display:block;background:var(--green-soft);color:var(--green);border:1px solid #BFE3C4}
+  .feedback.warn{display:block;background:var(--amber-soft);color:var(--amber);border:1px solid #EFD3B2}
+  .feedback.fel{display:block;background:var(--red-soft);color:var(--red);border:1px solid #EBC4C0}
+  .feedback sub{font-size:.7em}
+
+  .hist-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
+  .hist-note{font-size:12px;color:var(--ink-soft);font-family:var(--mono)}
+  .hist-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+  .hist-item{display:flex;gap:10px;align-items:baseline;text-align:left;
+    font-family:var(--sans);font-size:14px;font-weight:400;
+    background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;width:100%}
+  .hist-item:hover{border-color:var(--accent)}
+  .hist-item .hn{font-family:var(--mono);font-weight:600;color:var(--ink-soft);font-size:12px;flex-shrink:0}
+  .hist-item .ht{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--mono)}
+  .hist-item .ht sub{font-size:.7em}
+  .hist-item .hs{font-family:var(--mono);font-size:12px;font-weight:600;flex-shrink:0}
+  .hs.s-ok{color:var(--green)} .hs.s-warn{color:var(--amber)} .hs.s-fel{color:var(--red)} .hs.s-reveal{color:var(--ink-soft)}
+
+  .felknapp{position:fixed;right:16px;bottom:16px;z-index:50;font-size:13px;
+    background:var(--card);color:var(--ink-soft);border:1.5px solid var(--line);
+    border-radius:999px;padding:9px 14px;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+  .felknapp:hover{color:var(--accent);border-color:var(--accent)}
+  .felpanel{position:fixed;right:16px;bottom:64px;z-index:50;
+    width:min(340px,calc(100vw - 32px));background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:14px;
+    box-shadow:0 8px 28px rgba(0,0,0,.2)}
+  .felpanel h3{font-size:14px;margin-bottom:6px}
+  .felpanel textarea{width:100%;height:70px;font-family:var(--sans);font-size:13px;
+    padding:8px;border:1.5px solid var(--line);border-radius:8px;
+    background:var(--paper);color:var(--ink);resize:vertical}
+  .felmeta{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);
+    background:var(--paper);border-radius:6px;padding:6px 8px;margin:8px 0;
+    max-height:70px;overflow:auto;white-space:pre-wrap}
+  .felrad{display:flex;gap:6px}
+  .felrad button{flex:1;font-size:12.5px;padding:8px 6px}
+  .felok{font-size:12px;color:var(--green);margin-top:6px;display:none}
+
+  footer{margin-top:24px;font-size:13px;color:var(--ink-soft);text-align:center;
+    font-family:var(--mono);line-height:1.7}
+  @media (max-width:560px){
+    body{padding:16px 10px 48px}
+    .panel{padding:13px}
+    th,td{padding:6px 10px}
+  }
+  @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="hem" href="index.html">&#8592; Startsidan</a>
+  <header>
+    <div class="eyebrow">KE04 · Kemisk reaktion · GLP2019</div>
+    <h1>Balanseringstränaren</h1>
+    <div class="sub">Justera koefficienterna med + och &minus; tills atomerna stämmer på båda sidor. Tabellen räknar åt dig i realtid.</div>
+  </header>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="ctrl-group">
+        <span class="ctrl-label">Svårighetsgrad</span>
+        <div class="chips" id="diffChips" role="group" aria-label="Svårighetsgrad"></div>
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">Resultat</span>
+        <div class="scorebar">
+          <span>Rätt: <b id="scoreOk">0</b> / <b id="scoreTot">0</b></span>
+          <span class="streak" id="streak"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <span class="qtype-tag" id="qtag"></span>
+    <div class="ekvation" id="ekvation"></div>
+    <div class="raknetabell"><table id="tabell"></table></div>
+
+    <div class="answer-row">
+      <button class="btn-primary" id="checkBtn">Kontrollera</button>
+      <button class="btn-ghost" id="solBtn">Visa lösning</button>
+      <button class="btn-ghost" id="resetBtn">Nollställ</button>
+      <button class="btn-ghost" id="nextBtn">Ny uppgift &#8594;</button>
+      <button class="btn-primary" id="backBtn" style="display:none">&#8592; Fortsätt träna</button>
+    </div>
+
+    <div class="feedback" id="feedback" role="status"></div>
+  </div>
+
+  <div class="panel" id="histPanel" style="display:none">
+    <div class="hist-head">
+      <span class="ctrl-label">Historik</span>
+      <span class="hist-note">rensas när sidan laddas om</span>
+    </div>
+    <div class="hist-list" id="histList"></div>
+  </div>
+
+  <footer>
+    En reaktionsformel är balanserad när varje grundämne har lika många atomer på båda sidor.<br>
+    Använd alltid minsta möjliga heltalskoefficienter.
+  </footer>
+</div>
+
+<script>
+'use strict';
+/* ================================================================
+   LOGIK: ren och testbar
+   ================================================================ */
+function parseFormula(f){
+  const out = {};
+  function add(o,el,n){ o[el]=(o[el]||0)+n; }
+  let i=0;
+  function block(target){
+    while(i<f.length){
+      const ch=f[i];
+      if(ch==='('){
+        i++;
+        const inner={};
+        block(inner);
+        let num=''; while(i<f.length && /\d/.test(f[i])) num+=f[i++];
+        const m=num?+num:1;
+        for(const k in inner) add(target,k,inner[k]*m);
+      } else if(ch===')'){ i++; return; }
+      else{
+        let el=ch; i++;
+        if(i<f.length && /[a-z]/.test(f[i])) el+=f[i++];
+        let num=''; while(i<f.length && /\d/.test(f[i])) num+=f[i++];
+        add(target,el,num?+num:1);
+      }
+    }
+  }
+  block(out);
+  return out;
+}
+function gcd(a,b){ while(b){ [a,b]=[b,a%b]; } return a; }
+function gcdAll(arr){ return arr.reduce((g,x)=>gcd(g,x)); }
+
+/* Bank: minsta heltalskoefficienter lagrade som facit */
+const BANK = {
+  latt:[
+    {r:[[2,'H2'],[1,'O2']], p:[[2,'H2O']]},
+    {r:[[1,'H2'],[1,'Cl2']], p:[[2,'HCl']]},
+    {r:[[2,'Mg'],[1,'O2']], p:[[2,'MgO']]},
+    {r:[[1,'N2'],[3,'H2']], p:[[2,'NH3']]},
+    {r:[[2,'Na'],[1,'Cl2']], p:[[2,'NaCl']]},
+    {r:[[2,'Ca'],[1,'O2']], p:[[2,'CaO']]},
+    {r:[[1,'Zn'],[2,'HCl']], p:[[1,'ZnCl2'],[1,'H2']]},
+    {r:[[1,'H2'],[1,'I2']], p:[[2,'HI']]}
+  ],
+  medel:[
+    {r:[[1,'CH4'],[2,'O2']], p:[[1,'CO2'],[2,'H2O']]},
+    {r:[[2,'CO'],[1,'O2']], p:[[2,'CO2']]},
+    {r:[[2,'Al'],[3,'Cl2']], p:[[2,'AlCl3']]},
+    {r:[[1,'Fe2O3'],[3,'CO']], p:[[2,'Fe'],[3,'CO2']]},
+    {r:[[2,'KClO3']], p:[[2,'KCl'],[3,'O2']]},
+    {r:[[2,'H2O2']], p:[[2,'H2O'],[1,'O2']]},
+    {r:[[2,'SO2'],[1,'O2']], p:[[2,'SO3']]},
+    {r:[[2,'Na'],[2,'H2O']], p:[[2,'NaOH'],[1,'H2']]}
+  ],
+  svar:[
+    {r:[[2,'C2H6'],[7,'O2']], p:[[4,'CO2'],[6,'H2O']]},
+    {r:[[1,'C2H5OH'],[3,'O2']], p:[[2,'CO2'],[3,'H2O']]},
+    {r:[[1,'C3H8'],[5,'O2']], p:[[3,'CO2'],[4,'H2O']]},
+    {r:[[4,'NH3'],[5,'O2']], p:[[4,'NO'],[6,'H2O']]},
+    {r:[[4,'Fe'],[3,'O2']], p:[[2,'Fe2O3']]},
+    {r:[[2,'C4H10'],[13,'O2']], p:[[8,'CO2'],[10,'H2O']]},
+    {r:[[1,'Ca(OH)2'],[2,'HCl']], p:[[1,'CaCl2'],[2,'H2O']]},
+    {r:[[2,'Al'],[3,'H2SO4']], p:[[1,'Al2(SO4)3'],[3,'H2']]},
+    {r:[[3,'NO2'],[1,'H2O']], p:[[2,'HNO3'],[1,'NO']]},
+    {r:[[1,'P4'],[5,'O2']], p:[[1,'P4O10']]}
+  ]
+};
+
+function species(rx){ return [...rx.r.map(x=>x[1]), ...rx.p.map(x=>x[1])]; }
+function solution(rx){ return [...rx.r.map(x=>x[0]), ...rx.p.map(x=>x[0])]; }
+function elementsOf(rx){
+  const s=new Set();
+  species(rx).forEach(f=>Object.keys(parseFormula(f)).forEach(e=>s.add(e)));
+  return [...s];
+}
+/* atomsummor med givna koefficienter (array i species-ordning) */
+function sums(rx, coeffs){
+  const nr=rx.r.length;
+  const L={}, Rt={};
+  rx.r.forEach(([_,f],i)=>{
+    const comp=parseFormula(f);
+    for(const el in comp) L[el]=(L[el]||0)+coeffs[i]*comp[el];
+  });
+  rx.p.forEach(([_,f],i)=>{
+    const comp=parseFormula(f);
+    for(const el in comp) Rt[el]=(Rt[el]||0)+coeffs[nr+i]*comp[el];
+  });
+  return {L, R:Rt};
+}
+function checkAttempt(rx, coeffs){
+  const {L,R}=sums(rx,coeffs);
+  const els=elementsOf(rx);
+  for(const el of els){
+    if((L[el]||0)!==(R[el]||0)) return {status:'fel', el};
+  }
+  const g=gcdAll(coeffs);
+  if(g>1) return {status:'warn', faktor:g};
+  return {status:'ok'};
+}
+function isMinimalBalanced(rx){
+  const c=solution(rx);
+  return checkAttempt(rx,c).status==='ok' && !c.every(x=>x===1);
+}
+
+/* repetitionsskydd: gå igenom hela banken i slumpad ordning innan omstart */
+const queues={};
+function nextRx(diff){
+  if(!queues[diff] || !queues[diff].length){
+    const idx=BANK[diff].map((_,i)=>i);
+    for(let i=idx.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [idx[i],idx[j]]=[idx[j],idx[i]];
+    }
+    /* undvik att första i nya varvet är samma som senaste */
+    if(queues[diff+'_last']!==undefined && idx[0]===queues[diff+'_last'] && idx.length>1){
+      [idx[0],idx[1]]=[idx[1],idx[0]];
+    }
+    queues[diff]=idx;
+  }
+  const i=queues[diff].shift();
+  queues[diff+'_last']=i;
+  return {rx:BANK[diff][i], idx:i};
+}
+
+if(typeof module!=='undefined' && module.exports){
+  module.exports={BANK, parseFormula, gcd, gcdAll, species, solution,
+    elementsOf, sums, checkAttempt, isMinimalBalanced, nextRx, queues};
+}
+
+/* ================================================================
+   UI
+   ================================================================ */
+if(typeof document!=='undefined'){
+
+const DIFFS=[{id:'latt',label:'Lätt'},{id:'medel',label:'Medel'},{id:'svar',label:'Svår'}];
+const ELNAMN={H:'väte',O:'syre',C:'kol',N:'kväve',Cl:'klor',Na:'natrium',Mg:'magnesium',
+  Ca:'kalcium',Zn:'zink',I:'jod',Al:'aluminium',Fe:'järn',K:'kalium',S:'svavel',P:'fosfor'};
+let curDiff='latt';
+let rx=null, coeffs=[], answered=false, revealed=false;
+let score={ok:0,tot:0,streak:0};
+let history=[], histCounter=0, currentEntry=null;
+let reviewing=false, savedState=null;
+const MAXK=15;
+
+const $=id=>document.getElementById(id);
+const sub=f=>f.replace(/(\d+)/g,'<sub>$1</sub>');
+
+function eqText(r, c){
+  const nr=r.r.length;
+  const side=(arr,off)=>arr.map(([_,f],i)=>{
+    const k=c?c[off+i]:null;
+    return (k&&k>1?k+' ':'')+f;
+  }).join(' + ');
+  return side(r.r,0)+' \u2192 '+side(r.p,nr);
+}
+
+function buildChips(){
+  const el=$('diffChips'); el.innerHTML='';
+  DIFFS.forEach(it=>{
+    const b=document.createElement('button');
+    b.className='chip'+(it.id===curDiff?' on':'');
+    b.textContent=it.label;
+    b.onclick=()=>{curDiff=it.id;newProblem();};
+    el.appendChild(b);
+  });
+}
+
+function renderEq(interactive){
+  const holder=$('ekvation'); holder.innerHTML='';
+  const all=[...rx.r.map(x=>x[1]), ...rx.p.map(x=>x[1])];
+  const nr=rx.r.length;
+  all.forEach((f,i)=>{
+    if(i>0){
+      const op=document.createElement('span');
+      op.className='op';
+      op.textContent = i===nr ? '\u2192' : '+';
+      holder.appendChild(op);
+    }
+    const art=document.createElement('div');
+    art.className='art';
+    if(interactive){
+      const st=document.createElement('div');
+      st.className='stepper';
+      const minus=document.createElement('button');
+      minus.textContent='\u2212'; minus.setAttribute('aria-label','Minska koefficienten för '+f);
+      const val=document.createElement('span');
+      val.className='koef'+(coeffs[i]===1?' ett':''); val.textContent=coeffs[i];
+      const plus=document.createElement('button');
+      plus.textContent='+'; plus.setAttribute('aria-label','Öka koefficienten för '+f);
+      minus.disabled = coeffs[i]<=1;
+      plus.disabled = coeffs[i]>=MAXK;
+      minus.onclick=()=>{ if(coeffs[i]>1){coeffs[i]--; renderEq(true); renderTable();} };
+      plus.onclick=()=>{ if(coeffs[i]<MAXK){coeffs[i]++; renderEq(true); renderTable();} };
+      st.append(minus,val,plus);
+      art.appendChild(st);
+    } else {
+      const val=document.createElement('span');
+      val.className='koef'+(coeffs[i]===1?' ett':''); val.textContent=coeffs[i];
+      art.appendChild(val);
+    }
+    const fx=document.createElement('span');
+    fx.className='formel'; fx.innerHTML=sub(f);
+    art.appendChild(fx);
+    holder.appendChild(art);
+  });
+}
+
+function renderTable(){
+  const {L,R}=sums(rx,coeffs);
+  const els=elementsOf(rx);
+  const t=$('tabell');
+  let h='<tr><th>Grundämne</th><th>Vänster</th><th>Höger</th><th></th></tr>';
+  els.forEach(el=>{
+    const ok=(L[el]||0)===(R[el]||0);
+    h+=`<tr><td class="el">${el}</td><td>${L[el]||0}</td><td>${R[el]||0}</td>`+
+       `<td class="${ok?'status-ok':'status-fel'}">${ok?'\u2713':'\u2717'}</td></tr>`;
+  });
+  t.innerHTML=h;
+}
+
+function newProblem(){
+  reviewing=false; savedState=null;
+  buildChips();
+  const drawn=nextRx(curDiff);
+  rx=drawn.rx;
+  coeffs=species(rx).map(()=>1);
+  answered=false; revealed=false; currentEntry=null;
+  $('qtag').textContent='Balansera · '+DIFFS.find(d=>d.id===curDiff).label;
+  $('qtag').className='qtype-tag';
+  renderEq(true); renderTable();
+  $('feedback').className='feedback'; $('feedback').innerHTML='';
+  $('checkBtn').style.display='inline-block';
+  $('solBtn').style.display='inline-block';
+  $('resetBtn').style.display='inline-block';
+  $('nextBtn').style.display='inline-block';
+  $('backBtn').style.display='none';
+}
+
+function ensureEntry(){
+  if(currentEntry) return currentEntry;
+  histCounter++;
+  currentEntry={n:histCounter, rx, status:'fel', user:[...coeffs]};
+  history.unshift(currentEntry);
+  renderHistory();
+  return currentEntry;
+}
+const STATUS_LABEL={ok:'rätt ✓', warn:'rätt (förkorta)', fel:'fel ✗', reveal:'visade lösning'};
+
+function renderHistory(){
+  const panel=$('histPanel');
+  if(!history.length){ panel.style.display='none'; return; }
+  panel.style.display='block';
+  const list=$('histList'); list.innerHTML='';
+  history.forEach(e=>{
+    const b=document.createElement('button');
+    b.className='hist-item';
+    b.innerHTML=`<span class="hn">#${e.n}</span><span class="ht">${sub(eqText(e.rx,null))}</span><span class="hs s-${e.status}">${STATUS_LABEL[e.status]}</span>`;
+    b.onclick=()=>openReview(e);
+    list.appendChild(b);
+  });
+}
+
+function openReview(entry){
+  if(!reviewing){
+    savedState={rx, coeffs:[...coeffs], answered, revealed,
+      fbClass:$('feedback').className, fbHTML:$('feedback').innerHTML};
+  }
+  reviewing=true;
+  rx=entry.rx;
+  coeffs=solution(rx);
+  $('qtag').textContent='Balansera · Historik';
+  $('qtag').className='qtype-tag review-tag';
+  renderEq(false); renderTable();
+  const fb=$('feedback');
+  fb.className='feedback '+(entry.status==='ok'?'ok':entry.status==='fel'?'fel':'warn');
+  fb.innerHTML=`Resultat: ${STATUS_LABEL[entry.status]}. Ovan visas den korrekta balanseringen: <b>${sub(eqText(rx,solution(rx)))}</b>.<br>Klicka <b>&#8592; Fortsätt träna</b> för att återgå, eller <b>Ny uppgift</b> för att börja en ny.`;
+  $('checkBtn').style.display='none';
+  $('solBtn').style.display='none';
+  $('resetBtn').style.display='none';
+  $('backBtn').style.display='inline-block';
+  window.scrollTo({top:0});
+}
+
+function closeReview(){
+  reviewing=false;
+  const s=savedState; savedState=null;
+  if(!s){ newProblem(); return; }
+  rx=s.rx; coeffs=s.coeffs; answered=s.answered; revealed=s.revealed;
+  $('qtag').textContent='Balansera · '+DIFFS.find(d=>d.id===curDiff).label;
+  $('qtag').className='qtype-tag';
+  renderEq(true); renderTable();
+  $('feedback').className=s.fbClass; $('feedback').innerHTML=s.fbHTML;
+  $('checkBtn').style.display='inline-block';
+  $('solBtn').style.display='inline-block';
+  $('resetBtn').style.display='inline-block';
+  $('backBtn').style.display='none';
+}
+
+function check(){
+  if(reviewing) return;
+  const res=checkAttempt(rx,coeffs);
+  const fb=$('feedback');
+  const correct=res.status==='ok'||res.status==='warn';
+  if(!answered && !revealed){
+    score.tot++;
+    if(correct){ score.ok++; score.streak++; } else score.streak=0;
+    answered=true;
+    updateScore();
+  }
+  const entry=ensureEntry();
+  entry.user=[...coeffs];
+  if(entry.status!=='reveal'){
+    if(entry.status!=='ok') entry.status=res.status;
+  }
+  renderHistory();
+  if(res.status==='ok'){
+    fb.className='feedback ok';
+    fb.innerHTML='Balanserad! ✓ Med minsta möjliga heltalskoefficienter: <b>'+sub(eqText(rx,coeffs))+'</b>';
+  } else if(res.status==='warn'){
+    fb.className='feedback warn';
+    fb.innerHTML='Balanserad, men inte med minsta möjliga heltal. Alla koefficienter kan divideras med <b>'+res.faktor+'</b>. Räknas som rätt.';
+  } else {
+    const namn=ELNAMN[res.el]||res.el;
+    fb.className='feedback fel';
+    fb.innerHTML='Inte balanserad ännu. Kolla <b>'+namn+' ('+res.el+')</b>: antalet skiljer sig mellan sidorna. Tabellen visar var.';
+  }
+}
+
+function reveal(){
+  if(reviewing) return;
+  if(!answered){
+    const entry=ensureEntry();
+    entry.status='reveal';
+    renderHistory();
+  }
+  revealed=true;
+  coeffs=solution(rx);
+  renderEq(true); renderTable();
+  const fb=$('feedback');
+  fb.className='feedback warn';
+  fb.innerHTML='Lösning: <b>'+sub(eqText(rx,coeffs))+'</b>. Prova att nollställa och balansera själv en gång till!';
+}
+
+function reset(){
+  if(reviewing) return;
+  coeffs=species(rx).map(()=>1);
+  renderEq(true); renderTable();
+  $('feedback').className='feedback'; $('feedback').innerHTML='';
+}
+
+function updateScore(){
+  $('scoreOk').textContent=score.ok;
+  $('scoreTot').textContent=score.tot;
+  $('streak').textContent = score.streak>=2 ? `🔥 ${score.streak} i rad` : '';
+}
+
+$('checkBtn').onclick=check;
+$('solBtn').onclick=reveal;
+$('resetBtn').onclick=reset;
+$('nextBtn').onclick=newProblem;
+$('backBtn').onclick=closeReview;
+
+window.__felContext=()=>rx?{
+  Ekvation: eqText(rx,null),
+  'Dina koefficienter': coeffs.join(', '),
+  Facit: eqText(rx,solution(rx))
+}:null;
+
+newProblem();
+}
+</script>
+<button class="felknapp" id="felBtn">Hittade du ett fel?</button>
+<div class="felpanel" id="felPanel" hidden>
+  <h3>Rapportera ett fel</h3>
+  <textarea id="felText" placeholder="Beskriv felet: vad gjorde du, vad hände, vad förväntade du dig?"></textarea>
+  <div class="felmeta" id="felMeta"></div>
+  <div class="felrad">
+    <button class="btn-primary" id="felSkicka">Skicka via e-post</button>
+    <button class="btn-ghost" id="felKopiera">Kopiera rapporten</button>
+  </div>
+  <div class="felok" id="felOk"></div>
+</div>
+<script>
+(function(){
+const FELMAIL='ANDRA-MIG@exempel.fi'; /* ÄNDRA till lärarens e-postadress */
+const $=id=>document.getElementById(id);
+function ctx(){ try{return (window.__felContext&&window.__felContext())||null;}catch(e){return null;} }
+function report(){
+  let s='Sida: '+document.title+'\nAdress: '+location.href+'\nTid: '+new Date().toLocaleString('sv-FI');
+  const c=ctx();
+  if(c){ for(const k in c) s+='\n'+k+': '+c[k]; }
+  s+='\nWebbläsare: '+navigator.userAgent;
+  return s;
+}
+$('felBtn').onclick=()=>{
+  const p=$('felPanel'); p.hidden=!p.hidden;
+  if(!p.hidden){ $('felMeta').textContent=report(); $('felOk').style.display='none'; }
+};
+$('felSkicka').onclick=()=>{
+  const body=($('felText').value||'(ingen beskrivning)')+'\n\n--- Automatisk information ---\n'+report();
+  location.href='mailto:'+FELMAIL+'?subject='+encodeURIComponent('Felrapport: '+document.title)+'&body='+encodeURIComponent(body);
+};
+$('felKopiera').onclick=async()=>{
+  const t=($('felText').value||'(ingen beskrivning)')+'\n\n--- Automatisk information ---\n'+report();
+  try{ await navigator.clipboard.writeText(t); $('felOk').textContent='Kopierad! Klistra in i Wilma eller e-post.'; }
+  catch(e){ $('felOk').textContent='Kopiering blockerades. Markera texten ovan och kopiera manuellt.'; }
+  $('felOk').style.display='block';
+};
+})();
+</script>
+</body>
+</html>

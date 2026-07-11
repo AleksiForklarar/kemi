@@ -127,6 +127,40 @@
   a.knapp-sekundar:hover{background:var(--ke04);color:var(--card)}
   a.knapp-sekundar:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 
+  .b-stok{background:#0B6E5F} .b-stok:hover{background:#095C50}
+  .b-gas{background:#B2590B} .b-gas:hover{background:#8F470A}
+  .b-bal{background:#7A4FA0} .b-bal:hover{background:#634083}
+  .b-stok,.b-gas,.b-bal{color:#fff}
+  .verktygsrad.delad{border-top:1px solid var(--linje);margin-top:14px;padding-top:14px}
+
+  .vits{margin-bottom:44px}
+  .vits-kort{padding:20px 24px;border-left:6px solid var(--ke04)}
+  .vits-text{font-size:17px;line-height:1.55;max-width:60ch}
+  .vits-meta{font-family:var(--mono);font-size:11.5px;color:var(--neutral);margin-top:10px}
+
+  .felknapp{position:fixed;right:16px;bottom:16px;z-index:50;font-family:var(--sans);
+    font-size:13px;font-weight:600;cursor:pointer;
+    background:var(--card);color:var(--soft);border:1.5px solid var(--linje);
+    border-radius:999px;padding:9px 14px;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+  .felknapp:hover{color:var(--ke04);border-color:var(--ke04)}
+  .felpanel{position:fixed;right:16px;bottom:64px;z-index:50;
+    width:min(340px,calc(100vw - 32px));background:var(--card);
+    border:1px solid var(--linje);border-radius:12px;padding:14px;
+    box-shadow:0 8px 28px rgba(0,0,0,.2)}
+  .felpanel h3{font-size:14px;margin-bottom:6px}
+  .felpanel textarea{width:100%;height:70px;font-family:var(--sans);font-size:13px;
+    padding:8px;border:1.5px solid var(--linje);border-radius:8px;
+    background:var(--paper);color:var(--ink);resize:vertical}
+  .felmeta{font-family:var(--mono);font-size:10.5px;color:var(--soft);
+    background:var(--paper);border-radius:6px;padding:6px 8px;margin:8px 0;
+    max-height:70px;overflow:auto;white-space:pre-wrap}
+  .felrad{display:flex;gap:6px}
+  .felrad button{flex:1;font-family:var(--sans);font-weight:600;font-size:12.5px;
+    padding:8px 6px;border-radius:8px;cursor:pointer;border:1.5px solid transparent}
+  .fel-primar{background:var(--ke04);color:#fff}
+  .fel-sekundar{background:var(--card);border-color:var(--linje);color:var(--ink)}
+  .felok{font-size:12px;color:#1D7A33;margin-top:6px;display:none}
+
   .kommande{
     border:1.5px dashed var(--linje);border-radius:12px;
     padding:16px 22px;color:var(--neutral);
@@ -233,11 +267,25 @@
             <h3>Stökiometritränaren</h3>
             <p>Massaberäkningar, begränsande faktor, utbyte och koncentration, med reaktionsformler ur en verklig reaktionsbank.</p>
           </div>
-          <a class="knapp" href="stokiometritranaren-ke04.html">Öppna tränaren</a>
+          <a class="knapp b-stok" href="stokiometritranaren-ke04.html">Öppna tränaren</a>
+        </div>
+        <div class="verktygsrad delad">
+          <div>
+            <h3>Gastränaren</h3>
+            <p>Allmänna gaslagen pV = nRT, molvolymen och deltryck. På svår nivå ingår enhetsomvandlingar och okända molmassor.</p>
+          </div>
+          <a class="knapp b-gas" href="gastranaren-ke04.html">Öppna tränaren</a>
+        </div>
+        <div class="verktygsrad delad">
+          <div>
+            <h3>Balanseringstränaren</h3>
+            <p>Justera koefficienterna och se atomräkningen uppdateras i realtid. Från H&#8322; + O&#8322; till Al&#8322;(SO&#8324;)&#8323;.</p>
+          </div>
+          <a class="knapp b-bal" href="balanseringstranaren-ke04.html">Öppna tränaren</a>
         </div>
         <div class="chips">
-          <span class="chip">3 nivåer</span><span class="chip">stegvisa lösningar</span>
-          <span class="chip">gasvolymer</span><span class="chip">uppdaterad juli 2026</span>
+          <span class="chip">3 verktyg</span><span class="chip">3 nivåer</span>
+          <span class="chip">stegvisa lösningar</span><span class="chip">uppdaterad juli 2026</span>
         </div>
       </div>
     </div>
@@ -253,6 +301,14 @@
     <div class="kommande">
       <span class="kurskod">KE02&ndash;KE06</span>
       <p>Fler verktyg är på väg. Sidan uppdateras under läsåret.</p>
+    </div>
+  </section>
+
+  <section class="vits" aria-labelledby="vits-rubrik">
+    <h2 class="sektionsrubrik" id="vits-rubrik">Dagens kemivits</h2>
+    <div class="vits-kort kort-bas">
+      <p class="vits-text" id="vitsText"></p>
+      <p class="vits-meta" id="vitsMeta"></p>
     </div>
   </section>
 
@@ -278,5 +334,156 @@
     Byggd med verifierade uppgiftsgeneratorer. Varje svar är automatiskt kontrollräknat.
   </footer>
 </div>
+<script>
+(function(){
+const VITSAR=[
+  "Why can you never trust atoms? They make up everything!",
+  "I told a chemistry joke once. There was no reaction.",
+  "Two chemists walk into a bar. The first says 'I will have some H2O.' The second says 'I will have some H2O too.' The second chemist dies.",
+  "Wanna hear a joke about nitrogen oxide? NO.",
+  "What do you do with a sick chemist? If you can't helium and you can't curium, you'll just have to barium.",
+  "Why do chemists like nitrates so much? They're cheaper than day rates.",
+  "Oxygen and potassium went on a date. It went OK.",
+  "Oxygen, hydrogen, sulfur, sodium and phosphorus walk into a bar. OH SNaP!",
+  "Silver walks up to gold in a bar and says: Au, get outta here!",
+  "What did the scientist say when he found two isotopes of helium? HeHe.",
+  "Why should you go drinking with neutrons? Wherever they go, there's no charge.",
+  "I asked the guy next to me if he had any sodium hypobromite. He said NaBrO.",
+  "What is the chemical formula for banana? BaNa2.",
+  "Helium walks into a bar. The bartender says 'We don't serve noble gases here.' Helium doesn't react.",
+  "Why are chemists great at solving problems? They have all the solutions.",
+  "What element is a girl's future best friend? Carbon.",
+  "Oxygen went on a second date, this time with magnesium. OMg!",
+  "Why did the acid go to the gym? To become a buffer solution.",
+  "What do you call a tooth in a glass of water? A one molar solution.",
+  "Anyone know any jokes about sodium? Na.",
+  "The optimist sees the glass half full. The pessimist sees it half empty. The chemist sees it completely full: half liquid, half gas.",
+  "Why was the mole of oxygen molecules excited when he left the singles bar? He got Avogadro's number.",
+  "What did one charged atom say to the other? I got my ion you.",
+  "If you're not part of the solution, you're part of the precipitate.",
+  "What do chemists call a benzene ring with iron atoms replacing the carbons? A ferrous wheel.",
+  "Organic chemistry is difficult. Those who study it have alkynes of trouble.",
+  "What kind of ghosts haunt chemistry labs? Methylated spirits.",
+  "Why did carbon marry hydrogen? They bonded well from the minute they met.",
+  "What is the most important rule in chemistry? Never lick the spoon.",
+  "Old chemists never die. They just stop reacting.",
+  "What's a cation afraid of? A dogion.",
+  "What did Avogadro teach his students in math class? Moletiplication.",
+  "Chemistry puns? I'm in my element.",
+  "Are you made of copper and tellurium? Because you're CuTe.",
+  "I was going to tell a periodic table joke, but all the good ones argon.",
+  "What element derives from a Norse god? Thorium.",
+  "How do you tell chemists apart from non-chemists? Ask them to pronounce 'unionized'.",
+  "Why do chemists enjoy working with ammonia? Because it's pretty basic stuff.",
+  "What happens when electrons lose their energy? They get Bohr'd.",
+  "The proton is not speaking to the electron. It's still mad about the last attraction.",
+  "Florence Flask was getting ready for the opera. Suddenly she screamed: Erlenmeyer, my joules! Someone has stolen my joules!",
+  "A neutron walks into a bar and asks how much for a drink. The bartender replies: for you, no charge.",
+  "Titanium is a most amorous metal. When it gets hot, it will combine with anything.",
+  "What do you call iron blowing in the wind? Febreeze.",
+  "Heard about the man who got cooled to absolute zero? He's 0K now.",
+  "What did the chemist snack on during lunch? A gram cracker.",
+  "Why does hamburger have lower energy than steak? Because it's in the ground state.",
+  "What do you call a clown in jail? Silicon.",
+  "Wanna hear a joke about potassium? K.",
+  "Wanna hear a joke about cobalt, radon and yttrium? CoRnY.",
+  "Sulfur, tungsten and silver walk into a bar. SWAg.",
+  "I'd tell you a joke about noble gases, but I wouldn't expect a reaction.",
+  "What show do cesium and iodine love watching together? CSI.",
+  "Why did the white bear dissolve in water? Because it was polar.",
+  "How often do I make chemistry jokes? Periodically.",
+  "What did the mad scientist say to the nervous electron? Don't be so negative!",
+  "You must be made of beryllium and barium, because you're a total BaBe.",
+  "Why are noble gases so aloof? They already have full shells.",
+  "The teacher asked for the formula for water. A student said HIJKLMNO. Why? You said it's H to O!",
+  "Gold is the best element. It's AU-some.",
+  "Never trust an atom with your secrets. They make up everything and then they bond over it.",
+  "What do acids say to bases at parties? You're so basic.",
+  "Exam question: define a mole. Student answer: a small furry animal that digs 6.022e23 holes.",
+  "Why did the noble gas cry? Because all his friends argon.",
+  "What element hates being a follower? Lead.",
+  "What did one titration say to the other? Let's meet at the endpoint.",
+  "The barman says: we don't serve time travelers or noble gases here. A noble gas walks into a bar.",
+  "H2O is water and H2O2 is hydrogen peroxide. What is H2O4? Drinking.",
+  "Why do chemists love the metric system? Because they know their limits, and a mole is not one of them.",
+  "What is a chemist's favorite type of tree? A chemis-tree.",
+  "Lost an electron? You really have to keep an ion them.",
+  "What did the chemist say when she found a new isotope? Let's celebrate, this calls for a proton!",
+  "Varför kan man aldrig lita på en atom? Den hittar på allt!",
+  "Jag drog en kemivits. Ingen reaktion.",
+  "Vad heter James Bond inom kemin? Kovalent Bond.",
+  "Vad sade protonen till elektronen? Var inte så negativ!",
+  "Varför gick syran till gymmet? Den ville bli en buffert.",
+  "Hur räknar kemister ner till nyar? Neon, fluor, syre, kväve, kol, bor, beryllium, litium, helium, väte!",
+  "Vad är kemistens favoritgrönsak? MOLrot.",
+  "Varför är ädelgaser så tråkiga på fest? De reagerar inte på något.",
+  "Vad sade natrium när någon bad om ett skämt? Na.",
+  "Guld kom in på baren. Bartendern: Au, ut härifrån!",
+  "Vad är motsatsen till en katjon? En hundjon.",
+  "Optimisten: glaset är halvfullt. Pessimisten: halvtomt. Kemisten: glaset är helt fullt, hälften vätska och hälften gas.",
+  "Om du inte är en del av lösningen är du en del av fällningen.",
+  "Varför blev kolet och vätet ett par? Det uppstod kemi direkt.",
+  "Vad gör en kemist som hittar två heliumisotoper? HeHe.",
+  "Läraren: vad är den kemiska formeln för vatten? Eleven: HIJKLMNO. Läraren: va? Eleven: du sa ju H till O!",
+  "Varför löste sig isbjörnen i vattnet? Den var polär.",
+  "Hur ofta drar jag kemivitsar? Periodiskt.",
+  "Vad kallar man en falsk molekyl? En imitatjon.",
+  "Beställde nyss en bok om helium. Kunde inte lägga ner den.",
+  "Vill du höra ett skämt om kväveoxid? NO.",
+  "Kemisten till sin kollega: lugn, jag har alla lösningar.",
+  "Vad sade basen till syran? Du är så sur jämt.",
+  "Vad säger brom när det fryser? Brrr... alltså Br2.",
+  "Två kemister på restaurang. Den ena: jag tar H2O. Den andra: jag tar också H2O... tur att jag inte sa H2O2.",
+  "Vad kallas en tand i ett glas vatten? En enmolar lösning.",
+  "Elevens svar på provet: en mol är ett litet lurvigt djur som gräver 6,022 · 10²³ hål.",
+  "Varför gillar kemister ammoniak? Den är rätt basic.",
+  "Vad gör grundämnen på fredagskvällen? De bildar bindningar.",
+  "Vad sjunger kemister i duschen? Natrium, natrium, natrium... Na na na!",
+  "Gamla kemister dör aldrig. De slutar bara reagera.",
+  "Kemisten kom hem sent. Partnern: du har väl inte varit på baren igen? Kemisten: jag svär, bara en snabb titrering.",
+  "Vad blir det om man blandar svavel, volfram och silver? SWAg.",
+  "Kemistens motto: allt löser sig."
+];
+const dag=Math.floor(Date.now()/86400000);
+const i=((dag % VITSAR.length)+VITSAR.length)%VITSAR.length;
+document.getElementById('vitsText').textContent=VITSAR[i];
+document.getElementById('vitsMeta').textContent='Vits '+(i+1)+' av '+VITSAR.length+' · byts varje dygn';
+})();
+</script>
+<button class="felknapp" id="felBtn">Hittade du ett fel?</button>
+<div class="felpanel" id="felPanel" hidden>
+  <h3>Rapportera ett fel</h3>
+  <textarea id="felText" placeholder="Beskriv felet: vad gäller det och på vilken sida?"></textarea>
+  <div class="felmeta" id="felMeta"></div>
+  <div class="felrad">
+    <button class="fel-primar" id="felSkicka">Skicka via e-post</button>
+    <button class="fel-sekundar" id="felKopiera">Kopiera rapporten</button>
+  </div>
+  <div class="felok" id="felOk"></div>
+</div>
+<script>
+(function(){
+const FELMAIL='ANDRA-MIG@exempel.fi'; /* ÄNDRA till lärarens e-postadress */
+const $=id=>document.getElementById(id);
+function report(){
+  return 'Sida: '+document.title+'\nAdress: '+location.href+
+    '\nTid: '+new Date().toLocaleString('sv-FI')+'\nWebbläsare: '+navigator.userAgent;
+}
+$('felBtn').onclick=()=>{
+  const p=$('felPanel'); p.hidden=!p.hidden;
+  if(!p.hidden){ $('felMeta').textContent=report(); $('felOk').style.display='none'; }
+};
+$('felSkicka').onclick=()=>{
+  const body=($('felText').value||'(ingen beskrivning)')+'\n\n--- Automatisk information ---\n'+report();
+  location.href='mailto:'+FELMAIL+'?subject='+encodeURIComponent('Felrapport: '+document.title)+'&body='+encodeURIComponent(body);
+};
+$('felKopiera').onclick=async()=>{
+  const t=($('felText').value||'(ingen beskrivning)')+'\n\n--- Automatisk information ---\n'+report();
+  try{ await navigator.clipboard.writeText(t); $('felOk').textContent='Kopierad! Klistra in i Wilma eller e-post.'; }
+  catch(e){ $('felOk').textContent='Kopiering blockerades. Markera texten ovan och kopiera manuellt.'; }
+  $('felOk').style.display='block';
+};
+})();
+</script>
 </body>
 </html>

@@ -3,27 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Moltränaren · KE01</title>
+<title>Gastränaren · KE04</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#F5F8FB;
-    --grid:#E0E8F2;
-    --grid-major:#D0DCEA;
-    --ink:#16202E;
-    --ink-soft:#47566B;
-    --accent:#1D5FA8;
-    --accent-hover:#174C86;
-    --accent-soft:#E4EEF9;
-    --amber:#B25A0B;
+    --paper:#FBF9F4;
+    --grid:#EFE7D8;
+    --grid-major:#E5D9C4;
+    --ink:#241D12;
+    --ink-soft:#6E5C42;
+    --accent:#B2590B;
+    --accent-hover:#8F470A;
+    --accent-soft:#FBEFE0;
+    --amber:#B2590B;
     --amber-soft:#FBEFE0;
     --green:#1D7A33;
     --green-soft:#E4F3E6;
     --red:#A8332C;
     --red-soft:#F8E7E5;
     --card:#FFFFFF;
-    --line:#C6D2E0;
+    --line:#E2D4BC;
     --radius:10px;
     --mono:'IBM Plex Mono',ui-monospace,monospace;
     --sans:'IBM Plex Sans',system-ui,sans-serif;
@@ -45,7 +45,6 @@
     line-height:1.5;
   }
   .wrap{max-width:840px;margin:0 auto}
-
   .hem{display:inline-block;font-family:var(--mono);font-size:13px;font-weight:600;
     color:var(--ink-soft);text-decoration:none;margin-bottom:10px;padding:4px 0}
   .hem:hover{color:var(--accent)}
@@ -62,7 +61,7 @@
   .panel{
     background:var(--card);border:1px solid var(--line);
     border-radius:var(--radius);padding:16px;margin-bottom:14px;
-    box-shadow:0 1px 3px rgba(22,32,46,.06);
+    box-shadow:0 1px 3px rgba(36,29,18,.06);
   }
   .controls{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
   .ctrl-group{display:flex;flex-direction:column;gap:6px}
@@ -82,14 +81,14 @@
     font-family:var(--mono);font-size:14px;color:var(--ink-soft);
   }
   .scorebar b{color:var(--ink);font-weight:600}
-  .streak{color:var(--amber);font-weight:600}
+  .streak{color:var(--accent);font-weight:600}
 
   .qtype-tag{
     display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;
     color:var(--accent);background:var(--accent-soft);
     padding:3px 10px;border-radius:6px;margin-bottom:10px;letter-spacing:.04em;
   }
-  .review-tag{background:var(--amber-soft);color:var(--amber)}
+  .review-tag{background:#EFE7D8;color:var(--ink-soft)}
   .qtext{font-size:16px;margin-bottom:8px}
   .qtext b{font-weight:600}
   .qtext sub{font-size:.7em}
@@ -98,12 +97,6 @@
     margin:10px 0;display:flex;flex-direction:column;gap:3px;
   }
   .given sub{font-size:.7em}
-  .atommass{
-    font-family:var(--mono);font-size:13px;color:var(--ink-soft);
-    background:var(--paper);border:1px dashed var(--line);border-radius:8px;
-    padding:8px 12px;margin-top:10px;
-  }
-  .atommass em{font-style:normal;font-weight:600;color:var(--ink)}
 
   .answer-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
   .answer-field{position:relative;display:flex;align-items:center}
@@ -132,7 +125,7 @@
 
   .feedback{margin-top:12px;padding:12px 14px;border-radius:8px;font-size:15px;display:none;font-weight:500}
   .feedback.ok{display:block;background:var(--green-soft);color:var(--green);border:1px solid #BFE3C4}
-  .feedback.warn{display:block;background:var(--amber-soft);color:var(--amber);border:1px solid #F0D6B4}
+  .feedback.warn{display:block;background:var(--amber-soft);color:var(--amber);border:1px solid #EFD3B2}
   .feedback.fel{display:block;background:var(--red-soft);color:var(--red);border:1px solid #EBC4C0}
 
   .solution{margin-top:14px;display:none}
@@ -205,11 +198,11 @@
 </head>
 <body>
 <div class="wrap">
-  <a class="hem" href="index.html">← Startsidan</a>
+  <a class="hem" href="index.html">&#8592; Startsidan</a>
   <header>
-    <div class="eyebrow">KE01 · Kemi och jag · GLP2019</div>
-    <h1>Moltränaren</h1>
-    <div class="sub">Slumpade räkneuppgifter om substansmängd med stegvisa lösningar. Decimalkomma eller punkt går lika bra. Avrunda endast slutsvaret.</div>
+    <div class="eyebrow">KE04 · Kemisk reaktion · GLP2019</div>
+    <h1>Gastränaren</h1>
+    <div class="sub">Slumpade gasuppgifter med stegvisa lösningar. Decimalkomma eller punkt går lika bra. Avrunda endast slutsvaret.</div>
   </header>
 
   <div class="panel">
@@ -236,7 +229,6 @@
     <span class="qtype-tag" id="qtag"></span>
     <div class="qtext" id="qtext"></div>
     <div class="given" id="given"></div>
-    <div class="atommass" id="atommass" style="display:none"></div>
 
     <div class="answer-row">
       <div class="answer-field">
@@ -245,8 +237,8 @@
       </div>
       <button class="btn-primary" id="checkBtn">Kontrollera</button>
       <button class="btn-ghost" id="solBtn">Visa lösning</button>
-      <button class="btn-ghost" id="nextBtn">Ny uppgift →</button>
-      <button class="btn-primary" id="backBtn" style="display:none">← Fortsätt träna</button>
+      <button class="btn-ghost" id="nextBtn">Ny uppgift &#8594;</button>
+      <button class="btn-primary" id="backBtn" style="display:none">&#8592; Fortsätt träna</button>
     </div>
     <div class="hint" id="sciHint">Tips: skriv tiopotenser som <b>3,01e23</b> eller <b>3,01*10^23</b></div>
 
@@ -270,7 +262,7 @@
 
   <footer>
     Svaret anges med lika många gällande siffror som det minst noggranna mätvärdet i uppgiften.<br>
-    Atommassor enligt tabellbok · Nₐ = 6,022 · 10²³ 1/mol
+    R = 8,314 J/(mol·K) · V<sub>m</sub> = 24,0 dm³/mol vid 25 &deg;C · T(K) = t(&deg;C) + 273,15
   </footer>
 </div>
 
@@ -280,51 +272,21 @@
    LOGIK: ren och testbar (körs även i Node av testsviten)
    ================================================================ */
 
-/* Atommassor exakt enligt det periodiska systemet (tabellbok) */
 const ATOMIC_STR = {
-  H:'1,008', C:'12,01', N:'14,01', O:'16,00', Na:'22,99', Mg:'24,31',
-  Al:'26,98', P:'30,97', S:'32,06', Cl:'35,45', K:'39,10', Ca:'40,08',
-  Mn:'54,94', Fe:'55,85', Cu:'63,55', Zn:'65,38', Ag:'107,87',
-  Ba:'137,33', I:'126,90'
+  H:'1,008', C:'12,01', N:'14,01', O:'16,00', He:'4,003', Ar:'39,95',
+  S:'32,06', Cl:'35,45'
 };
 const ATOMIC = {};
 for(const el in ATOMIC_STR) ATOMIC[el] = parseFloat(ATOMIC_STR[el].replace(',','.'));
 
+const R_CONST = 8.314;
+const VM = 24.0;
 const NA_CONST = 6.022e23;
 const NA_STR = '6,022 · 10²³';
 
-const NAMES = {
-  H2O:'vatten', CO2:'koldioxid', NH3:'ammoniak', CH4:'metan',
-  C6H12O6:'glukos', C2H5OH:'etanol', O2:'syre', N2:'kväve',
-  NaCl:'natriumklorid', CaCO3:'kalciumkarbonat', MgO:'magnesiumoxid',
-  CuSO4:'koppar(II)sulfat', Na2CO3:'natriumkarbonat', KCl:'kaliumklorid',
-  NaOH:'natriumhydroxid', KMnO4:'kaliumpermanganat', KI:'kaliumjodid',
-  BaCl2:'bariumklorid', NaHCO3:'natriumvätekarbonat', AgNO3:'silvernitrat',
-  'Ca(OH)2':'kalciumhydroxid', 'Mg(NO3)2':'magnesiumnitrat',
-  '(NH4)2SO4':'ammoniumsulfat', 'Al2(SO4)3':'aluminiumsulfat',
-  Fe:'järn', Cu:'koppar', Al:'aluminium', Zn:'zink', Mg:'magnesium', Ag:'silver'
-};
-
-const MOLEC = ['H2O','CO2','NH3','CH4','C6H12O6','C2H5OH','O2','N2'];
-const IONIC_SIMPLE = ['NaCl','CaCO3','MgO','CuSO4','Na2CO3','KCl','NaHCO3'];
-const IONIC_COMPLEX = ['Ca(OH)2','Mg(NO3)2','(NH4)2SO4','Al2(SO4)3'];
-const METALS = ['Fe','Cu','Al','Zn','Mg','Ag'];
-const SUBS_SIMPLE = [...MOLEC, ...IONIC_SIMPLE, ...METALS];
-const SUBS_ALL = [...SUBS_SIMPLE, ...IONIC_COMPLEX];
-const SOLUTES = ['NaCl','NaOH','CuSO4','KMnO4','Na2CO3','KI','BaCl2','C6H12O6','NaHCO3','AgNO3'];
-const SOLUTES_COMPLEX = ['Mg(NO3)2','(NH4)2SO4'];
-
-function particleWord(f){
-  if(METALS.includes(f)) return 'atomer';
-  return 'molekyler';
-}
-const MOLEC_ELEMENTS = ['O2','N2'];
-function withKind(f){
-  if(METALS.includes(f)) return 'metallen '+NAMES[f];
-  if(MOLEC_ELEMENTS.includes(f)) return 'grundämnet '+NAMES[f];
-  if(MOLEC.includes(f)) return 'molekylföreningen '+NAMES[f];
-  return 'jonföreningen '+NAMES[f];
-}
+const GASES = ['O2','N2','CO2','H2','CH4','NH3','He','Ar','SO2'];
+const GNAME = {O2:'syrgas',N2:'kvävgas',CO2:'koldioxid',H2:'vätgas',
+  CH4:'metan',NH3:'ammoniak',He:'helium',Ar:'argon',SO2:'svaveldioxid'};
 
 /* ---------- kemihjälpare ---------- */
 function parseFormula(f){
@@ -362,15 +324,9 @@ function molarMass(f){
   }
   return M;
 }
-function elementsOf(formulas){
-  const s=new Set();
-  formulas.forEach(f=>Object.keys(parseFormula(f)).forEach(e=>s.add(e)));
-  return [...s];
-}
 
 /* ---------- gällande siffror & talformat ---------- */
 function stripSci(s){
-  /* skiljer mantissa från ev. tiopotens; returnerar {mant, exp} eller null */
   s = String(s).trim().replace(/\s/g,'').replace(/,/g,'.').replace(/[·×]/g,'*').replace(/^[-+]/,'');
   const m = s.match(/^(\d+(?:\.\d*)?|\.\d+)(?:[eE]([+-]?\d+)|\*10\^?\(?([+-]?\d+)\)?)?$/);
   if(!m) return null;
@@ -434,10 +390,6 @@ function fmtM(x){ return fmt(x,4); }
 function mkVal(str){
   return {str, v:parseNum(str), sf:countSF(str).min};
 }
-function mkSciVal(mantStr, exp){
-  const v = parseFloat(mantStr.replace(',','.')+'e'+exp);
-  return {str:mantStr+' · 10'+supExp(exp), v, sf:countSF(mantStr).min};
-}
 
 /* ---------- svarsbedömning ---------- */
 function evaluate(userStr, exact, sf){
@@ -459,23 +411,17 @@ function evaluate(userStr, exact, sf){
 
 /* ---------- slump ---------- */
 const pick = a => a[Math.floor(Math.random()*a.length)];
+function rndMolV(){ return mkVal(pick(['0,10','0,20','0,25','0,40','0,50','0,75','1,0','1,5','2,0'])); }
 function rndMassV(diff){
-  if(diff==='latt') return mkVal(pick(['5,0','9,0','10,0','12,0','18,0','25,0','36,0','50,0']));
+  if(diff==='latt') return mkVal(pick(['4,0','8,0','10,0','16,0','22,0','28,0','44,0']));
   return mkVal((2+Math.random()*60).toFixed(1).replace('.',','));
 }
-function rndMolV(diff){
-  if(diff==='latt') return mkVal(pick(['0,10','0,20','0,25','0,50','0,75','1,0','1,5','2,0']));
-  return mkVal((0.10+Math.random()*2.9).toFixed(2).replace('.',','));
-}
-function rndCountV(diff){
-  if(diff==='latt') return mkSciVal(pick(['1,20','1,50','2,00','2,50','3,01','4,50','6,02','9,03']), pick([22,23,24]));
-  return mkSciVal((1+Math.random()*8.9).toFixed(2).replace('.',','), pick([22,23,24]));
-}
-function rndVolV(){ return mkVal(pick(['0,100','0,150','0,200','0,250','0,500','0,750','1,00'])); }
-function rndConcV(){ return mkVal(pick(['0,050','0,100','0,150','0,200','0,250','0,400','0,500'])); }
+function rndTK(){ return mkVal(pick(['273','293','298','313','333','353'])); }
+function rndTC(){ return mkVal(pick(['0,0','15,0','20,0','25,0','37,0','50,0','80,0'])); }
+function rndP(){ return mkVal(pick(['101','120','150','200','250','300','98,0','105'])); }
+function rndVdm(){ return mkVal(pick(['1,50','2,00','2,50','4,00','5,00','10,0','25,0','50,0'])); }
+function rndPdel(){ return mkVal(pick(['21,0','35,0','45,0','55,0','60,0','75,0','80,0','98,0'])); }
 
-/* ---------- generatorer ----------
-   Svar lagras med full precision. Avrundning endast vid visning/bedömning. */
 function stepObj(text, math){ return {text, math}; }
 function finalStep(text, mathPrefix, answer, sf, unit){
   return stepObj(text, `${mathPrefix} = <b>${fmtSig(answer,sf)} ${unit}</b> &nbsp;(${sf} gällande siffror)`);
@@ -486,256 +432,292 @@ function Mexpr(f){
   return Object.entries(comp).map(([el,n])=>(n>1?n+' · ':'')+ATOMIC_STR[el]).join(' + ')
     +' = '+fmtM(molarMass(f))+' g/mol';
 }
-function givenM(f){ return `M(${sub(f)}) = ${fmtM(molarMass(f))} g/mol`; }
 function mStep(f){
-  return stepObj(`Beräkna molmassan för ${sub(f)} med atommassorna.`,
+  return stepObj(`Beräkna molmassan för ${sub(f)} med atommassorna ur tabellboken.`,
     `M(${sub(f)}) = ${Mexpr(f)}`);
 }
-
-function subsPool(diff){
-  if(diff==='latt') return SUBS_SIMPLE;
-  if(diff==='svar' && Math.random()<0.6) return IONIC_COMPLEX;
-  return SUBS_ALL;
+function tSteg(tc){
+  const TK = tc.v+273.15;
+  return {TK, steg:stepObj('Omvandla temperaturen till kelvin.',
+    `T = ${tc.str} &deg;C + 273,15 = ${fmt(TK)} K`)};
 }
+/* p i kPa och V i dm³ ger konsistenta enheter i pV = nRT */
 
-/* --- n = m/M --- */
-function genMM(diff){
-  if(diff==='svar') return genSvar('mM');
-  const f = pick(subsPool(diff));
-  const M = molarMass(f);
-  const name = 'av '+withKind(f);
-  const toN = Math.random()<0.5;
-  const steps=[];
-  const given=[];
-  if(diff==='latt') given.push(givenM(f));
-  else steps.push(mStep(f));
-  let answer, unit, q, valStr, sf;
-  if(toN){
-    const m = rndMassV(diff);
-    sf = m.sf; valStr = m.str;
-    answer = m.v/M; unit='mol';
-    q = `Hur stor <b>substansmängd</b> är <b>${m.str} g</b> ${name} (${sub(f)})?`;
-    steps.push(finalStep(`Använd sambandet n = m/M.`,
-      `n = ${m.str} g / ${fmtM(M)} g/mol`, answer, sf, unit));
+/* --- pV = nRT --- */
+function genIdeal(diff){
+  const f = pick(GASES), name = GNAME[f];
+  let answer, unit, q, steps=[], sf, sigParts, dbg;
+  if(diff==='latt'){
+    const variant = Math.random()<0.5 ? 'p' : 'n';
+    const T = rndTK();
+    if(variant==='p'){
+      const n = rndMolV(), V = rndVdm();
+      sf = Math.min(n.sf, V.sf, T.sf);
+      answer = n.v*R_CONST*T.v/V.v; unit='kPa';
+      q = `En behållare med volymen <b>${V.str} dm³</b> innehåller <b>${n.str} mol</b> ${name} (${sub(f)}) vid <b>${T.str} K</b>. Beräkna trycket.`;
+      steps.push(finalStep('Lös ut trycket ur pV = nRT. Med V i dm³ blir trycket i kPa.',
+        `p = nRT/V = ${n.str} · 8,314 · ${T.str} / ${V.str}`, answer, sf, unit));
+      sigParts=[variant,f,n.str,V.str,T.str]; dbg={kind:'p', n:n.v, V:V.v, TK:T.v};
+    } else {
+      const p = rndP(), V = rndVdm();
+      sf = Math.min(p.sf, V.sf, T.sf);
+      answer = p.v*V.v/(R_CONST*T.v); unit='mol';
+      q = `En gasbehållare med volymen <b>${V.str} dm³</b> håller trycket <b>${p.str} kPa</b> vid <b>${T.str} K</b>. Hur stor substansmängd ${name} (${sub(f)}) finns i behållaren?`;
+      steps.push(finalStep('Lös ut substansmängden ur pV = nRT.',
+        `n = pV/(RT) = ${p.str} · ${V.str} / (8,314 · ${T.str})`, answer, sf, unit));
+      sigParts=[variant,f,p.str,V.str,T.str]; dbg={kind:'n', p:p.v, V:V.v, TK:T.v};
+    }
+  } else if(diff==='medel'){
+    const variant = pick(['p','n','V']);
+    const tc = rndTC(); const {TK, steg} = tSteg(tc);
+    steps.push(steg);
+    if(variant==='p'){
+      const n = rndMolV(), V = rndVdm();
+      sf = Math.min(n.sf, V.sf, tc.sf);
+      answer = n.v*R_CONST*TK/V.v; unit='kPa';
+      q = `<b>${n.str} mol</b> ${name} (${sub(f)}) finns i en behållare med volymen <b>${V.str} dm³</b> vid <b>${tc.str} &deg;C</b>. Beräkna trycket.`;
+      steps.push(finalStep('Lös ut trycket ur pV = nRT.',
+        `p = nRT/V = ${n.str} · 8,314 · ${fmt(TK)} / ${V.str}`, answer, sf, unit));
+      sigParts=[variant,f,n.str,V.str,tc.str]; dbg={kind:'p', n:n.v, V:V.v, TK};
+    } else if(variant==='n'){
+      const p = rndP(), V = rndVdm();
+      sf = Math.min(p.sf, V.sf, tc.sf);
+      answer = p.v*V.v/(R_CONST*TK); unit='mol';
+      q = `En gasflaska med volymen <b>${V.str} dm³</b> håller trycket <b>${p.str} kPa</b> vid <b>${tc.str} &deg;C</b>. Hur stor substansmängd ${name} (${sub(f)}) innehåller flaskan?`;
+      steps.push(finalStep('Lös ut substansmängden ur pV = nRT.',
+        `n = pV/(RT) = ${p.str} · ${V.str} / (8,314 · ${fmt(TK)})`, answer, sf, unit));
+      sigParts=[variant,f,p.str,V.str,tc.str]; dbg={kind:'n', p:p.v, V:V.v, TK};
+    } else {
+      const n = rndMolV(), p = rndP();
+      sf = Math.min(n.sf, p.sf, tc.sf);
+      answer = n.v*R_CONST*TK/p.v; unit='dm³';
+      q = `Vilken volym upptar <b>${n.str} mol</b> ${name} (${sub(f)}) vid trycket <b>${p.str} kPa</b> och temperaturen <b>${tc.str} &deg;C</b>?`;
+      steps.push(finalStep('Lös ut volymen ur pV = nRT.',
+        `V = nRT/p = ${n.str} · 8,314 · ${fmt(TK)} / ${p.str}`, answer, sf, unit));
+      sigParts=[variant,f,n.str,p.str,tc.str]; dbg={kind:'V', n:n.v, p:p.v, TK};
+    }
   } else {
-    const n = rndMolV(diff);
-    sf = n.sf; valStr = n.str;
-    answer = n.v*M; unit='g';
-    q = `Vilken <b>massa</b> har <b>${n.str} mol</b> ${name} (${sub(f)})?`;
-    steps.push(finalStep(`Använd sambandet m = n · M.`,
-      `m = ${n.str} mol · ${fmtM(M)} g/mol`, answer, sf, unit));
+    const variant = pick(['massa','molmassa','massaV']);
+    const tc = rndTC(); const {TK, steg} = tSteg(tc);
+    const M = molarMass(f);
+    if(variant==='massa'){
+      const m = rndMassV(diff), V = rndVdm();
+      sf = Math.min(m.sf, V.sf, tc.sf);
+      const n = m.v/M;
+      answer = n*R_CONST*TK/V.v; unit='kPa';
+      q = `<b>${m.str} g</b> ${name} (${sub(f)}) fyller en behållare med volymen <b>${V.str} dm³</b> vid <b>${tc.str} &deg;C</b>. Beräkna trycket.`;
+      steps.push(mStep(f));
+      steps.push(stepObj('Beräkna substansmängden.', `n = m/M = ${m.str} g / ${fmtM(M)} g/mol = ${fmt(n)} mol`));
+      steps.push(steg);
+      steps.push(finalStep('Lös ut trycket ur pV = nRT.',
+        `p = nRT/V = ${fmt(n)} · 8,314 · ${fmt(TK)} / ${V.str}`, answer, sf, unit));
+      sigParts=[variant,f,m.str,V.str,tc.str]; dbg={kind:'massa', m:m.v, M, V:V.v, TK};
+    } else if(variant==='molmassa'){
+      const m = rndMassV(diff), p = rndP(), V = rndVdm();
+      sf = Math.min(m.sf, p.sf, V.sf, tc.sf);
+      const n = p.v*V.v/(R_CONST*TK);
+      answer = m.v/n; unit='g/mol';
+      q = `En okänd gas med massan <b>${m.str} g</b> fyller <b>${V.str} dm³</b> vid trycket <b>${p.str} kPa</b> och temperaturen <b>${tc.str} &deg;C</b>. Beräkna gasens molmassa.`;
+      steps.push(steg);
+      steps.push(stepObj('Beräkna substansmängden ur pV = nRT.',
+        `n = pV/(RT) = ${p.str} · ${V.str} / (8,314 · ${fmt(TK)}) = ${fmt(n)} mol`));
+      steps.push(finalStep('Beräkna molmassan.',
+        `M = m/n = ${m.str} g / ${fmt(n)} mol`, answer, sf, unit));
+      sigParts=[variant,m.str,p.str,V.str,tc.str]; dbg={kind:'molmassa', m:m.v, p:p.v, V:V.v, TK};
+    } else {
+      const m = rndMassV(diff), p = rndP();
+      sf = Math.min(m.sf, p.sf, tc.sf);
+      const n = m.v/M;
+      answer = n*R_CONST*TK/p.v; unit='dm³';
+      q = `Vilken volym upptar <b>${m.str} g</b> ${name} (${sub(f)}) vid trycket <b>${p.str} kPa</b> och temperaturen <b>${tc.str} &deg;C</b>?`;
+      steps.push(mStep(f));
+      steps.push(stepObj('Beräkna substansmängden.', `n = m/M = ${m.str} g / ${fmtM(M)} g/mol = ${fmt(n)} mol`));
+      steps.push(steg);
+      steps.push(finalStep('Lös ut volymen ur pV = nRT.',
+        `V = nRT/p = ${fmt(n)} · 8,314 · ${fmt(TK)} / ${p.str}`, answer, sf, unit));
+      sigParts=[variant,f,m.str,p.str,tc.str]; dbg={kind:'massaV', m:m.v, M, p:p.v, TK};
+    }
   }
-  return {tag:'n = m/M', qtext:q, given, atomEls:[], answer, sf, unit, steps, sci:false,
-    solute:f, signature:['mM',f,toN?'toN':'toM',valStr].join('|'),
-    dbg:{kind:toN?'toN':'toM', m:toN?parseNum(valStr):undefined, n:toN?undefined:parseNum(valStr), M}};
+  return {tag:'pV = nRT', qtext:q, given:[], answer, sf, unit, steps, sci:false,
+    solute:f, signature:['ideal',...sigParts].join('|'), dbg};
 }
 
-/* --- n = N/NA --- */
-function genNA(diff){
-  if(diff==='svar') return genSvar('NA');
-  const f = pick(subsPool(diff));
-  const name = 'av '+withKind(f);
-  const pw = particleWord(f);
-  const variant = Math.random()<0.5 ? 'count2n' : 'n2count';
-  let answer, unit, q, steps=[], valStr, sf, sci=false, dbg;
-  if(variant==='count2n'){
-    const N = rndCountV(diff);
-    sf=N.sf; valStr=N.str;
-    answer = N.v/NA_CONST; unit='mol';
-    q = `Hur stor <b>substansmängd</b> motsvarar <b>${N.str}</b> ${pw} ${name} (${sub(f)})?`;
-    steps.push(finalStep(`Använd sambandet n = N/Nₐ.`,
-      `n = ${N.str} / ${NA_STR} mol⁻¹`, answer, sf, unit));
-    dbg={kind:variant, N:N.v};
-  } else {
-    const n = rndMolV(diff);
-    sf=n.sf; valStr=n.str; sci=true;
-    answer = n.v*NA_CONST; unit=pw;
-    q = `Hur många <b>${pw}</b> finns i <b>${n.str} mol</b> ${name} (${sub(f)})?`;
-    steps.push(finalStep(`Använd sambandet N = n · Nₐ.`,
-      `N = ${n.str} mol · ${NA_STR} mol⁻¹`, answer, sf, unit));
-    dbg={kind:variant, n:n.v};
-  }
-  return {tag:'n = N/Nₐ', qtext:q, given:[], atomEls:[], answer, sf, unit, steps, sci,
-    solute:f, signature:['NA',f,variant,valStr].join('|'), dbg};
-}
-
-/* --- c = n/V --- */
-function genCV(diff){
-  if(diff==='svar') return genSvar('cV');
-  const f = pick(SOLUTES);
+/* --- Molvolym --- */
+function genMolvol(diff){
+  const f = pick(GASES), name = GNAME[f];
   const M = molarMass(f);
-  const name = 'av '+withKind(f);
-  const variant = diff==='medel' ? 'mV2c' : (Math.random()<0.5 ? 'nV2c' : 'cV2n');
-  let answer, unit, q, steps=[], sigNums, sf, dbg;
-  if(variant==='nV2c'){
-    const n = rndMolV(diff); const V = rndVolV();
-    sf = Math.min(n.sf, V.sf);
-    answer = n.v/V.v; unit='mol/dm³';
-    q = `<b>${n.str} mol</b> ${name} (${sub(f)}) löses i vatten till <b>${V.str} dm³</b> lösning. Beräkna lösningens koncentration.`;
-    steps.push(finalStep(`Använd sambandet c = n/V.`,
-      `c = ${n.str} mol / ${V.str} dm³`, answer, sf, unit));
-    sigNums=[n.str,V.str]; dbg={kind:variant, n:n.v, V:V.v};
-  } else if(variant==='cV2n'){
-    const c = rndConcV(); const V = rndVolV();
-    sf = Math.min(c.sf, V.sf);
-    answer = c.v*V.v; unit='mol';
-    q = `Hur stor <b>substansmängd</b> ${name} (${sub(f)}) finns i <b>${V.str} dm³</b> av en lösning med koncentrationen <b>${c.str} mol/dm³</b>?`;
-    steps.push(finalStep(`Använd sambandet n = c · V.`,
-      `n = ${c.str} mol/dm³ · ${V.str} dm³`, answer, sf, unit));
-    sigNums=[c.str,V.str]; dbg={kind:variant, c:c.v, V:V.v};
-  } else { /* mV2c */
-    const m = mkVal((1+Math.random()*30).toFixed(1).replace('.',','));
-    const V = rndVolV();
-    sf = Math.min(m.sf, V.sf);
-    const n = m.v/M;
-    answer = n/V.v; unit='mol/dm³';
-    q = `<b>${m.str} g</b> ${name} (${sub(f)}) löses i vatten till <b>${V.str} dm³</b> lösning. Beräkna lösningens koncentration.`;
-    steps.push(mStep(f));
-    steps.push(stepObj(`Beräkna substansmängden.`,
-      `n = m/M = ${m.str} g / ${fmtM(M)} g/mol = ${fmt(n)} mol`));
-    steps.push(finalStep(`Beräkna koncentrationen.`,
-      `c = n/V = ${fmt(n)} mol / ${V.str} dm³`, answer, sf, unit));
-    sigNums=[m.str,V.str]; dbg={kind:variant, m:m.v, V:V.v, M};
+  let answer, unit, q, steps=[], sf, sigParts, sci=false, dbg;
+  if(diff==='latt'){
+    const toV = Math.random()<0.5;
+    if(toV){
+      const n = rndMolV();
+      sf = Math.min(n.sf, 3);
+      answer = n.v*VM; unit='dm³';
+      q = `Vilken volym upptar <b>${n.str} mol</b> ${name} (${sub(f)}) vid 25 &deg;C?`;
+      steps.push(finalStep('Använd molvolymen.',
+        `V = n · V<sub>m</sub> = ${n.str} mol · 24,0 dm³/mol`, answer, sf, unit));
+      sigParts=['toV',f,n.str]; dbg={kind:'toV', n:n.v};
+    } else {
+      const V = rndVdm();
+      sf = Math.min(V.sf, 3);
+      answer = V.v/VM; unit='mol';
+      q = `Hur stor substansmängd ${name} (${sub(f)}) ryms i <b>${V.str} dm³</b> vid 25 &deg;C?`;
+      steps.push(finalStep('Använd molvolymen.',
+        `n = V/V<sub>m</sub> = ${V.str} dm³ / 24,0 dm³/mol`, answer, sf, unit));
+      sigParts=['toN',f,V.str]; dbg={kind:'toN', V:V.v};
+    }
+  } else if(diff==='medel'){
+    const toV = Math.random()<0.5;
+    if(toV){
+      const m = rndMassV(diff);
+      sf = Math.min(m.sf, 3);
+      const n = m.v/M;
+      answer = n*VM; unit='dm³';
+      q = `Vilken volym upptar <b>${m.str} g</b> ${name} (${sub(f)}) vid 25 &deg;C?`;
+      steps.push(mStep(f));
+      steps.push(stepObj('Beräkna substansmängden.', `n = m/M = ${m.str} g / ${fmtM(M)} g/mol = ${fmt(n)} mol`));
+      steps.push(finalStep('Använd molvolymen.',
+        `V = n · V<sub>m</sub> = ${fmt(n)} mol · 24,0 dm³/mol`, answer, sf, unit));
+      sigParts=['mV',f,m.str]; dbg={kind:'mV', m:m.v, M};
+    } else {
+      const V = rndVdm();
+      sf = Math.min(V.sf, 3);
+      const n = V.v/VM;
+      answer = n*M; unit='g';
+      q = `Vilken massa har <b>${V.str} dm³</b> ${name} (${sub(f)}) vid 25 &deg;C?`;
+      steps.push(stepObj('Beräkna substansmängden.', `n = V/V<sub>m</sub> = ${V.str} dm³ / 24,0 dm³/mol = ${fmt(n)} mol`));
+      steps.push(mStep(f));
+      steps.push(finalStep('Beräkna massan.',
+        `m = n · M = ${fmt(n)} mol · ${fmtM(M)} g/mol`, answer, sf, unit));
+      sigParts=['Vm2m',f,V.str]; dbg={kind:'Vm2m', V:V.v, M};
+    }
+  } else {
+    const variant = Math.random()<0.5 ? 'dens' : 'antal';
+    if(variant==='dens'){
+      sf = 3;
+      answer = M/VM; unit='g/dm³';
+      q = `Beräkna densiteten av ${name} (${sub(f)}) vid 25 &deg;C, i g/dm³.`;
+      steps.push(mStep(f));
+      steps.push(stepObj('En mol gas upptar molvolymen. Densiteten är massa per volym.',
+        `&rho; = M/V<sub>m</sub>`));
+      steps.push(finalStep('Beräkna densiteten.',
+        `&rho; = ${fmtM(M)} g/mol / 24,0 dm³/mol`, answer, sf, unit));
+      sigParts=['dens',f]; dbg={kind:'dens', M};
+    } else {
+      const V = rndVdm();
+      sf = Math.min(V.sf, 3); sci=true;
+      const n = V.v/VM;
+      answer = n*NA_CONST; unit='molekyler';
+      q = `Hur många molekyler ${name} (${sub(f)}) finns i <b>${V.str} dm³</b> gas vid 25 &deg;C?`;
+      steps.push(stepObj('Beräkna substansmängden.', `n = V/V<sub>m</sub> = ${V.str} dm³ / 24,0 dm³/mol = ${fmt(n)} mol`));
+      steps.push(finalStep('Beräkna antalet molekyler.',
+        `N = n · Nₐ = ${fmt(n)} mol · ${NA_STR} mol⁻¹`, answer, sf, unit));
+      sigParts=['antal',f,V.str]; dbg={kind:'antal', V:V.v};
+    }
   }
-  return {tag:'c = n/V', qtext:q, given:[], atomEls:[], answer, sf, unit, steps, sci:false,
-    solute:f, signature:['cV',f,variant,...sigNums].join('|'), dbg};
+  return {tag:'Molvolym', qtext:q, given:[], answer, sf, unit, steps, sci,
+    solute:f, signature:['molvol',...sigParts].join('|'), dbg};
 }
 
-/* --- Svåra kombinationsuppgifter ---
-   Studeranden måste själv avgöra vilka formler som behövs (alltid två eller fler). */
-function svarSub(){ return pick(Math.random()<0.4 ? IONIC_COMPLEX : SUBS_ALL); }
-function svarSolute(){ return pick(Math.random()<0.4 ? SOLUTES_COMPLEX : SOLUTES); }
-
-function chain_m2N(){
-  const f = svarSub();
-  const M = molarMass(f), name='av '+withKind(f), pw=particleWord(f);
-  const m = rndMassV('svar');
-  const n = m.v/M;
-  const answer = n*NA_CONST, sf=m.sf;
-  return {q:`Hur många <b>${pw}</b> finns i <b>${m.str} g</b> ${name} (${sub(f)})?`,
-    unit:pw, sci:true, answer, sf, solute:f,
-    steps:[mStep(f),
-      stepObj(`Beräkna substansmängden.`, `n = m/M = ${m.str} g / ${fmtM(M)} g/mol = ${fmt(n)} mol`),
-      finalStep(`Beräkna antalet partiklar.`, `N = n · Nₐ = ${fmt(n)} mol · ${NA_STR} mol⁻¹`, answer, sf, pw)],
-    signature:['sv','m2N',f,m.str].join('|'),
-    dbg:{kind:'m2N', m:m.v, M}};
-}
-function chain_N2m(){
-  const f = svarSub();
-  const M = molarMass(f), name='av '+withKind(f), pw=particleWord(f);
-  const N = rndCountV('svar');
-  const n = N.v/NA_CONST;
-  const answer = n*M, sf=N.sf;
-  return {q:`Vilken <b>massa</b> har <b>${N.str}</b> ${pw} ${name} (${sub(f)})?`,
-    unit:'g', sci:false, answer, sf, solute:f,
-    steps:[stepObj(`Beräkna substansmängden.`, `n = N/Nₐ = ${N.str} / ${NA_STR} mol⁻¹ = ${fmt(n)} mol`),
-      mStep(f),
-      finalStep(`Beräkna massan.`, `m = n · M = ${fmt(n)} mol · ${fmtM(M)} g/mol`, answer, sf, 'g')],
-    signature:['sv','N2m',f,N.str].join('|'),
-    dbg:{kind:'N2m', N:N.v, M}};
-}
-function chain_cV2m(){
-  const f = svarSolute();
-  const M = molarMass(f), name='av '+withKind(f);
-  const c = rndConcV(), V = rndVolV();
-  const n = c.v*V.v;
-  const answer = n*M, sf=Math.min(c.sf,V.sf);
-  return {q:`Hur många <b>gram</b> ${name} (${sub(f)}) behöver du väga upp för att bereda <b>${V.str} dm³</b> lösning med koncentrationen <b>${c.str} mol/dm³</b>?`,
-    unit:'g', sci:false, answer, sf, solute:f,
-    steps:[stepObj(`Beräkna substansmängden som behövs.`, `n = c · V = ${c.str} mol/dm³ · ${V.str} dm³ = ${fmt(n)} mol`),
-      mStep(f),
-      finalStep(`Beräkna massan.`, `m = n · M = ${fmt(n)} mol · ${fmtM(M)} g/mol`, answer, sf, 'g')],
-    signature:['sv','cV2m',f,c.str,V.str].join('|'),
-    dbg:{kind:'cV2m', c:c.v, V:V.v, M}};
-}
-function chain_cV2N(){
-  const f = svarSolute();
-  const name='av '+withKind(f), pw=particleWord(f);
-  const c = rndConcV(), V = rndVolV();
-  const n = c.v*V.v;
-  const answer = n*NA_CONST, sf=Math.min(c.sf,V.sf);
-  return {q:`Hur många <b>${pw}</b> ${name} (${sub(f)}) finns i <b>${V.str} dm³</b> av en lösning med koncentrationen <b>${c.str} mol/dm³</b>?`,
-    unit:pw, sci:true, answer, sf, solute:f,
-    steps:[stepObj(`Beräkna substansmängden.`, `n = c · V = ${c.str} mol/dm³ · ${V.str} dm³ = ${fmt(n)} mol`),
-      finalStep(`Beräkna antalet partiklar.`, `N = n · Nₐ = ${fmt(n)} mol · ${NA_STR} mol⁻¹`, answer, sf, pw)],
-    signature:['sv','cV2N',f,c.str,V.str].join('|'),
-    dbg:{kind:'cV2N', c:c.v, V:V.v}};
-}
-function chain_NV2c(){
-  const f = svarSolute();
-  const name='av '+withKind(f), pw=particleWord(f);
-  const N = rndCountV('svar'), V = rndVolV();
-  const n = N.v/NA_CONST;
-  const answer = n/V.v, sf=Math.min(N.sf,V.sf);
-  return {q:`<b>${N.str}</b> ${pw} ${name} (${sub(f)}) löses i vatten till <b>${V.str} dm³</b> lösning. Beräkna lösningens koncentration.`,
-    unit:'mol/dm³', sci:false, answer, sf, solute:f,
-    steps:[stepObj(`Beräkna substansmängden.`, `n = N/Nₐ = ${N.str} / ${NA_STR} mol⁻¹ = ${fmt(n)} mol`),
-      finalStep(`Beräkna koncentrationen.`, `c = n/V = ${fmt(n)} mol / ${V.str} dm³`, answer, sf, 'mol/dm³')],
-    signature:['sv','NV2c',f,N.str,V.str].join('|'),
-    dbg:{kind:'NV2c', N:N.v, V:V.v}};
-}
-function chain_mVv2N(){
-  const f = svarSolute();
-  const M = molarMass(f), name='av '+withKind(f), pw=particleWord(f);
-  const m = rndMassV('svar'), V = rndVolV();
-  const vs = mkVal(pick(['10,0','25,0','50,0','75,0']));
-  const n = m.v/M, c = n/V.v, ns = c*vs.v/1000;
-  const answer = ns*NA_CONST, sf=Math.min(m.sf,V.sf,vs.sf);
-  return {q:`<b>${m.str} g</b> ${name} (${sub(f)}) löses i vatten till <b>${V.str} dm³</b> lösning. Hur många <b>${pw}</b> ${name} finns i <b>${vs.str} cm³</b> av lösningen?`,
-    unit:pw, sci:true, answer, sf, solute:f,
-    steps:[mStep(f),
-      stepObj(`Beräkna substansmängden som löses.`, `n = m/M = ${m.str} g / ${fmtM(M)} g/mol = ${fmt(n)} mol`),
-      stepObj(`Beräkna lösningens koncentration.`, `c = n/V = ${fmt(n)} mol / ${V.str} dm³ = ${fmt(c)} mol/dm³`),
-      stepObj(`Beräkna substansmängden i provet (${vs.str} cm³ = ${fmt(vs.v/1000)} dm³).`, `n′ = c · V′ = ${fmt(c)} mol/dm³ · ${fmt(vs.v/1000)} dm³ = ${fmt(ns)} mol`),
-      finalStep(`Beräkna antalet partiklar.`, `N = n′ · Nₐ = ${fmt(ns)} mol · ${NA_STR} mol⁻¹`, answer, sf, pw)],
-    signature:['sv','mVv2N',f,m.str,V.str,vs.str].join('|'),
-    dbg:{kind:'mVv2N', m:m.v, V:V.v, vs:vs.v, M}};
+/* --- Deltryck --- */
+function genDelp(diff){
+  let answer, unit='kPa', q, steps=[], sf, sigParts, dbg;
+  const gasA = pick(GASES);
+  let gasB = pick(GASES);
+  while(gasB===gasA) gasB = pick(GASES);
+  const nameA = GNAME[gasA], nameB = GNAME[gasB];
+  if(diff==='latt'){
+    const p1 = rndPdel(), p2 = rndPdel();
+    if(Math.random()<0.5){
+      sf = Math.min(p1.sf, p2.sf);
+      answer = p1.v+p2.v;
+      q = `En gasblandning innehåller ${nameA} med deltrycket <b>${p1.str} kPa</b> och ${nameB} med deltrycket <b>${p2.str} kPa</b>. Beräkna totaltrycket.`;
+      steps.push(finalStep('Enligt Daltons lag är totaltrycket summan av deltrycken.',
+        `p = ${p1.str} + ${p2.str}`, answer, sf, unit));
+      sigParts=['sum',gasA,gasB,p1.str,p2.str]; dbg={kind:'sum', p1:p1.v, p2:p2.v};
+    } else {
+      const pt = mkVal(fmtSig(p1.v+p2.v,4));
+      sf = Math.min(pt.sf, p1.sf);
+      answer = pt.v-p1.v;
+      q = `Totaltrycket i en gasblandning av ${nameA} och ${nameB} är <b>${pt.str} kPa</b>. Deltrycket av ${nameA} är <b>${p1.str} kPa</b>. Beräkna deltrycket av ${nameB}.`;
+      steps.push(finalStep('Enligt Daltons lag: p(total) = p(A) + p(B).',
+        `p(${sub(gasB)}) = ${pt.str} &minus; ${p1.str}`, answer, sf, unit));
+      sigParts=['rest',gasA,gasB,pt.str,p1.str]; dbg={kind:'rest', pt:pt.v, p1:p1.v};
+    }
+  } else if(diff==='medel'){
+    const n1 = rndMolV(), n2 = rndMolV(), pt = rndP();
+    sf = Math.min(n1.sf, n2.sf, pt.sf);
+    answer = n1.v/(n1.v+n2.v)*pt.v;
+    q = `En behållare innehåller <b>${n1.str} mol</b> ${nameA} (${sub(gasA)}) och <b>${n2.str} mol</b> ${nameB} (${sub(gasB)}). Totaltrycket är <b>${pt.str} kPa</b>. Beräkna deltrycket av ${nameA}.`;
+    steps.push(stepObj('Deltrycket bestäms av molbråket.',
+      `x(${sub(gasA)}) = ${n1.str} / (${n1.str} + ${n2.str}) = ${fmt(n1.v/(n1.v+n2.v))}`));
+    steps.push(finalStep('Multiplicera molbråket med totaltrycket.',
+      `p(${sub(gasA)}) = ${fmt(n1.v/(n1.v+n2.v))} · ${pt.str}`, answer, sf, unit));
+    sigParts=['molfrak',gasA,gasB,n1.str,n2.str,pt.str]; dbg={kind:'molfrak', n1:n1.v, n2:n2.v, pt:pt.v};
+  } else {
+    const variant = Math.random()<0.5 ? 'massfrak' : 'nRT';
+    if(variant==='massfrak'){
+      const m1 = rndMassV(diff), m2 = rndMassV(diff), pt = rndP();
+      const MA = molarMass(gasA), MB = molarMass(gasB);
+      sf = Math.min(m1.sf, m2.sf, pt.sf);
+      const nA = m1.v/MA, nB = m2.v/MB;
+      answer = nA/(nA+nB)*pt.v;
+      q = `En gasblandning innehåller <b>${m1.str} g</b> ${nameA} (${sub(gasA)}) och <b>${m2.str} g</b> ${nameB} (${sub(gasB)}). Totaltrycket är <b>${pt.str} kPa</b>. Beräkna deltrycket av ${nameA}.`;
+      steps.push(stepObj('Beräkna substansmängderna.',
+        `n(${sub(gasA)}) = ${m1.str}/${fmtM(MA)} = ${fmt(nA)} mol &nbsp;·&nbsp; n(${sub(gasB)}) = ${m2.str}/${fmtM(MB)} = ${fmt(nB)} mol`));
+      steps.push(stepObj('Beräkna molbråket.',
+        `x(${sub(gasA)}) = ${fmt(nA)} / (${fmt(nA)} + ${fmt(nB)}) = ${fmt(nA/(nA+nB))}`));
+      steps.push(finalStep('Multiplicera molbråket med totaltrycket.',
+        `p(${sub(gasA)}) = ${fmt(nA/(nA+nB))} · ${pt.str}`, answer, sf, unit));
+      sigParts=['massfrak',gasA,gasB,m1.str,m2.str,pt.str];
+      dbg={kind:'massfrak', m1:m1.v, m2:m2.v, MA, MB, pt:pt.v};
+    } else {
+      const n1 = rndMolV(), n2 = rndMolV(), V = rndVdm(), tc = rndTC();
+      const {TK, steg} = tSteg(tc);
+      sf = Math.min(n1.sf, V.sf, tc.sf);
+      answer = n1.v*R_CONST*TK/V.v;
+      q = `En behållare med volymen <b>${V.str} dm³</b> innehåller <b>${n1.str} mol</b> ${nameA} (${sub(gasA)}) och <b>${n2.str} mol</b> ${nameB} (${sub(gasB)}) vid <b>${tc.str} &deg;C</b>. Beräkna deltrycket av ${nameA}.`;
+      steps.push(steg);
+      steps.push(finalStep('Varje gas fyller hela volymen. Deltrycket ges av gasens egen substansmängd i pV = nRT.',
+        `p(${sub(gasA)}) = n(${sub(gasA)})RT/V = ${n1.str} · 8,314 · ${fmt(TK)} / ${V.str}`, answer, sf, unit));
+      sigParts=['nRT',gasA,gasB,n1.str,n2.str,V.str,tc.str];
+      dbg={kind:'nRT', n1:n1.v, V:V.v, TK};
+    }
+  }
+  return {tag:'Deltryck', qtext:q, given:[], answer, sf, unit, steps, sci:false,
+    solute:gasA, signature:['delp',...sigParts].join('|'), dbg};
 }
 
-const SVAR_POOLS = {
-  mM:[chain_m2N, chain_N2m, chain_cV2m, chain_mVv2N],
-  NA:[chain_m2N, chain_N2m, chain_cV2N, chain_NV2c, chain_mVv2N],
-  cV:[chain_cV2m, chain_cV2N, chain_NV2c, chain_mVv2N]
-};
-function genSvar(type){
-  const c = pick(SVAR_POOLS[type])();
-  return {tag:'Kombinerad', qtext:c.q, given:[], atomEls:[], answer:c.answer, sf:c.sf,
-    unit:c.unit, steps:c.steps, sci:!!c.sci, solute:c.solute, signature:c.signature, dbg:c.dbg};
-}
-
-const GENS = {mM:genMM, NA:genNA, cV:genCV};
-
-const MIXPOOL = ['mM','NA','cV'];
+const GENS = {ideal:genIdeal, molvol:genMolvol, delp:genDelp};
+const MIXPOOL = ['ideal','molvol','delp'];
 
 /* ---------- repetitionsskydd ---------- */
 const seenSignatures = new Set();
-const recentSubs = [];
+const recentGases = [];
 function generateFresh(type, diff){
   let p = null;
   for(let i=0;i<80;i++){
     const t = type==='mix' ? pick(MIXPOOL) : type;
     p = GENS[t](diff);
     if(seenSignatures.has(p.signature)) continue;
-    if(i<40 && p.solute && recentSubs.includes(p.solute)) continue;
+    if(i<40 && p.solute && recentGases.includes(p.solute)) continue;
     break;
   }
   seenSignatures.add(p.signature);
   if(p.solute){
-    recentSubs.push(p.solute);
-    if(recentSubs.length>8) recentSubs.shift();
+    recentGases.push(p.solute);
+    if(recentGases.length>5) recentGases.shift();
   }
-  /* I Blandat (lätt/medel) döljs uppgiftstypen så att studeranden själv
-     måste avgöra vilken formel som behövs. */
-  p.displayTag = (type==='mix' && diff!=='svar') ? 'Blandat' : p.tag;
+  /* I Blandat döljs uppgiftstypen så att studeranden själv väljer metod. */
+  p.displayTag = type==='mix' ? 'Blandat' : p.tag;
   return p;
 }
 
 /* Export för testsviten (Node) */
 if(typeof module!=='undefined' && module.exports){
-  module.exports = {ATOMIC, ATOMIC_STR, NAMES, NA_CONST, SUBS_ALL, SOLUTES, SOLUTES_COMPLEX,
-    MOLEC, IONIC_SIMPLE, IONIC_COMPLEX, METALS, particleWord, withKind,
+  module.exports = {ATOMIC, ATOMIC_STR, GASES, GNAME, R_CONST, VM, NA_CONST,
     parseFormula, molarMass, countSF, roundSig, fmtSig, fmt,
-    parseNum, evaluate, genMM, genNA, genCV, generateFresh, seenSignatures};
+    parseNum, evaluate, genIdeal, genMolvol, genDelp, generateFresh, seenSignatures};
 }
 
 /* ================================================================
@@ -744,9 +726,9 @@ if(typeof module!=='undefined' && module.exports){
 if(typeof document!=='undefined'){
 
 const TYPES = [
-  {id:'mM', label:'n = m/M'},
-  {id:'NA', label:'n = N/Nₐ'},
-  {id:'cV', label:'c = n/V'},
+  {id:'ideal', label:'pV = nRT'},
+  {id:'molvol', label:'Molvolym'},
+  {id:'delp', label:'Deltryck'},
   {id:'mix', label:'Blandat'}
 ];
 const DIFFS = [
@@ -754,10 +736,10 @@ const DIFFS = [
   {id:'medel', label:'Medel'},
   {id:'svar', label:'Svår'}
 ];
-let curType='mM', curDiff='latt';
+let curType='ideal', curDiff='latt';
 let problem=null, answered=false, revealed=false, stepIdx=0;
 let score={ok:0,tot:0,streak:0};
-let history=[];            /* endast i minnet, rensas vid omladdning */
+let history=[];
 let histCounter=0;
 let currentEntry=null;
 let reviewing=false, savedState=null;
@@ -786,11 +768,6 @@ function renderProblem(p, review){
   const g=$('given');
   g.innerHTML = p.given.map(x=>`<span>${x}</span>`).join('');
   g.style.display = p.given.length?'flex':'none';
-  const am=$('atommass');
-  if(p.atomEls.length){
-    am.style.display='block';
-    am.innerHTML='Atommassor (g/mol): '+p.atomEls.map(e=>`<em>${e}</em>&nbsp;${ATOMIC_STR[e]}`).join(' · ');
-  } else am.style.display='none';
   $('unit').textContent = p.unit;
   $('sciHint').className = 'hint'+(p.sci && !review?' show':'');
   $('steps').innerHTML='';
@@ -855,7 +832,7 @@ function openReview(entry){
   $('backBtn').style.display='inline-block';
   const fb=$('feedback');
   fb.className='feedback '+(entry.status==='ok'?'ok':entry.status==='fel'?'fel':'warn');
-  fb.innerHTML=`Resultat: ${STATUS_LABEL[entry.status]}. Rätt svar: <b>${fmtSig(entry.problem.answer,entry.problem.sf)} ${entry.problem.unit}</b>.<br>Klicka <b>← Fortsätt träna</b> för att återgå till din pågående uppgift, eller <b>Ny uppgift</b> för att börja en ny.`;
+  fb.innerHTML=`Resultat: ${STATUS_LABEL[entry.status]}. Rätt svar: <b>${fmtSig(entry.problem.answer,entry.problem.sf)} ${entry.problem.unit}</b>.<br>Klicka <b>&#8592; Fortsätt träna</b> för att återgå till din pågående uppgift, eller <b>Ny uppgift</b> för att börja en ny.`;
   $('solution').className='solution open';
   const st=$('steps'); st.innerHTML='';
   entry.problem.steps.forEach((s,i)=>{
