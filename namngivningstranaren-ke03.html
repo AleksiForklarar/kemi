@@ -218,6 +218,7 @@
     <div class="solution" id="solution">
       <div class="sol-head">Lösning steg för steg</div>
       <div id="steps"></div>
+      <button class="btn-ghost" id="stepBtn" style="margin-top:4px">Visa nästa steg</button>
     </div>
   </div>
 
@@ -527,6 +528,19 @@ const BANK=RAW.map(row=>{
   c.warn.forEach(w=>expandName(w[0]).forEach(nm=>{
     if(!c.okSet.has(normN(nm))) c.warnMap.set(normN(nm),{skal:w[1],visat:w[0]});
   }));
+  /* grupp på kolatom 1: godkänn även namnet utan lokanten (buten = but-1-en) */
+  function ettaFri(nm){
+    if(/^1-(?![\d,])/.test(nm)) return nm.replace(/^1-/,'');
+    if(/-1-(?![\d,])/.test(nm)) return nm.replace(/-1-/,'');
+    return null;
+  }
+  [namn].concat(c.alt).forEach(nm=>{
+    const fri=ettaFri(nm);
+    if(!fri) return;
+    const key=normN(fri);
+    if(!c.okSet.has(key) && !c.warnMap.has(key))
+      c.warnMap.set(key,{skal:'etta',visat:fri});
+  });
   c.hasLok=/\d/.test(namn);
   c.lokSet=new Set();
   if(c.hasLok){
@@ -631,7 +645,7 @@ const DIFFS=[
 ];
 const MODENAMN={namn:'Struktur \u2192 namn', formel:'Namn \u2192 formel'};
 let curType='mix', curGrupp='alla', curDiff='latt';
-let problem=null, answered=false, revealed=false;
+let problem=null, answered=false, revealed=false, stepIdx=0;
 let score={ok:0,tot:0,streak:0};
 let history=[], histCounter=0, currentEntry=null;
 let reviewing=false, savedState=null;
@@ -930,8 +944,10 @@ function newProblem(){
   reviewing=false; savedState=null;
   refreshChips();
   problem=generateFresh(curType, curDiff, curGrupp);
-  answered=false; revealed=false; currentEntry=null;
+  answered=false; revealed=false; stepIdx=0; currentEntry=null;
   renderProblem(problem, false);
+  $('steps').innerHTML='';
+  $('stepBtn').style.display='inline-block';
   $('textsvar').value=''; $('textsvar').readOnly=false;
   $('checkBtn').style.display='inline-block';
   $('solBtn').style.display='inline-block';
@@ -969,10 +985,11 @@ function renderHistory(){
 
 function openReview(entry){
   if(!reviewing){
-    savedState={problem, answered, revealed,
+    savedState={problem, answered, revealed, stepIdx,
       input:$('textsvar').value,
       fbClass:$('feedback').className, fbHTML:$('feedback').innerHTML,
-      solOpen:$('solution').classList.contains('open')};
+      solOpen:$('solution').classList.contains('open'),
+      stepsHTML:$('steps').innerHTML, stepBtnVis:$('stepBtn').style.display};
   }
   reviewing=true;
   problem=entry.problem;
@@ -982,6 +999,7 @@ function openReview(entry){
   $('textsvar').readOnly=true;
   $('checkBtn').style.display='none';
   $('solBtn').style.display='none';
+  $('stepBtn').style.display='none';
   $('backBtn').style.display='inline-block';
   const fb=$('feedback');
   fb.className='feedback '+(entry.status==='ok'?'ok':entry.status==='fel'?'fel':'warn');
@@ -996,12 +1014,13 @@ function closeReview(){
   reviewing=false;
   const s=savedState; savedState=null;
   if(!s){ newProblem(); return; }
-  problem=s.problem; answered=s.answered; revealed=s.revealed;
+  problem=s.problem; answered=s.answered; revealed=s.revealed; stepIdx=s.stepIdx;
   renderProblem(problem, false);
   $('textsvar').value=s.input; $('textsvar').readOnly=false;
   $('feedback').className=s.fbClass; $('feedback').innerHTML=s.fbHTML;
   $('solution').className='solution'+(s.solOpen?' open':'');
-  if(s.solOpen) renderSteps(problem);
+  $('steps').innerHTML=s.stepsHTML;
+  $('stepBtn').style.display=s.stepBtnVis;
   $('checkBtn').style.display='inline-block';
   $('solBtn').style.display='inline-block';
   $('backBtn').style.display='none';
@@ -1050,6 +1069,8 @@ function check(){
         fb.innerHTML='Rätt grupper, men de anges i alfabetisk ordning: <b>'+c.namn+'</b>. Räknas som rätt.';
       else if(res.skal==='lokfri')
         fb.innerHTML='Rätt förening! Gruppens plats är entydig här, men skriv gärna lokanten ändå: <b>'+c.namn+'</b>. Räknas som rätt.';
+      else if(res.skal==='etta')
+        fb.innerHTML='Rätt! Utan lokant avses 1-isomeren, men skriv gärna <b>'+c.namn+'</b> för tydlighetens skull. Räknas som rätt.';
       else
         fb.innerHTML='Rätt! \u2713 <b>'+c.namn+'</b>. Räknas som rätt.';
     } else if(res.skal==='lokant'){
@@ -1090,6 +1111,22 @@ function check(){
   }
 }
 
+function showStep(){
+  if(reviewing) return;
+  problem.steps = problem.steps || solutionSteps(problem.c);
+  if(stepIdx===0) $('solution').className='solution open';
+  if(stepIdx < problem.steps.length){
+    const s=problem.steps[stepIdx];
+    const div=document.createElement('div');
+    div.className='step';
+    div.innerHTML='<span class="n">'+(stepIdx+1)+'</span><span class="t">'+s.text+
+      '<span class="m">'+s.math+'</span></span>';
+    $('steps').appendChild(div);
+    stepIdx++;
+  }
+  if(stepIdx>=problem.steps.length) $('stepBtn').style.display='none';
+}
+
 function reveal(){
   if(reviewing) return;
   if(!answered){
@@ -1098,9 +1135,8 @@ function reveal(){
     renderHistory();
   }
   revealed=true;
-  $('textsvar').value = problem.mode==='namn' ? problem.namn : problem.plain;
+  if(stepIdx===0) showStep();
   $('solution').className='solution open';
-  renderSteps(problem);
 }
 
 function updateScore(){
@@ -1112,6 +1148,7 @@ function updateScore(){
 $('checkBtn').onclick=check;
 $('textsvar').addEventListener('keydown',e=>{ if(e.key==='Enter') check(); });
 $('solBtn').onclick=reveal;
+$('stepBtn').onclick=showStep;
 $('nextBtn').onclick=newProblem;
 $('backBtn').onclick=closeReview;
 

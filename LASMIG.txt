@@ -27,12 +27,13 @@ namngivningstranaren-ke03.html
     kursens palett: alkaner, alkener, alkyner, alkoholer, etrar,
     aldehyder, ketoner, karboxylsyror, estrar, aminer och
     halogenalkaner. På lätt nivå visas kondenserade formler,
-    på medel och svår ritade streckformler. Trivialnamn som
-    aceton, fel numreringsriktning och utelämnad entydig lokant
-    räknas som rätt med en påminnelse. Saknad eller fel lokant,
-    liksom summaformel i stället för strukturformel, ger riktad
-    återkoppling. Lokanterna följer regeln om lägsta möjliga
-    lokant.
+    på medel och svår ritade streckformler. Lösningen visas ett
+    steg i taget. Trivialnamn som aceton, fel numreringsriktning
+    och namn utan lokant när gruppen sitter på kolatom 1 (buten
+    godtas för but-1-en) räknas som rätt med en påminnelse.
+    Saknad eller fel lokant i övriga fall, liksom summaformel i
+    stället för strukturformel, ger riktad återkoppling.
+    Lokanterna följer regeln om lägsta möjliga lokant.
 
 ph-tranaren-ke06.html
     pH-tränaren (KE06 Kemisk jämvikt). Fyra uppgiftstyper:
