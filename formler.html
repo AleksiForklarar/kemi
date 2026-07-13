@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0B6E5F">
-<title>Formelsamling · gymnasiekemi</title>
-<meta name="description" content="Formelsamling för KE01 och KE04: samband, arbetsgång, gällande siffror och atommassor.">
+<title>Räkneguiden · gymnasiekemi</title>
+<meta name="description" content="Räkneguiden för gymnasiekemi: arbetsgångar, gällande siffror och tips. Formler och tabellvärden finns i Mafys tabeller.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%97%EF%B8%8F%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -99,65 +99,43 @@
   <header>
     <div>
       <div class="eyebrow">Gymnasiekemi · GLP2019</div>
-      <h1>Formelsamling</h1>
+      <h1>Räkneguiden</h1>
     </div>
     <button class="skrivut" onclick="window.print()">Skriv ut</button>
   </header>
 
-  <section aria-labelledby="r-alla">
-    <h2 class="alla" id="r-alla">Storheter och enheter</h2>
-    <div class="kort">
-      <table>
-        <tr><th>Storhet</th><th>Beteckning</th><th>Enhet</th></tr>
-        <tr><td>Substansmängd</td><td class="formel">n</td><td>mol</td></tr>
-        <tr><td>Massa</td><td class="formel">m</td><td>g</td></tr>
-        <tr><td>Molmassa</td><td class="formel">M</td><td>g/mol</td></tr>
-        <tr><td>Antal partiklar</td><td class="formel">N</td><td>st</td></tr>
-        <tr><td>Avogadros konstant</td><td class="formel">N<sub>A</sub></td><td>6,022 · 10<sup>23</sup> 1/mol</td></tr>
-        <tr><td>Koncentration</td><td class="formel">c</td><td>mol/dm<sup>3</sup></td></tr>
-        <tr><td>Volym</td><td class="formel">V</td><td>dm<sup>3</sup></td></tr>
-        <tr><td>Molvolym (gas, 25 &deg;C)</td><td class="formel">V<sub>m</sub></td><td>24,0 dm<sup>3</sup>/mol</td></tr>
-      </table>
-    </div>
-  </section>
-
-  <section aria-labelledby="r-ke01">
-    <h2 class="k01" id="r-ke01">KE01 · Molbegreppet</h2>
-    <div class="kort">
-      <table>
-        <tr><th>Samband</th><th>Löst för</th><th>Används när</th></tr>
-        <tr><td class="formel f01">n = m/M</td><td class="formel">m = n · M</td><td>massa &#8596; substansmängd</td></tr>
-        <tr><td class="formel f01">n = N/N<sub>A</sub></td><td class="formel">N = n · N<sub>A</sub></td><td>antal partiklar &#8596; substansmängd</td></tr>
-        <tr><td class="formel f01">c = n/V</td><td class="formel">n = c · V</td><td>koncentration i lösningar</td></tr>
-      </table>
-      <p class="not">Räkna om till mol först. Substansmängden n är bryggan mellan alla storheter.</p>
+  <section aria-labelledby="r-mafy">
+    <h2 class="alla" id="r-mafy">Formler och tabellvärden</h2>
+    <div class="kort" style="border-left:5px solid var(--ke04)">
+      <h3>Allt du behöver slå upp finns i Mafys tabeller</h3>
+      <p style="font-size:14.5px;margin-bottom:10px">Samband, konstanter, atommassor och löslighetstabeller: använd samma tabellverk som på studentexamen, så tränar du på att hitta rätt från början.</p>
+      <a href="https://mafytaulukot.fi/" target="_blank" rel="noopener"
+         style="display:inline-block;font-weight:600;font-size:15px;text-decoration:none;color:#fff;background:var(--ke04);padding:10px 20px;border-radius:8px">Öppna Mafys tabeller</a>
     </div>
   </section>
 
   <section aria-labelledby="r-ke04">
-    <h2 class="k04" id="r-ke04">KE04 · Stökiometri</h2>
+    <h2 class="k04" id="r-ke04">Arbetsgång för reaktionsberäkningar</h2>
     <div class="kort">
-      <h3>Arbetsgång för massaberäkningar</h3>
       <ol>
         <li>Skriv en <b>balanserad reaktionsformel</b>.</li>
-        <li>Räkna om det givna till <b>substansmängd</b>: n = m/M.</li>
+        <li>Räkna om det givna till <b>substansmängd</b> med molmassan, som du räknar ut själv med atommassorna ur tabellerna.</li>
         <li>Använd <b>molförhållandet</b> ur koefficienterna.</li>
-        <li>Räkna om till det som frågas: m = n · M, eller V = n · V<sub>m</sub> för gaser.</li>
+        <li>Räkna om till det som efterfrågas: massa, gasvolym, antal partiklar eller koncentration.</li>
       </ol>
+      <p class="not">Substansmängden är alltid bryggan. Räkna om till mol först, oavsett vad uppgiften ger dig.</p>
     </div>
     <div class="kort">
       <h3>Begränsande faktor</h3>
-      <p style="font-size:14.5px">Jämför <span class="formel f04">n/koefficient</span> för varje reaktant. Det minsta värdet visar den begränsande faktorn. All produktberäkning utgår från den.</p>
+      <p style="font-size:14.5px">Jämför substansmängden delad med koefficienten för varje reaktant. Det minsta värdet visar den begränsande faktorn, och all produktberäkning utgår från den.</p>
     </div>
     <div class="kort">
       <h3>Utbyte</h3>
-      <p class="formel f04" style="margin-bottom:6px">utbyte = m(praktiskt) / m(teoretiskt) · 100 %</p>
-      <p style="font-size:14.5px">Det teoretiska utbytet räknas ur reaktionsformeln som om reaktionen vore fullständig.</p>
+      <p style="font-size:14.5px">Utbytet är det praktiska resultatet jämfört med det teoretiska, angivet i procent. Det teoretiska utbytet räknas ur reaktionsformeln som om reaktionen vore fullständig.</p>
     </div>
     <div class="kort">
       <h3>Gaser</h3>
-      <p class="formel f04" style="margin-bottom:6px">pV = nRT &nbsp;&nbsp; R = 8,314 J/(mol·K)</p>
-      <p style="font-size:14.5px">p i pascal, V i m<sup>3</sup>, T i kelvin (T = t + 273,15). Vid 25 &deg;C kan V = n · 24,0 dm<sup>3</sup>/mol användas.</p>
+      <p style="font-size:14.5px">Kontrollera enheterna innan du sätter in i gaslagen: tryck i pascal, volym i kubikmeter och temperatur i kelvin. Glöm inte att omvandla från grader Celsius genom att addera 273,15. Vid rumstemperatur kan molvolymen ur tabellerna användas som genväg, och i gasblandningar är totaltrycket summan av deltrycken.</p>
     </div>
   </section>
 
@@ -172,42 +150,21 @@
     </div>
   </section>
 
-  <section aria-labelledby="r-atom">
-    <h2 class="alla" id="r-atom">Atommassor (g/mol)</h2>
-    <div class="kort atomtabell">
-      <table>
-        <tr>
-          <td><span class="sym">H</span><br>1,008</td>
-          <td><span class="sym">C</span><br>12,01</td>
-          <td><span class="sym">N</span><br>14,01</td>
-          <td><span class="sym">O</span><br>16,00</td>
-          <td><span class="sym">Na</span><br>22,99</td>
-          <td><span class="sym">Mg</span><br>24,31</td>
-          <td><span class="sym">Al</span><br>26,98</td>
-        </tr>
-        <tr>
-          <td><span class="sym">P</span><br>30,97</td>
-          <td><span class="sym">S</span><br>32,06</td>
-          <td><span class="sym">Cl</span><br>35,45</td>
-          <td><span class="sym">K</span><br>39,10</td>
-          <td><span class="sym">Ca</span><br>40,08</td>
-          <td><span class="sym">Mn</span><br>54,94</td>
-          <td><span class="sym">Fe</span><br>55,85</td>
-        </tr>
-        <tr>
-          <td><span class="sym">Cu</span><br>63,55</td>
-          <td><span class="sym">Zn</span><br>65,38</td>
-          <td><span class="sym">Ag</span><br>107,87</td>
-          <td><span class="sym">I</span><br>126,90</td>
-          <td><span class="sym">Ba</span><br>137,33</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-      <p class="not">Värden enligt tabellboken. Fullständigt periodiskt system finns i MAOL.</p>
+  <section aria-labelledby="r-fel">
+    <h2 class="alla" id="r-fel">Vanliga fällor</h2>
+    <div class="kort">
+      <ul>
+        <li>Att blanda ihop <b>koefficient</b> (talet framför formeln) med <b>index</b> (den lilla siffran i formeln). Koefficienten får du ändra, indexet aldrig.</li>
+        <li>Att glömma balansera reaktionsformeln innan molförhållandet används.</li>
+        <li>Att glömma laddningsbalansen i jonföreningar: summan av jonernas laddningar ska bli noll, med minsta möjliga heltalsförhållande.</li>
+        <li>Vid utspädning: c<sub>1</sub>V<sub>1</sub> = c<sub>2</sub>V<sub>2</sub> ger hela slutvolymen, inte mängden vatten som ska tillsättas.</li>
+        <li>Att avrunda mellanresultat, vilket ger fel i sista siffran.</li>
+        <li>Att glömma enhetsomvandlingar i gasuppgifter, särskilt temperaturen.</li>
+      </ul>
     </div>
   </section>
 
-  <footer>Samma värden och konventioner som i tränarna.</footer>
+  <footer>Metoderna följer samma konventioner som tränarna. Formler och värden: Mafys tabeller.</footer>
 </div>
 </body>
 </html>

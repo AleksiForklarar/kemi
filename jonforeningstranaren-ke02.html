@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jonföreningstränaren · KE02</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF7F9;
+    --grid:#F0E2E9;
+    --grid-major:#E7D3DE;
+    --ink:#26161E;
+    --ink-soft:#6E4F5E;
+    --accent:#A8326B;
+    --accent-hover:#8A2758;
+    --accent-soft:#F9E8F0;
+    --green:#1D7A33;
+    --green-soft:#E4F3E6;
+    --amber:#B2590B;
+    --amber-soft:#FBEFE0;
+    --red:#A8332C;
+    --red-soft:#F8E7E5;
+    --card:#FFFFFF;
+    --line:#E4CCD8;
+    --radius:10px;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sans:'IBM Plex Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:var(--sans);color:var(--ink);
+    background-color:var(--paper);
+    background-image:
+      linear-gradient(var(--grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:100px 100px,100px 100px,20px 20px,20px 20px;
+    min-height:100vh;padding:24px 16px 64px;line-height:1.5;
+  }
+  .wrap{max-width:840px;margin:0 auto}
+  .hem{display:inline-block;font-family:var(--mono);font-size:13px;font-weight:600;
+    color:var(--ink-soft);text-decoration:none;margin-bottom:10px;padding:4px 0}
+  .hem:hover{color:var(--accent)}
+  .hem:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  header{margin-bottom:20px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-size:clamp(26px,5vw,36px);font-weight:700;letter-spacing:-.01em;line-height:1.15}
+  .sub{color:var(--ink-soft);font-size:15px;margin-top:4px}
+
+  .panel{background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:16px;margin-bottom:14px;
+    box-shadow:0 1px 3px rgba(38,22,30,.06)}
+  .controls{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+  .ctrl-group{display:flex;flex-direction:column;gap:6px}
+  .ctrl-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-family:var(--sans);font-size:14px;font-weight:500;
+    padding:7px 13px;border-radius:999px;border:1.5px solid var(--line);
+    background:var(--card);color:var(--ink);cursor:pointer;transition:all .12s}
+  .chip:hover{border-color:var(--accent)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .chip:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .scorebar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;
+    font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+  .scorebar b{color:var(--ink);font-weight:600}
+  .streak{color:var(--amber);font-weight:600}
+
+  .qtype-tag{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;
+    color:var(--accent);background:var(--accent-soft);
+    padding:3px 10px;border-radius:6px;margin-bottom:12px;letter-spacing:.04em}
+  .review-tag{background:var(--amber-soft);color:var(--amber)}
+  .qtext{font-size:16.5px;margin-bottom:6px}
+  .qtext b{font-weight:600}
+  .qtext sub{font-size:.7em}
+  .given{font-family:var(--mono);font-size:14.5px;color:var(--ink-soft);margin:8px 0}
+  .given sub{font-size:.7em} .given sup{font-size:.7em}
+
+  .byggyta{display:flex;justify-content:center;gap:26px;flex-wrap:wrap;padding:14px 4px 6px}
+  .jonkort{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .jonruta{
+    font-family:var(--mono);font-weight:600;font-size:clamp(19px,4vw,24px);
+    background:var(--accent-soft);padding:12px 18px;border-radius:10px;min-width:96px;text-align:center;
+  }
+  .jonruta sub{font-size:.68em} .jonruta sup{font-size:.68em}
+  .jonnamn{font-size:13px;color:var(--ink-soft);font-family:var(--mono)}
+  .stepper{display:flex;align-items:center;gap:4px}
+  .stepper button{width:30px;height:30px;border-radius:8px;font-size:17px;font-weight:700;
+    border:1.5px solid var(--line);background:var(--card);color:var(--accent);
+    cursor:pointer;line-height:1;padding:0}
+  .stepper button:hover{border-color:var(--accent)}
+  .stepper button:disabled{opacity:.35;cursor:default}
+  input.antal{font-family:var(--mono);font-size:22px;font-weight:600;width:48px;
+    text-align:center;color:var(--accent);border:1.5px solid transparent;
+    background:transparent;border-radius:6px;padding:2px 0}
+  input.antal:focus{border-color:var(--accent);outline:none;background:var(--card)}
+  .antaletikett{font-size:11.5px;color:var(--ink-soft);font-family:var(--mono);letter-spacing:.05em}
+
+  .laddvisning{
+    text-align:center;font-family:var(--mono);font-size:14.5px;
+    padding:9px 12px;border-radius:8px;background:var(--paper);
+    border:1px solid var(--line);margin-top:4px;
+  }
+  .laddvisning.balans{color:var(--green);border-color:#BFE3C4;background:var(--green-soft)}
+  .laddnot{font-family:var(--mono);font-size:13px;color:var(--ink-soft);
+    text-align:center;background:var(--paper);border:1.5px dashed var(--line);
+    border-radius:8px;padding:9px 12px;margin-top:4px}
+
+  .answer-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+  input.textsvar{font-family:var(--mono);font-size:17px;font-weight:500;
+    padding:10px 14px;border:1.5px solid var(--line);border-radius:8px;
+    width:230px;color:var(--ink);background:var(--card)}
+  input.textsvar:focus{border-color:var(--accent)}
+  input.textsvar[readonly]{background:var(--paper);color:var(--ink-soft)}
+  button{font-family:var(--sans);font-size:15px;font-weight:600;
+    padding:10px 18px;border-radius:8px;cursor:pointer;border:1.5px solid transparent;transition:all .12s}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-hover)}
+  .btn-ghost{background:var(--card);border-color:var(--line);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .hint{font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-top:8px}
+
+  .feedback{margin-top:12px;padding:12px 14px;border-radius:8px;font-size:15px;display:none;font-weight:500}
+  .feedback.ok{display:block;background:var(--green-soft);color:var(--green);border:1px solid #BFE3C4}
+  .feedback.warn{display:block;background:var(--amber-soft);color:var(--amber);border:1px solid #EFD3B2}
+  .feedback.fel{display:block;background:var(--red-soft);color:var(--red);border:1px solid #EBC4C0}
+  .feedback sub{font-size:.7em} .feedback sup{font-size:.7em}
+
+  .solution{margin-top:14px;display:none}
+  .solution.open{display:block}
+  .sol-head{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:8px}
+  .step{background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    padding:10px 14px;margin-bottom:8px;font-size:15px;display:flex;gap:12px;align-items:baseline}
+  .step .n{font-family:var(--mono);font-weight:600;color:var(--accent);font-size:13px;flex-shrink:0}
+  .step .t{flex:1}
+  .step .t .m{font-family:var(--mono);font-size:14.5px;display:block;margin-top:3px;color:var(--ink)}
+  .step sub{font-size:.7em} .step sup{font-size:.7em}
+
+  .hist-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
+  .hist-note{font-size:12px;color:var(--ink-soft);font-family:var(--mono)}
+  .hist-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+  .hist-item{display:flex;gap:10px;align-items:baseline;text-align:left;
+    font-family:var(--sans);font-size:14px;
+    background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;width:100%}
+  .hist-item:hover{border-color:var(--accent)}
+  .hist-item .hn{font-family:var(--mono);font-weight:600;color:var(--ink-soft);font-size:12px;flex-shrink:0}
+  .hist-item .ht{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hist-item .ht sub{font-size:.7em}
+  .hist-item .hs{font-family:var(--mono);font-size:12px;font-weight:600;flex-shrink:0}
+  .hs.s-ok{color:var(--green)} .hs.s-warn{color:var(--amber)} .hs.s-fel{color:var(--red)} .hs.s-reveal{color:var(--ink-soft)}
+
+  .felknapp{position:fixed;right:16px;bottom:16px;z-index:50;font-size:13px;
+    background:var(--card);color:var(--ink-soft);border:1.5px solid var(--line);
+    border-radius:999px;padding:9px 14px;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+  .felknapp:hover{color:var(--accent);border-color:var(--accent)}
+  .felpanel{position:fixed;right:16px;bottom:64px;z-index:50;
+    width:min(340px,calc(100vw - 32px));background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:14px;
+    box-shadow:0 8px 28px rgba(0,0,0,.2)}
+  .felpanel h3{font-size:14px;margin-bottom:6px}
+  .felpanel textarea{width:100%;height:70px;font-family:var(--sans);font-size:13px;
+    padding:8px;border:1.5px solid var(--line);border-radius:8px;
+    background:var(--paper);color:var(--ink);resize:vertical}
+  .felmeta{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);
+    background:var(--paper);border-radius:6px;padding:6px 8px;margin:8px 0;
+    max-height:70px;overflow:auto;white-space:pre-wrap}
+  .felrad{display:flex;gap:6px}
+  .felrad button{flex:1;font-size:12.5px;padding:8px 6px}
+  .felok{font-size:12px;color:var(--green);margin-top:6px;display:none}
+
+  footer{margin-top:24px;font-size:13px;color:var(--ink-soft);text-align:center;
+    font-family:var(--mono);line-height:1.7}
+  @media (max-width:560px){
+    body{padding:16px 10px 48px}
+    .panel{padding:13px}
+    input.textsvar{width:170px}
+    .byggyta{gap:16px}
+  }
+  @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="hem" href="index.html">&#8592; Startsidan</a>
+  <header>
+    <div class="eyebrow">KE02 · Kemi och en hållbar framtid · GLP2019</div>
+    <h1>Jonföreningstränaren</h1>
+    <div class="sub">Bygg jonföreningar av katjoner och anjoner, skriv formler ur namn och namn ur formler. Laddningssumman ska alltid bli noll.</div>
+  </header>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="ctrl-group">
+        <span class="ctrl-label">Uppgiftstyp</span>
+        <div class="chips" id="typeChips" role="group" aria-label="Uppgiftstyp"></div>
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">Svårighetsgrad</span>
+        <div class="chips" id="diffChips" role="group" aria-label="Svårighetsgrad"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="scorebar">
+      <span>Rätt: <b id="scoreOk">0</b> / <b id="scoreTot">0</b></span>
+      <span class="streak" id="streak"></span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <span class="qtype-tag" id="qtag"></span>
+    <div class="qtext" id="qtext"></div>
+    <div class="given" id="given" style="display:none"></div>
+
+    <div class="byggyta" id="byggyta" style="display:none"></div>
+    <div class="laddvisning" id="laddvisning" style="display:none"></div>
+    <div class="laddnot" id="laddnot" style="display:none">Laddningssumman är dold på den här nivån. Räkna själv: antal &middot; laddning för varje jon ska ge summan noll.</div>
+
+    <div class="answer-row">
+      <input type="text" class="textsvar" id="textsvar" autocomplete="off" autocapitalize="off" spellcheck="false" style="display:none" aria-label="Ditt svar">
+      <button class="btn-primary" id="checkBtn">Kontrollera</button>
+      <button class="btn-ghost" id="solBtn">Visa lösning</button>
+      <button class="btn-ghost" id="nextBtn">Ny uppgift &#8594;</button>
+      <button class="btn-primary" id="backBtn" style="display:none">&#8592; Fortsätt träna</button>
+    </div>
+    <div class="hint" id="inputHint" style="display:none"></div>
+
+    <div class="feedback" id="feedback" role="status"></div>
+
+    <div class="solution" id="solution">
+      <div class="sol-head">Lösning steg för steg</div>
+      <div id="steps"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="histPanel" style="display:none">
+    <div class="hist-head">
+      <span class="ctrl-label">Historik</span>
+      <span class="hist-note">rensas när sidan laddas om</span>
+    </div>
+    <div class="hist-list" id="histList"></div>
+  </div>
+
+  <footer>
+    Jonernas laddningar hittar du i Mafys tabeller.<br>
+    Katjonen skrivs först. Sammansatta joner sätts i parentes när det behövs fler än en.
+  </footer>
+</div>
+
+<script>
+'use strict';
+/* ================================================================
+   LOGIK: ren och testbar
+   ================================================================ */
+const KATJONER = [
+  {f:'Na', q:1, namn:'natrium'},
+  {f:'K',  q:1, namn:'kalium'},
+  {f:'Ag', q:1, namn:'silver'},
+  {f:'NH4',q:1, namn:'ammonium', poly:true},
+  {f:'Mg', q:2, namn:'magnesium'},
+  {f:'Ca', q:2, namn:'kalcium'},
+  {f:'Ba', q:2, namn:'barium'},
+  {f:'Zn', q:2, namn:'zink'},
+  {f:'Fe', q:2, namn:'järn', roman:'II'},
+  {f:'Cu', q:2, namn:'koppar', roman:'II'},
+  {f:'Cu', q:1, namn:'koppar', roman:'I'},
+  {f:'Fe', q:3, namn:'järn', roman:'III'},
+  {f:'Al', q:3, namn:'aluminium'}
+];
+const ANJONER = [
+  {f:'F',  q:-1, namn:'fluorid'},
+  {f:'Cl', q:-1, namn:'klorid'},
+  {f:'Br', q:-1, namn:'bromid'},
+  {f:'I',  q:-1, namn:'jodid'},
+  {f:'O',  q:-2, namn:'oxid'},
+  {f:'S',  q:-2, namn:'sulfid'},
+  {f:'N',  q:-3, namn:'nitrid'},
+  {f:'OH', q:-1, namn:'hydroxid', poly:true},
+  {f:'NO3',q:-1, namn:'nitrat', poly:true},
+  {f:'HCO3',q:-1, namn:'vätekarbonat', poly:true},
+  {f:'CO3',q:-2, namn:'karbonat', poly:true},
+  {f:'SO4',q:-2, namn:'sulfat', poly:true},
+  {f:'PO4',q:-3, namn:'fosfat', poly:true}
+];
+
+function gcd(a,b){ while(b){ [a,b]=[b,a%b]; } return a; }
+
+/* Vilka par är tillåtna på vilken nivå? */
+function allowedPair(kat, an, diff){
+  const polyAn = !!an.poly;
+  if(kat.f==='NH4'){
+    if(['O','N','S','F','OH'].includes(an.f)) return false;
+    if(diff==='latt') return false;
+    if(diff==='medel') return ['Cl','Br','I','NO3'].includes(an.f);
+    return ['SO4','CO3','PO4','HCO3'].includes(an.f);
+  }
+  if(kat.roman){
+    if(diff==='latt') return false;
+    if(diff==='medel') return ['Cl','Br','I','F','O','S'].includes(an.f);
+    return ['NO3','SO4','CO3','OH','PO4'].includes(an.f);
+  }
+  if(an.f==='N') return diff!=='latt' && ['Mg','Ca','Al'].includes(kat.f);
+  if(an.f==='HCO3') return diff==='svar' && ['Na','K','Ca','Mg'].includes(kat.f);
+  if(kat.f==='Ag' && !['Cl','Br','I','NO3','S'].includes(an.f)) return false;
+  if(diff==='latt') return !polyAn;
+  if(diff==='medel') return polyAn ? ['OH','NO3','SO4','CO3'].includes(an.f) : true;
+  /* svår med fast laddning: sammansatta och flervärda kombinationer */
+  return an.f==='PO4' || (polyAn && kat.q>=2) || (an.f==='OH' && kat.q>=3);
+}
+const PAIRS = {latt:[], medel:[], svar:[]};
+for(const diff of ['latt','medel','svar']){
+  KATJONER.forEach((k,ki)=>ANJONER.forEach((a,ai)=>{
+    if(allowedPair(k,a,diff)) PAIRS[diff].push([ki,ai]);
+  }));
+}
+
+/* Formel och namn ur ett jonpar */
+function counts(kat, an){
+  const g = gcd(kat.q, Math.abs(an.q));
+  return {nk: Math.abs(an.q)/g, na: kat.q/g};
+}
+function partStr(f, n, poly){
+  if(n===1) return f;
+  return poly ? '('+f+')'+n : f+n;
+}
+function formulaOf(kat, an){
+  const {nk, na} = counts(kat, an);
+  return partStr(kat.f, nk, kat.poly) + partStr(an.f, na, an.poly);
+}
+function nameOf(kat, an){
+  return kat.namn + (kat.roman ? '('+kat.roman+')' : '') + an.namn;
+}
+function parseFormula(f){
+  const out = {};
+  function add(o,el,n){ o[el]=(o[el]||0)+n; }
+  let i=0;
+  function block(target){
+    while(i<f.length){
+      const ch=f[i];
+      if(ch==='('){
+        i++;
+        const inner={};
+        block(inner);
+        let num=''; while(i<f.length && /\d/.test(f[i])) num+=f[i++];
+        const m=num?+num:1;
+        for(const k in inner) add(target,k,inner[k]*m);
+      } else if(ch===')'){ i++; return; }
+      else if(/[A-Z]/.test(ch)){
+        let el=ch; i++;
+        if(i<f.length && /[a-z]/.test(f[i])) el+=f[i++];
+        let num=''; while(i<f.length && /\d/.test(f[i])) num+=f[i++];
+        add(target,el,num?+num:1);
+      }
+      else throw new Error('ogiltigt tecken: '+ch);
+    }
+  }
+  block(out);
+  return out;
+}
+function compEqual(a,b){
+  const ka=Object.keys(a), kb=Object.keys(b);
+  if(ka.length!==kb.length) return false;
+  return ka.every(k=>a[k]===b[k]);
+}
+function compProportional(a,b){
+  const ka=Object.keys(a).sort(), kb=Object.keys(b).sort();
+  if(ka.length!==kb.length || ka.some((k,i)=>k!==kb[i])) return false;
+  const r0=[a[ka[0]], b[ka[0]]];
+  return ka.every(k => a[k]*r0[1] === b[k]*r0[0]);
+}
+
+/* --- kontroll: byggaren --- */
+function checkBygg(kat, an, nk, na){
+  if(!(nk>=1 && na>=1)) return {status:'fel', sum:NaN};
+  const sum = kat.q*nk + an.q*na;
+  if(sum!==0) return {status:'fel', sum};
+  const g = gcd(nk, na);
+  if(g>1) return {status:'warn', faktor:g};
+  return {status:'ok'};
+}
+
+/* --- kontroll: namn -> formel --- */
+const SUBDIGITS = {'\u2080':'0','\u2081':'1','\u2082':'2','\u2083':'3','\u2084':'4',
+  '\u2085':'5','\u2086':'6','\u2087':'7','\u2088':'8','\u2089':'9'};
+function normFormula(str){
+  return String(str).trim()
+    .replace(/[\s\u00a0]+/g,'')
+    .replace(/[\u2080-\u2089]/g, c=>SUBDIGITS[c])
+    .replace(/[*·.]/g,'');
+}
+function checkFormel(kat, an, userStr){
+  const user = normFormula(userStr);
+  if(!user) return {status:'invalid'};
+  if(!/^[A-Za-z0-9()]+$/.test(user)) return {status:'invalid'};
+  const canonical = formulaOf(kat, an);
+  if(user===canonical) return {status:'ok'};
+  let comp;
+  try{ comp = parseFormula(user); } catch(e){ return {status:'fel', skal:'tolkning'}; }
+  for(const el in comp){ if(comp[el]<=0) return {status:'fel', skal:'tolkning'}; }
+  const canonComp = parseFormula(canonical);
+  if(compEqual(comp, canonComp)) return {status:'warn', skal:'skrivsatt', canonical};
+  if(compProportional(comp, canonComp)) return {status:'warn', skal:'forkorta', canonical};
+  return {status:'fel', skal:'sammansattning'};
+}
+
+/* --- kontroll: formel -> namn --- */
+const ROM = {1:'I',2:'II',3:'III',4:'IV'};
+function normName(str){
+  let s = String(str).toLowerCase()
+    .replace(/[\s\u00a0-]+/g,'')
+    .replace(/\((\d)\)/g, (m,d)=>'('+ (ROM[+d]||d) +')')
+    .replace(/\(([ivx]+)\)/g, (m,r)=>'('+r.toUpperCase()+')');
+  return s;
+}
+function usedArabic(str){ return /\(\d\)/.test(String(str)); }
+function checkNamn(kat, an, userStr){
+  const raw = String(userStr);
+  const user = normName(raw);
+  if(!user) return {status:'invalid'};
+  const canonical = nameOf(kat, an);
+  const canonNorm = normName(canonical);
+  if(user===canonNorm){
+    if(usedArabic(raw)) return {status:'warn', skal:'arabisk', canonical};
+    return {status:'ok'};
+  }
+  if(!kat.roman){
+    const medSiffra = normName(kat.namn+'('+ROM[kat.q]+')'+an.namn);
+    if(user===medSiffra) return {status:'warn', skal:'onodigsiffra', canonical};
+  }
+  if(kat.roman){
+    const utanSiffra = normName(kat.namn+an.namn);
+    if(user===utanSiffra) return {status:'fel', skal:'saknadsiffra'};
+  }
+  return {status:'fel', skal:'namn'};
+}
+
+/* --- uppgiftsgenerering med repetitionsskydd --- */
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const seenSignatures = new Set();
+const recentPairs = [];
+function drawPair(diff){
+  let ki, ai, sig;
+  for(let i=0;i<80;i++){
+    [ki, ai] = pick(PAIRS[diff]);
+    sig = ki+'-'+ai;
+    if(i<40 && recentPairs.includes(sig)) continue;
+    break;
+  }
+  recentPairs.push(sig);
+  if(recentPairs.length>8) recentPairs.shift();
+  return {kat:KATJONER[ki], an:ANJONER[ai]};
+}
+function makeProblem(mode, diff){
+  for(let i=0;i<80;i++){
+    const {kat, an} = drawPair(diff);
+    const sig = mode+'|'+kat.f+kat.q+'|'+an.f;
+    if(seenSignatures.has(sig) && i<60) continue;
+    seenSignatures.add(sig);
+    return {mode, kat, an,
+      formula: formulaOf(kat, an),
+      namn: nameOf(kat, an),
+      cnt: counts(kat, an),
+      signature: sig};
+  }
+}
+const MODEPOOL = ['bygg','formel','namn'];
+function generateFresh(type, diff){
+  const mode = type==='mix' ? pick(MODEPOOL) : type;
+  return makeProblem(mode, diff);
+}
+
+if(typeof module!=='undefined' && module.exports){
+  module.exports = {KATJONER, ANJONER, PAIRS, allowedPair, gcd, counts,
+    formulaOf, nameOf, parseFormula, compEqual, compProportional,
+    checkBygg, checkFormel, checkNamn, normFormula, normName,
+    makeProblem, generateFresh, seenSignatures};
+}
+
+/* ================================================================
+   UI
+   ================================================================ */
+if(typeof document!=='undefined'){
+
+const TYPES = [
+  {id:'bygg', label:'Byggaren'},
+  {id:'formel', label:'Namn &#8594; formel'},
+  {id:'namn', label:'Formel &#8594; namn'},
+  {id:'mix', label:'Blandat'}
+];
+const DIFFS = [
+  {id:'latt', label:'Lätt'},
+  {id:'medel', label:'Medel'},
+  {id:'svar', label:'Svår'}
+];
+const MODENAMN = {bygg:'Byggaren', formel:'Namn \u2192 formel', namn:'Formel \u2192 namn'};
+let curType='bygg', curDiff='latt';
+let problem=null, answered=false, revealed=false;
+let bygg={nk:1, na:1};
+let score={ok:0,tot:0,streak:0};
+let history=[], histCounter=0, currentEntry=null;
+let reviewing=false, savedState=null;
+const MAXN=6;
+
+const $ = id => document.getElementById(id);
+const sub = f => f.replace(/(\d+)/g,'<sub>$1</sub>');
+function ionHTML(ion){
+  const m = Math.abs(ion.q);
+  return sub(ion.f)+'<sup>'+(m>1?m:'')+(ion.q>0?'+':'\u2212')+'</sup>';
+}
+function fSub(str){
+  return str.replace(/(\d+)/g,'<sub>$1</sub>');
+}
+
+function buildChips(elId, items, cur, onSet){
+  const el=$(elId); el.innerHTML='';
+  items.forEach(it=>{
+    const b=document.createElement('button');
+    b.className='chip'+(it.id===cur?' on':'');
+    b.innerHTML=it.label;
+    b.onclick=()=>onSet(it.id);
+    el.appendChild(b);
+  });
+}
+function refreshChips(){
+  buildChips('typeChips',TYPES,curType,id=>{curType=id;newProblem();});
+  buildChips('diffChips',DIFFS,curDiff,id=>{curDiff=id;newProblem();});
+}
+
+function laddText(){
+  const {kat, an} = problem;
+  const s1 = bygg.nk+' \u00b7 ('+(kat.q>0?'+':'')+kat.q+')';
+  const s2 = bygg.na+' \u00b7 ('+an.q+')';
+  const sum = kat.q*bygg.nk + an.q*bygg.na;
+  return 'Laddningssumma: '+s1+' + '+s2+' = '+(sum>0?'+':'')+sum+(sum===0?' \u2713':'');
+}
+function updateLadd(){
+  if(problem.mode!=='bygg') return;
+  const visa = curDiff==='latt' || reviewing || revealed;
+  $('laddvisning').style.display = visa ? 'block' : 'none';
+  $('laddnot').style.display = (!visa) ? 'block' : 'none';
+  if(!visa) return;
+  const sum = problem.kat.q*bygg.nk + problem.an.q*bygg.na;
+  $('laddvisning').textContent = laddText();
+  $('laddvisning').className = 'laddvisning'+(sum===0?' balans':'');
+}
+
+function renderBygg(interactive){
+  const holder=$('byggyta'); holder.innerHTML='';
+  const ioner=[[problem.kat,'nk','katjon'],[problem.an,'na','anjon']];
+  ioner.forEach(([ion,key,typ])=>{
+    const kort=document.createElement('div'); kort.className='jonkort';
+    const ruta=document.createElement('div'); ruta.className='jonruta';
+    ruta.innerHTML=ionHTML(ion);
+    const namn=document.createElement('div'); namn.className='jonnamn';
+    namn.textContent=ion.namn+(ion.roman?'('+ion.roman+')':'')+' ('+typ+')';
+    kort.append(ruta,namn);
+    if(interactive){
+      const st=document.createElement('div'); st.className='stepper';
+      const minus=document.createElement('button');
+      minus.textContent='\u2212'; minus.setAttribute('aria-label','Färre '+ion.namn+'joner');
+      const plus=document.createElement('button');
+      plus.textContent='+'; plus.setAttribute('aria-label','Fler '+ion.namn+'joner');
+      const val=document.createElement('input');
+      val.type='text'; val.inputMode='numeric'; val.autocomplete='off';
+      val.className='antal'; val.value=bygg[key];
+      val.setAttribute('aria-label','Antal '+ion.namn+'joner');
+      const setN=(n)=>{
+        if(isNaN(n)) n=1;
+        n=Math.max(1,Math.min(MAXN,Math.round(n)));
+        bygg[key]=n; val.value=n;
+        minus.disabled=n<=1; plus.disabled=n>=MAXN;
+        updateLadd();
+      };
+      minus.disabled=bygg[key]<=1; plus.disabled=bygg[key]>=MAXN;
+      minus.onclick=()=>setN(bygg[key]-1);
+      plus.onclick=()=>setN(bygg[key]+1);
+      val.onfocus=()=>val.select();
+      val.onchange=()=>setN(parseInt(String(val.value).replace(/[^0-9]/g,''),10));
+      val.onkeydown=e=>{ if(e.key==='Enter') val.blur(); };
+      st.append(minus,val,plus);
+      const et=document.createElement('div'); et.className='antaletikett'; et.textContent='ANTAL';
+      kort.append(st,et);
+    } else {
+      const v=document.createElement('div');
+      v.className='antaletikett';
+      v.textContent='antal: '+bygg[key];
+      kort.append(v);
+    }
+    holder.appendChild(kort);
+  });
+}
+
+function qTextFor(p){
+  if(p.mode==='bygg')
+    return 'Bygg jonföreningen <b>'+p.namn+'</b> av jonerna nedan. Hur många av varje jon behövs?';
+  if(p.mode==='formel')
+    return 'Skriv formeln för <b>'+p.namn+'</b>.';
+  return 'Vad heter jonföreningen <b>'+fSub(p.formula)+'</b>?';
+}
+
+function solutionSteps(p){
+  const {kat, an, cnt} = p;
+  const l = Math.abs(kat.q*Math.abs(an.q))/gcd(kat.q,Math.abs(an.q));
+  const steps=[];
+  steps.push({text:'Skriv jonerna med laddningar. Laddningarna hittar du i Mafys tabeller.',
+    math: ionHTML(kat)+' ('+kat.namn+(kat.roman?'('+kat.roman+')':'')+') och '+ionHTML(an)+' ('+an.namn+')'});
+  steps.push({text:'Balansera laddningarna. Minsta gemensamma multipeln av '+kat.q+' och '+Math.abs(an.q)+' är '+l+'. Laddningssumman ska bli noll.',
+    math: cnt.nk+' \u00b7 ('+(kat.q>0?'+':'')+kat.q+') + '+cnt.na+' \u00b7 ('+an.q+') = 0'});
+  steps.push({text:'Skriv formeln med katjonen först.'+(an.poly&&cnt.na>1||kat.poly&&cnt.nk>1?' Sammansatta joner sätts i parentes när det behövs fler än en.':''),
+    math:'<b>'+fSub(p.formula)+'</b> \u00b7 namn: <b>'+p.namn+'</b>'});
+  return steps;
+}
+
+function renderSteps(p){
+  const st=$('steps'); st.innerHTML='';
+  solutionSteps(p).forEach((s,i)=>{
+    const div=document.createElement('div');
+    div.className='step';
+    div.innerHTML='<span class="n">'+(i+1)+'</span><span class="t">'+s.text+'<span class="m">'+s.math+'</span></span>';
+    st.appendChild(div);
+  });
+}
+
+function renderProblem(p, review){
+  $('qtag').innerHTML=(MODENAMN[p.mode])+' \u00b7 '+(review?'Historik':DIFFS.find(d=>d.id===curDiff).label);
+  $('qtag').className='qtype-tag'+(review?' review-tag':'');
+  $('qtext').innerHTML=qTextFor(p);
+  const g=$('given');
+  if(p.mode==='formel' && curDiff==='latt' && !review){
+    g.style.display='block';
+    g.innerHTML='Joner: '+ionHTML(p.kat)+' och '+ionHTML(p.an);
+  } else g.style.display='none';
+  const isBygg=p.mode==='bygg';
+  $('byggyta').style.display=isBygg?'flex':'none';
+  $('laddvisning').style.display='none';
+  $('laddnot').style.display='none';
+  $('textsvar').style.display=isBygg?'none':'inline-block';
+  const hint=$('inputHint');
+  if(p.mode==='formel' && !review){
+    hint.style.display='block';
+    hint.textContent='Skriv formeln med vanliga siffror, t.ex. CaCl2 eller Al2(SO4)3.';
+  } else if(p.mode==='namn' && !review){
+    hint.style.display='block';
+    hint.textContent='Skriv namnet med små bokstäver, t.ex. natriumklorid eller järn(III)klorid.';
+  } else hint.style.display='none';
+  $('feedback').className='feedback'; $('feedback').innerHTML='';
+  $('solution').className='solution';
+  if(isBygg){ renderBygg(!review); updateLadd(); }
+}
+
+function newProblem(){
+  reviewing=false; savedState=null;
+  refreshChips();
+  problem=generateFresh(curType, curDiff);
+  bygg={nk:1, na:1};
+  answered=false; revealed=false; currentEntry=null;
+  renderProblem(problem, false);
+  $('textsvar').value=''; $('textsvar').readOnly=false;
+  $('checkBtn').style.display='inline-block';
+  $('solBtn').style.display='inline-block';
+  $('nextBtn').style.display='inline-block';
+  $('backBtn').style.display='none';
+  if(problem.mode!=='bygg') $('textsvar').focus();
+}
+
+function ensureEntry(){
+  if(currentEntry) return currentEntry;
+  histCounter++;
+  currentEntry={n:histCounter, problem, user:'', bygg:{...bygg}, status:'fel'};
+  history.unshift(currentEntry);
+  renderHistory();
+  return currentEntry;
+}
+const STATUS_LABEL={ok:'rätt \u2713', warn:'rätt (detalj)', fel:'fel \u2717', reveal:'visade lösning'};
+
+function renderHistory(){
+  const panel=$('histPanel');
+  if(!history.length){ panel.style.display='none'; return; }
+  panel.style.display='block';
+  const list=$('histList'); list.innerHTML='';
+  history.forEach(e=>{
+    const b=document.createElement('button');
+    b.className='hist-item';
+    b.innerHTML='<span class="hn">#'+e.n+'</span><span class="ht">'+MODENAMN[e.problem.mode]+': '+e.problem.namn+' ('+fSub(e.problem.formula)+')</span><span class="hs s-'+e.status+'">'+STATUS_LABEL[e.status]+'</span>';
+    b.onclick=()=>openReview(e);
+    list.appendChild(b);
+  });
+}
+
+function openReview(entry){
+  if(!reviewing){
+    savedState={problem, bygg:{...bygg}, answered, revealed,
+      input:$('textsvar').value,
+      fbClass:$('feedback').className, fbHTML:$('feedback').innerHTML,
+      solOpen:$('solution').classList.contains('open')};
+  }
+  reviewing=true;
+  problem=entry.problem;
+  bygg={...entry.problem.cnt, nk:entry.problem.cnt.nk, na:entry.problem.cnt.na};
+  renderProblem(problem, true);
+  $('textsvar').value=typeof entry.user==='string'?entry.user:''; $('textsvar').readOnly=true;
+  $('checkBtn').style.display='none';
+  $('solBtn').style.display='none';
+  $('backBtn').style.display='inline-block';
+  const fb=$('feedback');
+  fb.className='feedback '+(entry.status==='ok'?'ok':entry.status==='fel'?'fel':'warn');
+  fb.innerHTML='Resultat: '+STATUS_LABEL[entry.status]+'. Facit: <b>'+fSub(entry.problem.formula)+'</b> ('+entry.problem.namn+').<br>Klicka <b>\u2190 Fortsätt träna</b> för att återgå, eller <b>Ny uppgift</b> för att börja en ny.';
+  $('solution').className='solution open';
+  renderSteps(entry.problem);
+  window.scrollTo({top:0});
+}
+
+function closeReview(){
+  reviewing=false;
+  const s=savedState; savedState=null;
+  if(!s){ newProblem(); return; }
+  problem=s.problem; bygg=s.bygg; answered=s.answered; revealed=s.revealed;
+  renderProblem(problem, false);
+  $('textsvar').value=s.input; $('textsvar').readOnly=false;
+  $('feedback').className=s.fbClass; $('feedback').innerHTML=s.fbHTML;
+  $('solution').className='solution'+(s.solOpen?' open':'');
+  if(s.solOpen) renderSteps(problem);
+  $('checkBtn').style.display='inline-block';
+  $('solBtn').style.display='inline-block';
+  $('backBtn').style.display='none';
+}
+
+function registerResult(correct, userRepr){
+  if(!answered && !revealed){
+    score.tot++;
+    if(correct){ score.ok++; score.streak++; } else score.streak=0;
+    answered=true;
+    updateScore();
+  }
+  const entry=ensureEntry();
+  entry.user=userRepr;
+  if(entry.status!=='reveal'){
+    if(entry.status!=='ok') entry.status = correct ? (entry.statusWarn?'warn':'ok') : 'fel';
+  }
+}
+
+function check(){
+  if(reviewing) return;
+  const fb=$('feedback');
+  const facit='<b>'+fSub(problem.formula)+'</b> ('+problem.namn+')';
+  if(problem.mode==='bygg'){
+    const res=checkBygg(problem.kat, problem.an, bygg.nk, bygg.na);
+    const correct=res.status!=='fel';
+    if(!answered && !revealed){
+      score.tot++;
+      if(correct){ score.ok++; score.streak++; } else score.streak=0;
+      answered=true; updateScore();
+    }
+    const entry=ensureEntry();
+    entry.user=bygg.nk+' st katjoner, '+bygg.na+' st anjoner';
+    if(entry.status!=='reveal' && entry.status!=='ok')
+      entry.status = res.status==='fel'?'fel':(res.status==='warn'?'warn':'ok');
+    renderHistory();
+    updateLadd();
+    if(res.status==='ok'){
+      fb.className='feedback ok';
+      fb.innerHTML='Rätt! \u2713 '+bygg.nk+' st '+ionHTML(problem.kat)+' och '+bygg.na+' st '+ionHTML(problem.an)+' ger '+facit+'.';
+    } else if(res.status==='warn'){
+      fb.className='feedback warn';
+      fb.innerHTML='Laddningssumman är noll, men förhållandet kan förkortas: dividera båda antalen med '+res.faktor+'. Minsta heltalsförhållandet ger '+facit+'. Räknas som rätt.';
+    } else {
+      fb.className='feedback fel';
+      fb.innerHTML='Inte neutralt ännu. Laddningssumman är '+(res.sum>0?'+':'')+res.sum+', men den ska vara noll. Justera antalen.';
+    }
+  } else if(problem.mode==='formel'){
+    const raw=$('textsvar').value;
+    const res=checkFormel(problem.kat, problem.an, raw);
+    if(res.status==='invalid'){ fb.className='feedback fel'; fb.innerHTML='Skriv en formel med bokstäver, siffror och eventuella parenteser, t.ex. CaCl2.'; return; }
+    const correct=res.status!=='fel';
+    if(!answered && !revealed){
+      score.tot++;
+      if(correct){ score.ok++; score.streak++; } else score.streak=0;
+      answered=true; updateScore();
+    }
+    const entry=ensureEntry();
+    entry.user=raw;
+    if(entry.status!=='reveal' && entry.status!=='ok')
+      entry.status = res.status==='fel'?'fel':(res.status==='warn'?'warn':'ok');
+    renderHistory();
+    if(res.status==='ok'){
+      fb.className='feedback ok';
+      fb.innerHTML='Rätt! \u2713 '+facit+'.';
+    } else if(res.skal==='forkorta'){
+      fb.className='feedback warn';
+      fb.innerHTML='Rätt förhållande, men använd minsta möjliga heltal: '+facit+'. Räknas som rätt.';
+    } else if(res.skal==='skrivsatt'){
+      fb.className='feedback warn';
+      fb.innerHTML='Rätt sammansättning, men skrivsättet ska vara '+facit+'. Katjonen först, och sammansatta joner i parentes när det behövs fler än en. Räknas som rätt.';
+    } else if(res.skal==='tolkning'){
+      fb.className='feedback fel';
+      fb.innerHTML='Formeln kunde inte tolkas. Kontrollera stavning och parenteser, t.ex. Al2(SO4)3.';
+    } else {
+      fb.className='feedback fel';
+      fb.innerHTML='Inte riktigt. Kontrollera jonernas laddningar i Mafys tabeller och balansera så att summan blir noll.';
+    }
+  } else {
+    const raw=$('textsvar').value;
+    const res=checkNamn(problem.kat, problem.an, raw);
+    if(res.status==='invalid'){ fb.className='feedback fel'; fb.innerHTML='Skriv ett namn, t.ex. natriumklorid.'; return; }
+    const correct=res.status!=='fel';
+    if(!answered && !revealed){
+      score.tot++;
+      if(correct){ score.ok++; score.streak++; } else score.streak=0;
+      answered=true; updateScore();
+    }
+    const entry=ensureEntry();
+    entry.user=raw;
+    if(entry.status!=='reveal' && entry.status!=='ok')
+      entry.status = res.status==='fel'?'fel':(res.status==='warn'?'warn':'ok');
+    renderHistory();
+    if(res.status==='ok'){
+      fb.className='feedback ok';
+      fb.innerHTML='Rätt! \u2713 <b>'+problem.namn+'</b>.';
+    } else if(res.skal==='arabisk'){
+      fb.className='feedback warn';
+      fb.innerHTML='Rätt namn, men skriv laddningen med romerska siffror: <b>'+problem.namn+'</b>. Räknas som rätt.';
+    } else if(res.skal==='onodigsiffra'){
+      fb.className='feedback warn';
+      fb.innerHTML='Rätt jon, men romersk siffra anges bara när metallen kan ha flera laddningar. Här räcker <b>'+problem.namn+'</b>. Räknas som rätt.';
+    } else if(res.skal==='saknadsiffra'){
+      fb.className='feedback fel';
+      fb.innerHTML='Nästan! '+problem.kat.namn.charAt(0).toUpperCase()+problem.kat.namn.slice(1)+' kan ha flera laddningar, så laddningen måste anges med romersk siffra i namnet.';
+    } else {
+      fb.className='feedback fel';
+      fb.innerHTML='Inte riktigt. Titta på jonernas namn och ladda upp laddningarna ur Mafys tabeller.';
+    }
+  }
+}
+
+function reveal(){
+  if(reviewing) return;
+  if(!answered){
+    const entry=ensureEntry();
+    entry.status='reveal';
+    renderHistory();
+  }
+  revealed=true;
+  if(problem.mode==='bygg'){
+    bygg={nk:problem.cnt.nk, na:problem.cnt.na};
+    renderBygg(true); updateLadd();
+  } else {
+    $('textsvar').value = problem.mode==='formel' ? problem.formula : problem.namn;
+  }
+  $('solution').className='solution open';
+  renderSteps(problem);
+}
+
+function updateScore(){
+  $('scoreOk').textContent=score.ok;
+  $('scoreTot').textContent=score.tot;
+  $('streak').textContent = score.streak>=2 ? '🔥 '+score.streak+' i rad' : '';
+}
+
+$('checkBtn').onclick=check;
+$('textsvar').addEventListener('keydown',e=>{ if(e.key==='Enter') check(); });
+$('solBtn').onclick=reveal;
+$('nextBtn').onclick=newProblem;
+$('backBtn').onclick=closeReview;
+
+window.__felContext=()=>problem?{
+  Uppgift: qTextFor(problem).replace(/<[^>]*>/g,''),
+  Facit: problem.formula+' ('+problem.namn+')',
+  Signatur: problem.signature
+}:null;
+
+newProblem();
+}
+</script>
+<button class="felknapp" id="felBtn">Hittade du ett fel?</button>
+<div class="felpanel" id="felPanel" hidden>
+  <h3>Rapportera ett fel</h3>
+  <textarea id="felText" placeholder="Beskriv felet: vad gjorde du, vad hände, vad förväntade du dig?"></textarea>
+  <div class="felmeta" id="felMeta"></div>
+  <div class="felrad">
+    <button class="btn-primary" id="felSkicka">Skicka via e-post</button>
+    <button class="btn-ghost" id="felKopiera">Kopiera rapporten</button>
+  </div>
+  <div class="felok" id="felOk"></div>
+</div>
+<script>
+(function(){
+const FELMAIL='kauremaa.aleksi@gmail.com';
+const $=id=>document.getElementById(id);
+function ctx(){ try{return (window.__felContext&&window.__felContext())||null;}catch(e){return null;} }
+function report(){
+  let s='Sida: '+document.title+'\nAdress: '+location.href+'\nTid: '+new Date().toLocaleString('sv-FI');
+  const c=ctx();
+  if(c){ for(const k in c) s+='\n'+k+': '+c[k]; }
+  s+='\nWebbläsare: '+navigator.userAgent;
+  return s;
+}
+$('felBtn').onclick=()=>{
+  const p=$('felPanel'); p.hidden=!p.hidden;
+  if(!p.hidden){ $('felMeta').textContent=report(); $('felOk').style.display='none'; }
+};
+$('felSkicka').onclick=()=>{
+  const body=($('felText').value||'(ingen beskrivning)')+'\n\n--- Automatisk information ---\n'+report();
+  location.href='mailto:'+FELMAIL+'?subject='+encodeURIComponent('Felrapport: '+document.title)+'&body='+encodeURIComponent(body);
+};
+$('felKopiera').onclick=async()=>{
+  const t=($('felText').value||'(ingen beskrivning)')+'\n\n--- Automatisk information ---\n'+report();
+  try{ await navigator.clipboard.writeText(t); $('felOk').textContent='Kopierad! Klistra in i Wilma eller e-post.'; }
+  catch(e){ $('felOk').textContent='Kopiering blockerades. Markera texten ovan och kopiera manuellt.'; }
+  $('felOk').style.display='block';
+};
+})();
+</script>
+</body>
+</html>

@@ -127,10 +127,11 @@
   a.knapp-sekundar:hover{background:var(--ke04);color:var(--card)}
   a.knapp-sekundar:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 
+  .b-jon{background:#A8326B} .b-jon:hover{background:#8A2758}
   .b-stok{background:#0B6E5F} .b-stok:hover{background:#095C50}
   .b-gas{background:#B2590B} .b-gas:hover{background:#8F470A}
   .b-bal{background:#7A4FA0} .b-bal:hover{background:#634083}
-  .b-stok,.b-gas,.b-bal{color:#fff}
+  .b-stok,.b-gas,.b-bal,.b-jon{color:#fff}
   .verktygsrad.delad{border-top:1px solid var(--linje);margin-top:14px;padding-top:14px}
 
   .vits{margin-bottom:44px}
@@ -238,20 +239,27 @@
 
     <div class="kurs kort-bas ke01">
       <div class="kurs-head">
-        <span class="kurskod">KE01</span>
-        <span class="kursnamn">Kemi och jag</span>
+        <span class="kurskod">KE01/KE02</span>
+        <span class="kursnamn">Kemi och jag &middot; Kemi och en hållbar framtid</span>
       </div>
       <div class="kurs-body">
         <div class="verktygsrad">
           <div>
             <h3>Moltränaren</h3>
-            <p>Substansmängd i tre riktningar: n = m/M, n = N/N&#8342; och c = n/V. På svår nivå väljer du formlerna själv.</p>
+            <p>Substansmängd, koncentration, utspädning och massprocent: fem uppgiftstyper med stegvisa lösningar. På svår nivå väljer du formlerna själv.</p>
           </div>
           <a class="knapp" href="moltranaren-ke01.html">Öppna tränaren</a>
         </div>
+        <div class="verktygsrad delad">
+          <div>
+            <h3>Jonföreningstränaren</h3>
+            <p>Bygg jonföreningar av katjoner och anjoner, skriv formler ur namn och namn ur formler. Med järn(III), sammansatta joner och laddningsbalans.</p>
+          </div>
+          <a class="knapp b-jon" href="jonforeningstranaren-ke02.html">Öppna tränaren</a>
+        </div>
         <div class="chips">
-          <span class="chip">3 nivåer</span><span class="chip">stegvisa lösningar</span>
-          <span class="chip">historik</span><span class="chip">uppdaterad juli 2026</span>
+          <span class="chip">2 verktyg</span><span class="chip">3 nivåer</span>
+          <span class="chip">stegvisa lösningar</span><span class="chip">uppdaterad juli 2026</span>
         </div>
       </div>
     </div>
@@ -292,10 +300,10 @@
 
     <div class="resurs kort-bas">
       <div>
-        <h3>Formelsamling</h3>
-        <p>Sambanden, arbetsgångarna, gällande siffror och atommassor. Samma värden som i tränarna. Kan skrivas ut.</p>
+        <h3>Räkneguiden</h3>
+        <p>Arbetsgångar, gällande siffror och vanliga fällor. Formlerna och tabellvärdena hittar du i <a href="https://mafytaulukot.fi/" target="_blank" rel="noopener" style="color:var(--ke04);font-weight:600">Mafys tabeller</a>.</p>
       </div>
-      <a class="knapp-sekundar" href="formler.html">Öppna formelsamlingen</a>
+      <a class="knapp-sekundar" href="formler.html">Öppna räkneguiden</a>
     </div>
 
     <div class="kommande">
@@ -463,7 +471,7 @@ document.getElementById('vitsMeta').textContent='Vits '+(i+1)+' av '+VITSAR.leng
 </div>
 <script>
 (function(){
-const FELMAIL='ANDRA-MIG@exempel.fi'; /* ÄNDRA till lärarens e-postadress */
+const FELMAIL='kauremaa.aleksi@gmail.com';
 const $=id=>document.getElementById(id);
 function report(){
   return 'Sida: '+document.title+'\nAdress: '+location.href+

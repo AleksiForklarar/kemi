@@ -14,10 +14,20 @@ index.html
 
 moltranaren-ke01.html
     Moltränaren (KE01 Kemi och jag). Slumpade uppgifter om
-    substansmängd: n = m/M, n = N/NA och c = n/V. Tre
-    svårighetsgrader med stegvisa lösningar. På svår nivå
+    substansmängd, koncentration, utspädning och massprocent.
+    Tre svårighetsgrader med stegvisa lösningar. På svår nivå
     kombineras flera formler och studeranden väljer själv
-    lösningsvägen.
+    lösningsvägen. Utspädningens klassiska fälla, att skilja
+    på slutvolym och tillsatt vatten, tränas uttryckligen.
+
+jonforeningstranaren-ke02.html
+    Jonföreningstränaren (KE02 Kemi och en hållbar framtid).
+    Tre lägen: bygg jonföreningen av katjoner och anjoner med
+    laddningsbalans, skriv formeln ur namnet, eller namnge
+    formeln. Innehåller joner med flera laddningar (romerska
+    siffror som järn(III)) och sammansatta joner. På lätt nivå
+    visas laddningssumman i realtid, på medel och svår räknar
+    studeranden själv.
 
 stokiometritranaren-ke04.html
     Stökiometritränaren (KE04 Kemisk reaktion). Massaberäkningar,
@@ -35,8 +45,9 @@ balanseringstranaren-ke04.html
     på båda sidor av reaktionsformeln.
 
 formler.html
-    Formelsamling med samband, arbetsgångar, regler för gällande
-    siffror och atommassor. Kan skrivas ut.
+    Räkneguiden: arbetsgångar, regler för gällande siffror och
+    vanliga fällor. Formler och tabellvärden hänvisas till Mafys
+    tabeller (mafytaulukot.fi). Kan skrivas ut.
 
 404.html
     Visas automatiskt om någon skriver in en adress som inte finns.
@@ -44,7 +55,12 @@ formler.html
 BRA ATT VETA
 ------------
 - Tränarna kontrollerar svaren med korrekt antal gällande siffror
-  och accepterar både decimalkomma och decimalpunkt.
+  och accepterar både decimalkomma och decimalpunkt. Molmassor ges
+  aldrig automatiskt: studeranden räknar ut dem själv med
+  atommassor ur tabellerna, och lösningsstegen visar hur.
+- De tre räknetränarna har en provsimulering: fem blandade
+  uppgifter i följd utan facit emellan, med sammanfattning,
+  tid och fullständiga lösningar i historiken efteråt.
 - Varje uppgift genereras slumpmässigt och varje facitsvar är
   automatiskt kontrollräknat.
 - Historiken i tränarna sparas bara under sessionen och rensas
@@ -52,7 +68,6 @@ BRA ATT VETA
 - Startsidan visar dagens kemivits ur en bank på över hundra
   vitsar. Vitsen byts automatiskt varje dygn.
 - Knappen "Hittade du ett fel?" finns på alla sidor. Den samlar
-  automatiskt ihop sidans namn och den aktuella uppgiften och
-  skickar rapporten via e-post eller kopierar den till urklipp.
-  VIKTIGT: öppna varje html-fil i en textredigerare, sök efter
-  ANDRA-MIG och byt ut adressen mot lärarens riktiga e-post.
+  automatiskt ihop sidans namn, den aktuella uppgiften och rätt
+  svar, och skickar rapporten till läraren via e-post eller
+  kopierar den till urklipp.

@@ -84,6 +84,8 @@
   .scorebar b{color:var(--ink);font-weight:600}
   .streak{color:var(--amber);font-weight:600}
 
+  .provinfo{font-family:var(--mono);font-size:14px;color:var(--accent);font-weight:600}
+
   .qtype-tag{
     display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;
     color:var(--accent);background:var(--accent-soft);
@@ -229,6 +231,8 @@
     <div class="scorebar">
       <span>Rätt: <b id="scoreOk">0</b> / <b id="scoreTot">0</b></span>
       <span class="streak" id="streak"></span>
+      <span class="provinfo" id="provInfo"></span>
+      <button class="btn-ghost" id="provBtn" style="margin-left:auto;font-size:13px;padding:8px 14px">Provsimulering: 5 uppgifter</button>
     </div>
   </div>
 
@@ -703,9 +707,128 @@ function genSvar(type){
     unit:c.unit, steps:c.steps, sci:!!c.sci, solute:c.solute, signature:c.signature, dbg:c.dbg};
 }
 
-const GENS = {mM:genMM, NA:genNA, cV:genCV};
 
-const MIXPOOL = ['mM','NA','cV'];
+/* --- Utspädning: c1V1 = c2V2 --- */
+function rndStamC(){ return mkVal(pick(['0,500','0,750','1,00','1,50','2,00'])); }
+function genSp(diff){
+  const f = pick(SOLUTES);
+  const name = NAMES[f];
+  let answer, unit, q, steps=[], sf, sigParts, dbg;
+  if(diff==='latt'){
+    const c1 = rndConcV();
+    const V1 = mkVal(pick(['0,100','0,150','0,200','0,250']));
+    const V2 = mkVal(pick(['0,500','0,750','1,00','1,50','2,00']));
+    sf = Math.min(c1.sf, V1.sf, V2.sf);
+    answer = c1.v*V1.v/V2.v; unit='mol/dm\u00b3';
+    q = `<b>${V1.str} dm\u00b3</b> av en ${name}l\u00f6sning med koncentrationen <b>${c1.str} mol/dm\u00b3</b> sp\u00e4ds med vatten till volymen <b>${V2.str} dm\u00b3</b>. Ber\u00e4kna den nya koncentrationen.`;
+    steps.push(stepObj('Substansm\u00e4ngden \u00e4ndras inte vid sp\u00e4dning. D\u00e4rf\u00f6r g\u00e4ller c\u2081V\u2081 = c\u2082V\u2082.',
+      `c\u2082 = c\u2081V\u2081/V\u2082`));
+    steps.push(finalStep('S\u00e4tt in v\u00e4rdena.',
+      `c\u2082 = ${c1.str} \u00b7 ${V1.str} / ${V2.str}`, answer, sf, unit));
+    sigParts=['c2',f,c1.str,V1.str,V2.str]; dbg={kind:'sp_c2', c1:c1.v, V1:V1.v, V2:V2.v};
+  } else if(diff==='medel'){
+    const c1 = rndStamC();
+    let c2 = rndConcV();
+    for(let i=0;i<20 && c2.v>=c1.v;i++) c2 = rndConcV();
+    const V2 = mkVal(pick(['0,250','0,500','1,00']));
+    sf = Math.min(c1.sf, c2.sf, V2.sf);
+    const V1dm = c2.v*V2.v/c1.v;
+    answer = V1dm*1000; unit='cm\u00b3';
+    q = `Du ska bereda <b>${V2.str} dm\u00b3</b> ${name}l\u00f6sning med koncentrationen <b>${c2.str} mol/dm\u00b3</b> ur en staml\u00f6sning med koncentrationen <b>${c1.str} mol/dm\u00b3</b>. Hur m\u00e5nga cm\u00b3 av staml\u00f6sningen beh\u00f6ver du?`;
+    steps.push(stepObj('Substansm\u00e4ngden \u00e4r samma f\u00f6re och efter sp\u00e4dningen: c\u2081V\u2081 = c\u2082V\u2082.',
+      `V\u2081 = c\u2082V\u2082/c\u2081 = ${c2.str} \u00b7 ${V2.str} / ${c1.str} = ${fmt(V1dm)} dm\u00b3`));
+    steps.push(finalStep('Omvandla till cm\u00b3 (1 dm\u00b3 = 1000 cm\u00b3).',
+      `V\u2081 = ${fmt(V1dm)} dm\u00b3 \u00b7 1000`, answer, sf, unit));
+    sigParts=['V1',f,c1.str,c2.str,V2.str]; dbg={kind:'sp_V1cm', c1:c1.v, c2:c2.v, V2:V2.v};
+  } else {
+    const c1 = mkVal(pick(['0,400','0,500','1,00','2,00']));
+    const V1 = mkVal(pick(['0,100','0,200','0,250','0,500']));
+    let c2 = rndConcV();
+    for(let i=0;i<20 && c2.v>=c1.v;i++) c2 = rndConcV();
+    sf = Math.min(c1.sf, V1.sf, c2.sf);
+    const V2 = c1.v*V1.v/c2.v;
+    answer = V2 - V1.v; unit='dm\u00b3';
+    q = `Du har <b>${V1.str} dm\u00b3</b> ${name}l\u00f6sning med koncentrationen <b>${c1.str} mol/dm\u00b3</b>. Hur mycket vatten m\u00e5ste tills\u00e4ttas f\u00f6r att koncentrationen ska bli <b>${c2.str} mol/dm\u00b3</b>? Volymerna antas additiva.`;
+    steps.push(stepObj('Ber\u00e4kna f\u00f6rst den totala slutvolymen ur c\u2081V\u2081 = c\u2082V\u2082.',
+      `V\u2082 = c\u2081V\u2081/c\u2082 = ${c1.str} \u00b7 ${V1.str} / ${c2.str} = ${fmt(V2)} dm\u00b3`));
+    steps.push(stepObj('Vanlig f\u00e4lla: V\u2082 \u00e4r hela slutvolymen, inte vattnet. Vattnet \u00e4r skillnaden.',
+      `V(vatten) = V\u2082 \u2212 V\u2081`));
+    steps.push(finalStep('S\u00e4tt in v\u00e4rdena.',
+      `V(vatten) = ${fmt(V2)} \u2212 ${V1.str}`, answer, sf, unit));
+    sigParts=['vatten',f,c1.str,V1.str,c2.str]; dbg={kind:'sp_vatten', c1:c1.v, V1:V1.v, c2:c2.v};
+  }
+  return {tag:'Utsp\u00e4dning', qtext:q, given:[], answer, sf, unit, steps, sci:false,
+    solute:f, signature:['sp',...sigParts].join('|'), dbg};
+}
+
+/* --- Massprocent --- */
+function genMp(diff){
+  let answer, unit, q, steps=[], sf, sigParts, dbg;
+  if(diff==='latt'){
+    const ms = mkVal(pick(['5,0','7,5','10,0','12,5','15,0','20,0','25,0']));
+    if(Math.random()<0.5){
+      const mv = mkVal(pick(['80,0','100,0','120,0','150,0','200,0','250,0']));
+      sf = Math.min(ms.sf, mv.sf);
+      answer = ms.v/(ms.v+mv.v)*100; unit='%';
+      q = `Du l\u00f6ser <b>${ms.str} g</b> salt i <b>${mv.str} g</b> vatten. Ber\u00e4kna l\u00f6sningens massprocent.`;
+      steps.push(stepObj('L\u00f6sningens massa \u00e4r summan av det l\u00f6sta \u00e4mnet och vattnet.',
+        `m(l\u00f6sning) = ${ms.str} + ${mv.str} = ${fmt(ms.v+mv.v)} g`));
+      steps.push(finalStep('Massprocenten \u00e4r det l\u00f6sta \u00e4mnets andel av hela l\u00f6sningens massa.',
+        `${ms.str} / ${fmt(ms.v+mv.v)} \u00b7 100 %`, answer, sf, unit));
+      sigParts=['pct',ms.str,mv.str]; dbg={kind:'mp_pct', ms:ms.v, mv:mv.v};
+    } else {
+      const ml = mkVal(pick(['100,0','150,0','200,0','250,0','400,0']));
+      sf = Math.min(ms.sf, ml.sf);
+      answer = ms.v/ml.v*100; unit='%';
+      q = `En l\u00f6sning med massan <b>${ml.str} g</b> inneh\u00e5ller <b>${ms.str} g</b> l\u00f6st \u00e4mne. Ber\u00e4kna massprocenten.`;
+      steps.push(finalStep('Massprocenten \u00e4r det l\u00f6sta \u00e4mnets andel av l\u00f6sningens massa.',
+        `${ms.str} / ${ml.str} \u00b7 100 %`, answer, sf, unit));
+      sigParts=['pct2',ms.str,ml.str]; dbg={kind:'mp_pct2', ms:ms.v, ml:ml.v};
+    }
+  } else if(diff==='medel'){
+    const p = mkVal(pick(['2,0','3,5','5,0','8,0','10,0','12,5','15,0']));
+    if(Math.random()<0.5){
+      const ml = mkVal(pick(['150,0','200,0','250,0','400,0','500,0']));
+      sf = Math.min(p.sf, ml.sf);
+      answer = p.v*ml.v/100; unit='g';
+      q = `En l\u00f6sning inneh\u00e5ller <b>${p.str} massprocent</b> l\u00f6st \u00e4mne. Hur m\u00e5nga gram l\u00f6st \u00e4mne finns i <b>${ml.str} g</b> av l\u00f6sningen?`;
+      steps.push(finalStep('Massprocenten anger andelen av l\u00f6sningens massa.',
+        `m = ${p.str}/100 \u00b7 ${ml.str}`, answer, sf, unit));
+      sigParts=['m',p.str,ml.str]; dbg={kind:'mp_m', p:p.v, ml:ml.v};
+    } else {
+      const ms = mkVal(pick(['5,0','10,0','15,0','20,0','30,0']));
+      sf = Math.min(p.sf, ms.sf);
+      answer = ms.v*100/p.v; unit='g';
+      q = `En l\u00f6sning inneh\u00e5ller <b>${p.str} massprocent</b> l\u00f6st \u00e4mne. Hur m\u00e5nga gram l\u00f6sning beh\u00f6vs f\u00f6r att f\u00e5 <b>${ms.str} g</b> l\u00f6st \u00e4mne?`;
+      steps.push(stepObj('L\u00f6s ut l\u00f6sningens massa ur sambandet massprocent = m(\u00e4mne)/m(l\u00f6sning) \u00b7 100 %.',
+        `m(l\u00f6sning) = m(\u00e4mne) \u00b7 100 / ${p.str}`));
+      steps.push(finalStep('S\u00e4tt in v\u00e4rdena.',
+        `m(l\u00f6sning) = ${ms.str} \u00b7 100 / ${p.str}`, answer, sf, unit));
+      sigParts=['ml',p.str,ms.str]; dbg={kind:'mp_ml', p:p.v, ms:ms.v};
+    }
+  } else {
+    const f = pick(SOLUTES);
+    const M = molarMass(f);
+    const p = mkVal(pick(['2,0','3,5','5,0','8,0','10,0','12,5']));
+    const ml = mkVal(pick(['200,0','250,0','500,0']));
+    sf = Math.min(p.sf, ml.sf);
+    const ms = p.v*ml.v/100;
+    answer = ms/M; unit='mol';
+    q = `En l\u00f6sning inneh\u00e5ller <b>${p.str} massprocent</b> ${withKind(f)} (${sub(f)}). Hur stor substansm\u00e4ngd ${NAMES[f]} finns i <b>${ml.str} g</b> av l\u00f6sningen?`;
+    steps.push(stepObj('Ber\u00e4kna f\u00f6rst massan l\u00f6st \u00e4mne.',
+      `m = ${p.str}/100 \u00b7 ${ml.str} = ${fmt(ms)} g`));
+    steps.push(mStep(f));
+    steps.push(finalStep('Ber\u00e4kna substansm\u00e4ngden.',
+      `n = m/M = ${fmt(ms)} g / ${fmtM(M)} g/mol`, answer, sf, unit));
+    sigParts=['n',f,p.str,ml.str]; dbg={kind:'mp_n', p:p.v, ml:ml.v, M};
+  }
+  return {tag:'Massprocent', qtext:q, given:[], answer, sf, unit, steps, sci:false,
+    solute:null, signature:['mp',...sigParts].join('|'), dbg};
+}
+
+const GENS = {mM:genMM, NA:genNA, cV:genCV, sp:genSp, mp:genMp};
+
+const MIXPOOL = ['mM','NA','cV','sp','mp'];
 
 /* ---------- repetitionsskydd ---------- */
 const seenSignatures = new Set();
@@ -726,7 +849,7 @@ function generateFresh(type, diff){
   }
   /* I Blandat (lätt/medel) döljs uppgiftstypen så att studeranden själv
      måste avgöra vilken formel som behövs. */
-  p.displayTag = (type==='mix' && diff!=='svar') ? 'Blandat' : p.tag;
+  p.displayTag = type==='mix' ? (p.tag==='Kombinerad' ? 'Kombinerad' : 'Blandat') : p.tag;
   return p;
 }
 
@@ -735,7 +858,7 @@ if(typeof module!=='undefined' && module.exports){
   module.exports = {ATOMIC, ATOMIC_STR, NAMES, NA_CONST, SUBS_ALL, SOLUTES, SOLUTES_COMPLEX,
     MOLEC, IONIC_SIMPLE, IONIC_COMPLEX, METALS, particleWord, withKind,
     parseFormula, molarMass, countSF, roundSig, fmtSig, fmt,
-    parseNum, evaluate, genMM, genNA, genCV, generateFresh, seenSignatures};
+    parseNum, evaluate, genMM, genNA, genCV, genSp, genMp, generateFresh, seenSignatures};
 }
 
 /* ================================================================
@@ -747,6 +870,8 @@ const TYPES = [
   {id:'mM', label:'n = m/M'},
   {id:'NA', label:'n = N/Nₐ'},
   {id:'cV', label:'c = n/V'},
+  {id:'sp', label:'Utspädning'},
+  {id:'mp', label:'Massprocent'},
   {id:'mix', label:'Blandat'}
 ];
 const DIFFS = [
@@ -770,7 +895,7 @@ function buildChips(elId, items, cur, onSet){
     const b=document.createElement('button');
     b.className='chip'+(it.id===cur?' on':'');
     b.textContent=it.label;
-    b.onclick=()=>onSet(it.id);
+    b.onclick=()=>{ if(prov) return; onSet(it.id); };
     el.appendChild(b);
   });
 }
@@ -810,6 +935,10 @@ function newProblem(){
   $('nextBtn').style.display='inline-block';
   $('backBtn').style.display='none';
   $('stepBtn').style.display='inline-block';
+  if(prov){
+    $('solBtn').style.display='none';
+    $('provInfo').textContent='Uppgift '+(prov.i+1)+'/5';
+  }
   $('answer').focus();
 }
 
@@ -888,6 +1017,7 @@ function closeReview(){
 
 function check(){
   if(reviewing) return;
+  if(prov){ provCheck(); return; }
   const raw = $('answer').value;
   const res = evaluate(raw, problem.answer, problem.sf);
   const fb = $('feedback');
@@ -937,6 +1067,7 @@ function showStep(){
 
 function reveal(){
   if(reviewing) return;
+  if(prov) return;
   if(!answered){
     const entry=ensureEntry();
     entry.status='reveal';
@@ -953,12 +1084,68 @@ function updateScore(){
   $('streak').textContent = score.streak>=2 ? `🔥 ${score.streak} i rad` : '';
 }
 
+let prov=null;
+
+function provToggle(){
+  if(prov){ provEnd(); newProblem(); return; }
+  prov={i:0,items:[],t0:Date.now()};
+  curType='mix';
+  $('provBtn').textContent='Avbryt provet';
+  newProblem();
+}
+function provEnd(){
+  prov=null;
+  $('provBtn').textContent='Provsimulering: 5 uppgifter';
+  $('provInfo').textContent='';
+  $('solBtn').style.display='inline-block';
+}
+function provCheck(){
+  const raw=$('answer').value;
+  const res=evaluate(raw, problem.answer, problem.sf);
+  const fb=$('feedback');
+  if(res.status==='invalid'){
+    fb.className='feedback warn';
+    fb.innerHTML='Skriv in ett tal innan du går vidare. Svaret räknas som fel om du lämnar tomt: skriv 0 för att hoppa över.';
+    if(raw.trim()==='0'){ } else return;
+  }
+  const korrekt = res.status==='ok'||res.status==='warn';
+  prov.items.push({problem, raw, korrekt});
+  prov.i++;
+  if(prov.i<5){
+    newProblem();
+  } else {
+    provSummary();
+  }
+}
+function provSummary(){
+  const items=prov.items;
+  const ratt=items.filter(x=>x.korrekt).length;
+  const sek=Math.round((Date.now()-prov.t0)/1000);
+  const min=Math.floor(sek/60), ss=sek%60;
+  score.tot+=5; score.ok+=ratt; updateScore();
+  items.forEach(it=>{
+    histCounter++;
+    history.unshift({n:histCounter, problem:it.problem, userAnswer:it.raw, status:it.korrekt?'ok':'fel'});
+  });
+  provEnd();
+  renderHistory();
+  const rows=items.map((it,i)=>
+    (i+1)+'. '+(it.korrekt?'✓':'✗')+' ditt svar: '+(it.raw||'(tomt)')+
+    ' · rätt: '+fmtSig(it.problem.answer,it.problem.sf)+' '+it.problem.unit
+  ).join('<br>');
+  const fb=$('feedback');
+  fb.className='feedback '+(ratt>=4?'ok':(ratt>=2?'warn':'fel'));
+  fb.innerHTML='<b>Provsimulering klar: '+ratt+'/5 rätt på '+min+' min '+ss+' s.</b><br>'+rows+
+    '<br>Öppna uppgifterna i historiken för fullständiga lösningar.';
+}
+
 $('checkBtn').onclick=check;
 $('answer').addEventListener('keydown',e=>{ if(e.key==='Enter') check(); });
 $('solBtn').onclick=reveal;
 $('stepBtn').onclick=showStep;
 $('nextBtn').onclick=newProblem;
 $('backBtn').onclick=closeReview;
+$('provBtn').onclick=provToggle;
 
 window.__felContext=()=>problem?{
   Uppgift: problem.qtext.replace(/<[^>]*>/g,''),
@@ -982,7 +1169,7 @@ newProblem();
 </div>
 <script>
 (function(){
-const FELMAIL='ANDRA-MIG@exempel.fi'; /* ÄNDRA till lärarens e-postadress */
+const FELMAIL='kauremaa.aleksi@gmail.com';
 const $=id=>document.getElementById(id);
 function ctx(){ try{return (window.__felContext&&window.__felContext())||null;}catch(e){return null;} }
 function report(){
