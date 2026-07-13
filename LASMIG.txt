@@ -20,6 +20,20 @@ moltranaren-ke01.html
     lösningsvägen. Utspädningens klassiska fälla, att skilja
     på slutvolym och tillsatt vatten, tränas uttryckligen.
 
+namngivningstranaren-ke03.html
+    Namngivningstränaren (KE03 Molekyler och modeller). Två
+    riktningar: namnge föreningen ur strukturen eller skriv den
+    kondenserade strukturformeln ur namnet. Banken täcker hela
+    kursens palett: alkaner, alkener, alkyner, alkoholer, etrar,
+    aldehyder, ketoner, karboxylsyror, estrar, aminer och
+    halogenalkaner. På lätt nivå visas kondenserade formler,
+    på medel och svår ritade streckformler. Trivialnamn som
+    aceton, fel numreringsriktning och utelämnad entydig lokant
+    räknas som rätt med en påminnelse. Saknad eller fel lokant,
+    liksom summaformel i stället för strukturformel, ger riktad
+    återkoppling. Lokanterna följer regeln om lägsta möjliga
+    lokant.
+
 ph-tranaren-ke06.html
     pH-tränaren (KE06 Kemisk jämvikt). Fyra uppgiftstyper:
     sambandet mellan pH och oxoniumjonkoncentration i båda

@@ -14,6 +14,7 @@
     --paper:#F7F8F6; --grid:#DEE6E0; --grid-major:#CFDAD2;
     --ink:#17241E; --soft:#4C5B53;
     --ke01:#1D5FA8; --ke01-soft:#E4EEF9; --ke01-hover:#174C86;
+    --ke03:#6D7A1F; --ke03-soft:#F1F4DC; --ke03-hover:#566114;
     --ke04:#0B6E5F; --ke04-soft:#E3F1ED; --ke04-hover:#095C50;
     --ke05:#0E6E8C; --ke05-soft:#E2F0F5; --ke05-hover:#0A5870;
     --ke06:#4B41A6; --ke06-soft:#E9E7F7; --ke06-hover:#372F82;
@@ -26,6 +27,7 @@
       --paper:#131B17; --grid:#1B241F; --grid-major:#222E27;
       --ink:#E8EEEA; --soft:#9FB0A6;
       --ke01:#6FA5E3; --ke01-soft:#1A2836; --ke01-hover:#8AB6E9;
+      --ke03:#A9BA52; --ke03-soft:#20260F; --ke03-hover:#BFCF6E;
       --ke04:#4FB3A1; --ke04-soft:#152823; --ke04-hover:#6BC4B4;
       --ke05:#58B5D2; --ke05-soft:#12262D; --ke05-hover:#74C6DF;
       --ke06:#9B92E6; --ke06-soft:#1F1C33; --ke06-hover:#B2AAEF;
@@ -111,6 +113,10 @@
     padding:11px 22px;border-radius:8px;white-space:nowrap;display:inline-block;
   }
   .ke01 a.knapp{background:var(--ke01)} .ke01 a.knapp:hover{background:var(--ke01-hover)}
+  .ke03 .kurs-head{border-color:var(--ke03);background:var(--ke03-soft)}
+  .ke03 .kurskod{color:var(--ke03)}
+  .ke03 a.knapp{background:var(--ke03)}
+  .ke03 a.knapp:hover{background:var(--ke03-hover)}
   .ke05 .kurs-head{border-color:var(--ke05);background:var(--ke05-soft)}
   .ke05 .kurskod{color:var(--ke05)}
   .ke05 a.knapp{background:var(--ke05)}
@@ -276,6 +282,26 @@
       </div>
     </div>
 
+    <div class="kurs kort-bas ke03">
+      <div class="kurs-head">
+        <span class="kurskod">KE03</span>
+        <span class="kursnamn">Molekyler och modeller</span>
+      </div>
+      <div class="kurs-body">
+        <div class="verktygsrad">
+          <div>
+            <h3>Namngivningstränaren</h3>
+            <p>Namnge organiska föreningar ur strukturen och skriv strukturformler ur namnet. Från alkaner och alkoholer till estrar, etrar och aminer, med ritade streckformler på högre nivåer.</p>
+          </div>
+          <a class="knapp" href="namngivningstranaren-ke03.html">Öppna tränaren</a>
+        </div>
+        <div class="chips">
+          <span class="chip">11 ämnesklasser</span><span class="chip">3 nivåer</span>
+          <span class="chip">102 föreningar</span><span class="chip">ny juli 2026</span>
+        </div>
+      </div>
+    </div>
+
     <div class="kurs kort-bas ke04">
       <div class="kurs-head">
         <span class="kurskod">KE04</span>
@@ -359,7 +385,6 @@
     </div>
 
     <div class="kommande">
-      <span class="kurskod">KE03</span>
       <p>Fler verktyg är på väg. Sidan uppdateras under läsåret.</p>
     </div>
   </section>

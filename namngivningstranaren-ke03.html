@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Namngivningstränaren · KE03</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAFBF3;
+    --grid:#EDF0DA;
+    --grid-major:#E0E5C6;
+    --ink:#1E2213;
+    --ink-soft:#5D6647;
+    --accent:#6D7A1F;
+    --accent-hover:#566114;
+    --accent-soft:#F1F4DC;
+    --green:#1D7A33;
+    --green-soft:#E4F3E6;
+    --amber:#B2590B;
+    --amber-soft:#FBEFE0;
+    --red:#A8332C;
+    --red-soft:#F8E7E5;
+    --card:#FFFFFF;
+    --line:#DCE1C3;
+    --radius:10px;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sans:'IBM Plex Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:var(--sans);color:var(--ink);
+    background-color:var(--paper);
+    background-image:
+      linear-gradient(var(--grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:100px 100px,100px 100px,20px 20px,20px 20px;
+    min-height:100vh;padding:24px 16px 64px;line-height:1.5;
+  }
+  .wrap{max-width:840px;margin:0 auto}
+  .hem{display:inline-block;font-family:var(--mono);font-size:13px;font-weight:600;
+    color:var(--ink-soft);text-decoration:none;margin-bottom:10px;padding:4px 0}
+  .hem:hover{color:var(--accent)}
+  .hem:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  header{margin-bottom:20px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-size:clamp(26px,5vw,36px);font-weight:700;letter-spacing:-.01em;line-height:1.15}
+  .sub{color:var(--ink-soft);font-size:15px;margin-top:4px}
+
+  .panel{background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:16px;margin-bottom:14px;
+    box-shadow:0 1px 3px rgba(30,34,19,.06)}
+  .controls{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+  .ctrl-group{display:flex;flex-direction:column;gap:6px}
+  .ctrl-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-family:var(--sans);font-size:14px;font-weight:500;
+    padding:7px 13px;border-radius:999px;border:1.5px solid var(--line);
+    background:var(--card);color:var(--ink);cursor:pointer;transition:all .12s}
+  .chip:hover{border-color:var(--accent)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .chip:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .scorebar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;
+    font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+  .scorebar b{color:var(--ink);font-weight:600}
+  .streak{color:var(--amber);font-weight:600}
+
+  .qtype-tag{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;
+    color:var(--accent);background:var(--accent-soft);
+    padding:3px 10px;border-radius:6px;margin-bottom:12px;letter-spacing:.04em}
+  .review-tag{background:var(--amber-soft);color:var(--amber)}
+  .qtext{font-size:16.5px;margin-bottom:6px}
+  .qtext b{font-weight:600}
+  .given{font-family:var(--mono);font-size:14.5px;color:var(--ink-soft);margin:8px 0}
+
+  .molyta{display:flex;justify-content:center;padding:14px 4px 8px}
+  .molvisning{font-family:var(--mono);font-weight:600;
+    font-size:clamp(18px,4vw,23px);background:var(--accent-soft);
+    padding:14px 20px;border-radius:10px;text-align:center;line-height:1.4;
+    overflow-wrap:anywhere}
+  .molvisning sub{font-size:.68em}
+  .molsvg{max-width:100%;height:auto;background:var(--accent-soft);
+    border-radius:10px;padding:6px}
+  .molsvg line{stroke:var(--ink);stroke-width:2;stroke-linecap:round}
+  .molsvg text{font-family:var(--mono);font-size:14px;font-weight:600;fill:var(--ink)}
+
+  .answer-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+  input.textsvar{font-family:var(--mono);font-size:16.5px;font-weight:500;
+    padding:10px 14px;border:1.5px solid var(--line);border-radius:8px;
+    width:min(300px,100%);color:var(--ink);background:var(--card)}
+  input.textsvar:focus{border-color:var(--accent)}
+  input.textsvar[readonly]{background:var(--paper);color:var(--ink-soft)}
+  button{font-family:var(--sans);font-size:15px;font-weight:600;
+    padding:10px 18px;border-radius:8px;cursor:pointer;border:1.5px solid transparent;transition:all .12s}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-hover)}
+  .btn-ghost{background:var(--card);border-color:var(--line);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .hint{font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-top:8px}
+
+  .feedback{margin-top:12px;padding:12px 14px;border-radius:8px;font-size:15px;display:none;font-weight:500}
+  .feedback.ok{display:block;background:var(--green-soft);color:var(--green);border:1px solid #BFE3C4}
+  .feedback.warn{display:block;background:var(--amber-soft);color:var(--amber);border:1px solid #EFD3B2}
+  .feedback.fel{display:block;background:var(--red-soft);color:var(--red);border:1px solid #EBC4C0}
+  .feedback sub{font-size:.7em}
+
+  .solution{margin-top:14px;display:none}
+  .solution.open{display:block}
+  .sol-head{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:8px}
+  .step{background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    padding:10px 14px;margin-bottom:8px;font-size:15px;display:flex;gap:12px;align-items:baseline}
+  .step .n{font-family:var(--mono);font-weight:600;color:var(--accent);font-size:13px;flex-shrink:0}
+  .step .t{flex:1}
+  .step .t .m{font-family:var(--mono);font-size:14.5px;display:block;margin-top:3px;color:var(--ink)}
+  .step sub{font-size:.7em}
+
+  .hist-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
+  .hist-note{font-size:12px;color:var(--ink-soft);font-family:var(--mono)}
+  .hist-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+  .hist-item{display:flex;gap:10px;align-items:baseline;text-align:left;
+    font-family:var(--sans);font-size:14px;
+    background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;width:100%}
+  .hist-item:hover{border-color:var(--accent)}
+  .hist-item .hn{font-family:var(--mono);font-weight:600;color:var(--ink-soft);font-size:12px;flex-shrink:0}
+  .hist-item .ht{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hist-item .ht sub{font-size:.7em}
+  .hist-item .hs{font-family:var(--mono);font-size:12px;font-weight:600;flex-shrink:0}
+  .hs.s-ok{color:var(--green)} .hs.s-warn{color:var(--amber)} .hs.s-fel{color:var(--red)} .hs.s-reveal{color:var(--ink-soft)}
+
+  .felknapp{position:fixed;right:16px;bottom:16px;z-index:50;font-size:13px;
+    background:var(--card);color:var(--ink-soft);border:1.5px solid var(--line);
+    border-radius:999px;padding:9px 14px;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+  .felknapp:hover{color:var(--accent);border-color:var(--accent)}
+  .felpanel{position:fixed;right:16px;bottom:64px;z-index:50;
+    width:min(340px,calc(100vw - 32px));background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:14px;
+    box-shadow:0 8px 28px rgba(0,0,0,.2)}
+  .felpanel h3{font-size:14px;margin-bottom:6px}
+  .felpanel textarea{width:100%;height:70px;font-family:var(--sans);font-size:13px;
+    padding:8px;border:1.5px solid var(--line);border-radius:8px;
+    background:var(--paper);color:var(--ink);resize:vertical}
+  .felmeta{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);
+    background:var(--paper);border-radius:6px;padding:6px 8px;margin:8px 0;
+    max-height:70px;overflow:auto;white-space:pre-wrap}
+  .felrad{display:flex;gap:6px}
+  .felrad button{flex:1;font-size:12.5px;padding:8px 6px}
+  .felok{font-size:12px;color:var(--green);margin-top:6px;display:none}
+
+  footer{margin-top:24px;font-size:13px;color:var(--ink-soft);text-align:center;
+    font-family:var(--mono);line-height:1.7}
+  @media (max-width:560px){
+    body{padding:16px 10px 48px}
+    .panel{padding:13px}
+    input.textsvar{width:min(220px,100%)}
+  }
+  @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="hem" href="index.html">&#8592; Startsidan</a>
+  <header>
+    <div class="eyebrow">KE03 · Molekyler och modeller · GLP2019</div>
+    <h1>Namngivningstränaren</h1>
+    <div class="sub">Namnge organiska föreningar ur strukturen och skriv strukturformler ur namnet, från alkaner till estrar och aminer. Lokanterna ska alltid bli så låga som möjligt.</div>
+  </header>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="ctrl-group">
+        <span class="ctrl-label">Uppgiftstyp</span>
+        <div class="chips" id="typeChips" role="group" aria-label="Uppgiftstyp"></div>
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">Ämnesklass</span>
+        <div class="chips" id="klassChips" role="group" aria-label="Ämnesklass"></div>
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">Svårighetsgrad</span>
+        <div class="chips" id="diffChips" role="group" aria-label="Svårighetsgrad"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="scorebar">
+      <span>Rätt: <b id="scoreOk">0</b> / <b id="scoreTot">0</b></span>
+      <span class="streak" id="streak"></span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <span class="qtype-tag" id="qtag"></span>
+    <div class="qtext" id="qtext"></div>
+    <div class="given" id="given" style="display:none"></div>
+    <div class="molyta" id="molyta" style="display:none"></div>
+
+    <div class="answer-row">
+      <input type="text" class="textsvar" id="textsvar" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Ditt svar">
+      <button class="btn-primary" id="checkBtn">Kontrollera</button>
+      <button class="btn-ghost" id="solBtn">Visa lösning</button>
+      <button class="btn-ghost" id="nextBtn">Ny uppgift &#8594;</button>
+      <button class="btn-primary" id="backBtn" style="display:none">&#8592; Fortsätt träna</button>
+    </div>
+    <div class="hint" id="inputHint" style="display:none"></div>
+
+    <div class="feedback" id="feedback" role="status"></div>
+
+    <div class="solution" id="solution">
+      <div class="sol-head">Lösning steg för steg</div>
+      <div id="steps"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="histPanel" style="display:none">
+    <div class="hist-head">
+      <span class="ctrl-label">Historik</span>
+      <span class="hist-note">rensas när sidan laddas om</span>
+    </div>
+    <div class="hist-list" id="histList"></div>
+  </div>
+
+  <footer>
+    Ändelser, prefix och regler för lokanter hittar du i Mafys tabeller.<br>
+    Numrera huvudkedjan så att den funktionella gruppen får lägsta möjliga lokant.
+  </footer>
+</div>
+
+<script>
+'use strict';
+/* ================================================================
+   LOGIK: ren och testbar
+   ================================================================ */
+
+const STAM=['','metan','etan','propan','butan','pentan','hexan','heptan','oktan'];
+const ALKYL=['','metyl','etyl','propyl','butyl','pentyl'];
+const HALNAMN={F:'fluor',Cl:'klor',Br:'brom',I:'jod'};
+const GTXT={OH:'OH',NH2:'NH2',CH3:'CH3',C2H5:'CH2CH3'};
+const MIR={OH:'HO',NH2:'H2N'};
+const HALS=['F','Cl','Br','I'];
+
+/* --- struktur: c = kedjans atomer, b = bindningsordningar,
+       s = [[position, grupp], ...], rev = IUPAC-numreringen går
+       från höger (gruppen ritas till höger men är kolatom 1) --- */
+
+function atomBonds(st){
+  const n=st.c.length;
+  return st.b ? st.b.split('').map(Number) : new Array(n-1).fill(1);
+}
+function subsByIndex(st){
+  const m={};
+  (st.s||[]).forEach(p=>{ const i=p[0]-1, g=p[1]==='OHx'?'OH':p[1];
+    (m[i]=m[i]||[]).push(g); });
+  return m;
+}
+function atomH(el, bondSum){
+  return ({C:4,O:2,N:3}[el]||0) - bondSum;
+}
+function hFor(atoms, bonds, subs, i){
+  let s=(i>0?bonds[i-1]:0)+(i<atoms.length-1?bonds[i]:0);
+  (subs[i]||[]).forEach(g=>{ s += (g==='=O'?2:1); });
+  return atomH(atoms[i], s);
+}
+
+/* Kondenserad strukturformel ur strukturen. */
+function buildCond(st, rev, symbols){
+  let atoms=st.c.split('');
+  let bonds=atomBonds(st);
+  let subs=subsByIndex(st);
+  const n=atoms.length;
+  if(rev){
+    atoms=atoms.slice().reverse();
+    bonds=bonds.slice().reverse();
+    const ns={};
+    for(const k in subs) ns[n-1-(+k)]=subs[k];
+    subs=ns;
+  }
+  let out='';
+  for(let i=0;i<n;i++){
+    const el=atoms[i];
+    const list=(subs[i]||[]).slice();
+    const carbonyl=list.includes('=O');
+    const rest=list.filter(g=>g!=='=O');
+    const h=hFor(atoms,bonds,subs,i);
+    const hp=h<=0?'':(h===1?'H':'H'+h);
+    if(el==='O'){ out+='O'; }
+    else if(el==='N'){ out+='N'+hp; }
+    else{
+      const halCount={}; const others=[];
+      rest.forEach(g=>{ if(HALS.includes(g)) halCount[g]=(halCount[g]||0)+1; else others.push(g); });
+      const halStr=Object.keys(halCount).map(sym=>sym+(halCount[sym]>1?halCount[sym]:'')).join('');
+      if(i===0 && i!==n-1 && (carbonyl || others.length)){
+        let pre='';
+        others.forEach(g=>{ pre += (MIR[g] || '('+GTXT[g]+')'); });
+        if(carbonyl) pre += 'O'+(h>0?('H'+(h>1?h:'')):'');
+        out += pre + 'C' + (carbonyl?'':hp) + halStr;
+      } else {
+        out += 'C'+hp+(carbonyl?'O':'')+halStr;
+        others.forEach(g=>{
+          const t=GTXT[g];
+          const direct=(i===n-1)&&(g==='OH'||g==='NH2');
+          out += direct ? t : '('+t+')';
+        });
+      }
+    }
+    if(symbols && i<n-1){
+      if(bonds[i]===2) out+='=';
+      else if(bonds[i]===3) out+='\u2261';
+    }
+  }
+  return out;
+}
+
+/* --- normalisering --- */
+const SUBDIGITS={'\u2080':'0','\u2081':'1','\u2082':'2','\u2083':'3','\u2084':'4',
+  '\u2085':'5','\u2086':'6','\u2087':'7','\u2088':'8','\u2089':'9'};
+function normF(str){
+  let s=String(str).trim()
+    .replace(/[\s\u00a0]+/g,'')
+    .replace(/[\u2080-\u2089]/g,c=>SUBDIGITS[c])
+    .replace(/[-=\u2212\u2261\u2260\u00b7*.\u2013]/g,'');
+  s=s.toUpperCase().replace(/CL/g,'Cl').replace(/BR/g,'Br');
+  return s;
+}
+function normN(str){
+  return String(str).toLowerCase().replace(/[\s\u00a0\u2013-]+/g,'');
+}
+function expandName(name){
+  const out=[name];
+  const m=/^([a-zåäö]+)-(\d[\d,]*)-([a-zåäö]+)$/.exec(name);
+  if(m) out.push(m[2]+'-'+m[1]+m[3]);
+  return out;
+}
+
+/* --- summaformelparser --- */
+function countEl(s){
+  let i=0;
+  function block(){
+    const o={};
+    while(i<s.length){
+      const ch=s[i];
+      if(ch==='('){
+        i++; const inner=block();
+        let num=''; while(i<s.length && /\d/.test(s[i])) num+=s[i++];
+        const m=num?+num:1;
+        for(const k in inner) o[k]=(o[k]||0)+inner[k]*m;
+      } else if(ch===')'){ i++; return o; }
+      else if(/[A-Z]/.test(ch)){
+        let el=ch; i++;
+        if(i<s.length && /[a-z]/.test(s[i])) el+=s[i++];
+        let num=''; while(i<s.length && /\d/.test(s[i])) num+=s[i++];
+        o[el]=(o[el]||0)+(num?+num:1);
+      }
+      else throw new Error('ogiltigt tecken');
+    }
+    return o;
+  }
+  return block();
+}
+function compEqual(a,b){
+  const ka=Object.keys(a), kb=Object.keys(b);
+  if(ka.length!==kb.length) return false;
+  return ka.every(k=>a[k]===b[k]);
+}
+
+/* ================================================================
+   ÄMNESBANKEN
+   ================================================================ */
+const GRUPPMAP={alkan:'kolv',alken:'kolv',alkyn:'kolv',
+  alkohol:'alko',diol:'alko',triol:'alko',eter:'alko',
+  aldehyd:'karb',keton:'karb',syra:'syra',ester:'syra',
+  amin:'amha',halogen:'amha'};
+const KLASSNAMN={alkan:'alkan',alken:'alken',alkyn:'alkyn',alkohol:'alkohol',
+  diol:'diol (tvåvärd alkohol)',triol:'triol (trevärd alkohol)',eter:'eter',
+  aldehyd:'aldehyd',keton:'keton',syra:'karboxylsyra',ester:'ester',
+  amin:'amin',halogen:'halogenalkan'};
+
+/* [id, klass, diff, namn, st, extra]
+   extra: alt (helt rätta namn), warn ([namn, skäl]), xf (extra formler),
+   fx ({d: visad formel, a: godkända formler})                      */
+const RAW=[
+/* ------ LÄTT ------ */
+['metan','alkan','latt','metan',{c:'C'}],
+['etan','alkan','latt','etan',{c:'CC'}],
+['propan','alkan','latt','propan',{c:'CCC'}],
+['butan','alkan','latt','butan',{c:'CCCC'}],
+['pentan','alkan','latt','pentan',{c:'CCCCC'}],
+['hexan','alkan','latt','hexan',{c:'CCCCCC'}],
+['heptan','alkan','latt','heptan',{c:'CCCCCCC'}],
+['oktan','alkan','latt','oktan',{c:'CCCCCCCC'}],
+['eten','alken','latt','eten',{c:'CC',b:'2'},{warn:[['etylen','trivial']]}],
+['propen','alken','latt','propen',{c:'CCC',b:'21'},{warn:[['prop-1-en','onodig'],['propylen','trivial']]}],
+['but1en','alken','latt','but-1-en',{c:'CCCC',b:'211'},{warn:[['but-3-en','riktning']]}],
+['but2en','alken','latt','but-2-en',{c:'CCCC',b:'121'}],
+['etyn','alkyn','latt','etyn',{c:'CC',b:'3'},{warn:[['acetylen','trivial']]}],
+['propyn','alkyn','latt','propyn',{c:'CCC',b:'31'},{warn:[['prop-1-yn','onodig']]}],
+['metanol','alkohol','latt','metanol',{c:'C',s:[[1,'OH']]},{warn:[['träsprit','trivial']]}],
+['etanol','alkohol','latt','etanol',{c:'CC',s:[[2,'OH']]}],
+['propan1ol','alkohol','latt','propan-1-ol',{c:'CCC',s:[[3,'OH']],rev:1},{warn:[['propan-3-ol','riktning']]}],
+['propan2ol','alkohol','latt','propan-2-ol',{c:'CCC',s:[[2,'OH']]},{warn:[['isopropanol','trivial'],['isopropylalkohol','trivial']]}],
+['butan1ol','alkohol','latt','butan-1-ol',{c:'CCCC',s:[[4,'OH']],rev:1},{warn:[['butan-4-ol','riktning']]}],
+['metansyra','syra','latt','metansyra',{c:'C',s:[[1,'=O'],[1,'OHx']]},{warn:[['myrsyra','trivial']],fx:{d:'HCOOH',a:['HCOOH','HCO2H']}}],
+['etansyra','syra','latt','etansyra',{c:'CC',s:[[2,'=O'],[2,'OHx']],rev:1},{warn:[['ättiksyra','trivial']]}],
+['propansyra','syra','latt','propansyra',{c:'CCC',s:[[3,'=O'],[3,'OHx']],rev:1}],
+['butansyra','syra','latt','butansyra',{c:'CCCC',s:[[4,'=O'],[4,'OHx']],rev:1},{warn:[['smörsyra','trivial']]}],
+['klormetan','halogen','latt','klormetan',{c:'C',s:[[1,'Cl']]}],
+['kloretan','halogen','latt','kloretan',{c:'CC',s:[[2,'Cl']],rev:1},{warn:[['1-kloretan','onodig']],xf:['ClCH2CH3']}],
+['brometan','halogen','latt','brometan',{c:'CC',s:[[2,'Br']],rev:1},{warn:[['1-brometan','onodig']],xf:['BrCH2CH3']}],
+['klorpropan1','halogen','latt','1-klorpropan',{c:'CCC',s:[[3,'Cl']],rev:1},{warn:[['3-klorpropan','riktning']],xf:['ClCH2CH2CH3']}],
+['klorpropan2','halogen','latt','2-klorpropan',{c:'CCC',s:[[2,'Cl']]}],
+['metanal','aldehyd','latt','metanal',{c:'C',s:[[1,'=O']]},{warn:[['formaldehyd','trivial']],fx:{d:'HCHO',a:['HCHO','CH2O']}}],
+['etanal','aldehyd','latt','etanal',{c:'CC',s:[[2,'=O']],rev:1},{warn:[['acetaldehyd','trivial']]}],
+['propanon','keton','latt','propanon',{c:'CCC',s:[[2,'=O']]},{alt:['propan-2-on'],warn:[['aceton','trivial']]}],
+['metylamin','amin','latt','metylamin',{c:'C',s:[[1,'NH2']]},{alt:['metanamin']}],
+['etylamin','amin','latt','etylamin',{c:'CC',s:[[2,'NH2']],rev:1},{alt:['etanamin']}],
+/* ------ MEDEL ------ */
+['metylpropan','alkan','medel','2-metylpropan',{c:'CCC',s:[[2,'CH3']]},{warn:[['isobutan','trivial'],['metylpropan','lokfri']],xf:['(CH3)3CH','CH(CH3)3']}],
+['metylbutan2','alkan','medel','2-metylbutan',{c:'CCCC',s:[[2,'CH3']]},{warn:[['3-metylbutan','riktning'],['isopentan','trivial'],['metylbutan','lokfri']],xf:['(CH3)2CHCH2CH3','CH3CH2CH(CH3)2']}],
+['metylpentan2','alkan','medel','2-metylpentan',{c:'CCCCC',s:[[2,'CH3']]},{warn:[['4-metylpentan','riktning']],xf:['(CH3)2CHCH2CH2CH3']}],
+['metylpentan3','alkan','medel','3-metylpentan',{c:'CCCCC',s:[[3,'CH3']]}],
+['dimetylpropan','alkan','medel','2,2-dimetylpropan',{c:'CCC',s:[[2,'CH3'],[2,'CH3']]},{warn:[['neopentan','trivial'],['dimetylpropan','lokfri']],xf:['C(CH3)4','(CH3)4C']}],
+['dimetylbutan23','alkan','medel','2,3-dimetylbutan',{c:'CCCC',s:[[2,'CH3'],[3,'CH3']]},{xf:['(CH3)2CHCH(CH3)2']}],
+['pent1en','alken','medel','pent-1-en',{c:'CCCCC',b:'2111'},{warn:[['pent-4-en','riktning']]}],
+['pent2en','alken','medel','pent-2-en',{c:'CCCCC',b:'1211'},{warn:[['pent-3-en','riktning']]}],
+['hex2en','alken','medel','hex-2-en',{c:'CCCCCC',b:'12111'},{warn:[['hex-4-en','riktning']]}],
+['hex3en','alken','medel','hex-3-en',{c:'CCCCCC',b:'11211'}],
+['but1yn','alkyn','medel','but-1-yn',{c:'CCCC',b:'311'},{warn:[['but-3-yn','riktning']]}],
+['but2yn','alkyn','medel','but-2-yn',{c:'CCCC',b:'131'}],
+['pent2yn','alkyn','medel','pent-2-yn',{c:'CCCCC',b:'1311'},{warn:[['pent-3-yn','riktning']]}],
+['butan2ol','alkohol','medel','butan-2-ol',{c:'CCCC',s:[[2,'OH']]},{warn:[['butan-3-ol','riktning']]}],
+['pentan1ol','alkohol','medel','pentan-1-ol',{c:'CCCCC',s:[[5,'OH']],rev:1},{warn:[['pentan-5-ol','riktning']]}],
+['pentan2ol','alkohol','medel','pentan-2-ol',{c:'CCCCC',s:[[2,'OH']]},{warn:[['pentan-4-ol','riktning']]}],
+['pentan3ol','alkohol','medel','pentan-3-ol',{c:'CCCCC',s:[[3,'OH']]}],
+['metylpropan1ol','alkohol','medel','2-metylpropan-1-ol',{c:'CCC',s:[[2,'CH3'],[3,'OH']],rev:1},{alt:['2-metyl-1-propanol']}],
+['propanal','aldehyd','medel','propanal',{c:'CCC',s:[[3,'=O']],rev:1}],
+['butanal','aldehyd','medel','butanal',{c:'CCCC',s:[[4,'=O']],rev:1}],
+['pentanal','aldehyd','medel','pentanal',{c:'CCCCC',s:[[5,'=O']],rev:1}],
+['butanon','keton','medel','butanon',{c:'CCCC',s:[[2,'=O']]},{alt:['butan-2-on']}],
+['pentan2on','keton','medel','pentan-2-on',{c:'CCCCC',s:[[2,'=O']]},{warn:[['pentan-4-on','riktning']]}],
+['pentan3on','keton','medel','pentan-3-on',{c:'CCCCC',s:[[3,'=O']]}],
+['pentansyra','syra','medel','pentansyra',{c:'CCCCC',s:[[5,'=O'],[5,'OHx']],rev:1}],
+['metylpropansyra','syra','medel','2-metylpropansyra',{c:'CCC',s:[[2,'CH3'],[3,'=O'],[3,'OHx']],rev:1},{warn:[['metylpropansyra','lokfri']]}],
+['metyletanoat','ester','medel','metyletanoat',{c:'CCOC',s:[[2,'=O']]},{warn:[['metylacetat','trivial']]}],
+['etyletanoat','ester','medel','etyletanoat',{c:'CCOCC',s:[[2,'=O']]},{warn:[['etylacetat','trivial']]}],
+['dimetyleter','eter','medel','dimetyleter',{c:'COC'},{alt:['metoximetan']}],
+['dietyleter','eter','medel','dietyleter',{c:'CCOCC'},{alt:['etoxietan']}],
+['brombutan1','halogen','medel','1-brombutan',{c:'CCCC',s:[[4,'Br']],rev:1},{warn:[['4-brombutan','riktning']],xf:['BrCH2CH2CH2CH3']}],
+['brombutan2','halogen','medel','2-brombutan',{c:'CCCC',s:[[2,'Br']]},{warn:[['3-brombutan','riktning']]}],
+['jodpropan2','halogen','medel','2-jodpropan',{c:'CCC',s:[[2,'I']]}],
+['dikloretan','halogen','medel','1,2-dikloretan',{c:'CC',s:[[1,'Cl'],[2,'Cl']]},{xf:['ClCH2CH2Cl']}],
+['klorbutan2','halogen','medel','2-klorbutan',{c:'CCCC',s:[[2,'Cl']]},{warn:[['3-klorbutan','riktning']]}],
+['propan1amin','amin','medel','propan-1-amin',{c:'CCC',s:[[3,'NH2']],rev:1},{alt:['propylamin'],warn:[['propan-3-amin','riktning']]}],
+['propan2amin','amin','medel','propan-2-amin',{c:'CCC',s:[[2,'NH2']]},{alt:['2-aminopropan'],warn:[['isopropylamin','trivial']]}],
+['butan1amin','amin','medel','butan-1-amin',{c:'CCCC',s:[[4,'NH2']],rev:1},{alt:['butylamin']}],
+/* ------ SVÅR ------ */
+['dimetylbutan22','alkan','svar','2,2-dimetylbutan',{c:'CCCC',s:[[2,'CH3'],[2,'CH3']]},{warn:[['3,3-dimetylbutan','riktning']],xf:['(CH3)3CCH2CH3','CH3CH2C(CH3)3']}],
+['dimetylpentan24','alkan','svar','2,4-dimetylpentan',{c:'CCCCC',s:[[2,'CH3'],[4,'CH3']]},{xf:['(CH3)2CHCH2CH(CH3)2']}],
+['etylpentan3','alkan','svar','3-etylpentan',{c:'CCCCC',s:[[3,'C2H5']]}],
+['trimetylpentan','alkan','svar','2,2,4-trimetylpentan',{c:'CCCCC',s:[[2,'CH3'],[2,'CH3'],[4,'CH3']]},{warn:[['isooktan','trivial'],['2,4,4-trimetylpentan','riktning']],xf:['(CH3)3CCH2CH(CH3)2']}],
+['metylbut2en','alken','svar','2-metylbut-2-en',{c:'CCCC',b:'121',s:[[2,'CH3']]},{alt:['2-metyl-2-buten'],warn:[['3-metylbut-2-en','riktning'],['3-metyl-2-buten','riktning']]}],
+['dimetylbut2en','alken','svar','2,3-dimetylbut-2-en',{c:'CCCC',b:'121',s:[[2,'CH3'],[3,'CH3']]},{alt:['2,3-dimetyl-2-buten']}],
+['metylpent1en','alken','svar','4-metylpent-1-en',{c:'CCCCC',b:'2111',s:[[4,'CH3']]},{alt:['4-metyl-1-penten'],warn:[['2-metylpent-4-en','riktning'],['2-metyl-4-penten','riktning']]}],
+['metylpropan2ol','alkohol','svar','2-metylpropan-2-ol',{c:'CCC',s:[[2,'CH3'],[2,'OH']]},{alt:['2-metyl-2-propanol'],xf:['(CH3)3COH','C(CH3)3OH','HOC(CH3)3']}],
+['metylbutan2ol','alkohol','svar','2-metylbutan-2-ol',{c:'CCCC',s:[[2,'CH3'],[2,'OH']]},{alt:['2-metyl-2-butanol']}],
+['etandiol','diol','svar','etan-1,2-diol',{c:'CC',s:[[1,'OH'],[2,'OH']]},{warn:[['glykol','trivial'],['etylenglykol','trivial'],['etandiol','lokfri']]}],
+['propantriol','triol','svar','propan-1,2,3-triol',{c:'CCC',s:[[1,'OH'],[2,'OH'],[3,'OH']]},{warn:[['glycerol','trivial'],['glycerin','trivial'],['propantriol','lokfri']]}],
+['metylpropanal2','aldehyd','svar','2-metylpropanal',{c:'CCC',s:[[2,'CH3'],[3,'=O']],rev:1},{warn:[['metylpropanal','lokfri']]}],
+['metylbutanal3','aldehyd','svar','3-metylbutanal',{c:'CCCC',s:[[2,'CH3'],[4,'=O']],rev:1}],
+['metylbutan2on','keton','svar','3-metylbutan-2-on',{c:'CCCC',s:[[2,'=O'],[3,'CH3']]},{alt:['3-metyl-2-butanon'],warn:[['2-metylbutan-3-on','riktning'],['2-metyl-3-butanon','riktning']]}],
+['hexan3on','keton','svar','hexan-3-on',{c:'CCCCCC',s:[[3,'=O']]},{warn:[['hexan-4-on','riktning']]}],
+['metylpentan2on','keton','svar','4-metylpentan-2-on',{c:'CCCCC',s:[[2,'=O'],[4,'CH3']]},{alt:['4-metyl-2-pentanon'],warn:[['2-metylpentan-4-on','riktning'],['2-metyl-4-pentanon','riktning']]}],
+['metylbutansyra3','syra','svar','3-metylbutansyra',{c:'CCCC',s:[[2,'CH3'],[4,'=O'],[4,'OHx']],rev:1}],
+['metylmetanoat','ester','svar','metylmetanoat',{c:'COC',s:[[1,'=O']]},{warn:[['metylformiat','trivial']],fx:{d:'HCOOCH3',a:['HCOOCH3','CH3OCHO','CH3OOCH']}}],
+['etylmetanoat','ester','svar','etylmetanoat',{c:'COCC',s:[[1,'=O']]},{warn:[['etylformiat','trivial']],fx:{d:'HCOOCH2CH3',a:['HCOOCH2CH3','HCOOC2H5','CH3CH2OCHO','C2H5OCHO','C2H5OOCH']}}],
+['metylpropanoat','ester','svar','metylpropanoat',{c:'CCCOC',s:[[3,'=O']]}],
+['propyletanoat','ester','svar','propyletanoat',{c:'CCOCCC',s:[[2,'=O']]},{warn:[['propylacetat','trivial']]}],
+['etylpropanoat','ester','svar','etylpropanoat',{c:'CCCOCC',s:[[3,'=O']]}],
+['metylbutanoat','ester','svar','metylbutanoat',{c:'CCCCOC',s:[[4,'=O']]}],
+['etylmetyleter','eter','svar','etylmetyleter',{c:'CCOC'},{alt:['metoxietan'],warn:[['metyletyleter','ordning']]}],
+['metylpropyleter','eter','svar','metylpropyleter',{c:'CCCOC'},{alt:['metoxipropan','1-metoxipropan'],warn:[['propylmetyleter','ordning']]}],
+['butan2amin','amin','svar','butan-2-amin',{c:'CCCC',s:[[2,'NH2']]},{alt:['2-aminobutan','2-butanamin'],warn:[['butan-3-amin','riktning']]}],
+['pentan1amin','amin','svar','pentan-1-amin',{c:'CCCCC',s:[[5,'NH2']],rev:1},{alt:['pentylamin']}],
+['dimetylamin','amin','svar','dimetylamin',{c:'CNC'}],
+['triklormetan','halogen','svar','triklormetan',{c:'C',s:[[1,'Cl'],[1,'Cl'],[1,'Cl']]},{warn:[['kloroform','trivial']]}],
+['brommetylpropan','halogen','svar','2-brom-2-metylpropan',{c:'CCC',s:[[2,'Br'],[2,'CH3']]},{fx:{d:'CH3CBr(CH3)CH3',a:['CH3CBr(CH3)CH3','CH3C(CH3)BrCH3','(CH3)3CBr','C(CH3)3Br','BrC(CH3)3']}}],
+['klormetylbutan','halogen','svar','2-klor-3-metylbutan',{c:'CCCC',s:[[2,'Cl'],[3,'CH3']]},{warn:[['3-klor-2-metylbutan','riktning']]}]
+];
+
+/* --- bearbeta banken --- */
+function etylVarianter(set){
+  const extra=[];
+  set.forEach(s=>{
+    let v=s;
+    if(v.includes('(CH2CH3)')) extra.push(v.replace(/\(CH2CH3\)/g,'(C2H5)'));
+    if(v.startsWith('CH3CH2')) extra.push('C2H5'+v.slice(6));
+    if(v.endsWith('CH2CH3')) extra.push(v.slice(0,-6)+'C2H5');
+  });
+  extra.forEach(v=>set.add(v));
+}
+const BANK=RAW.map(row=>{
+  const [id,klass,diff,namn,st] = row;
+  const o=row[5]||{};
+  const c={id,klass,diff,namn,st,alt:o.alt||[],warn:o.warn||[],xf:o.xf||[],fx:o.fx||null};
+  /* formler */
+  const fwd=buildCond(st,false,false), rev=buildCond(st,true,false);
+  c.plain = c.fx ? c.fx.d : buildCond(st,false,true);
+  const acc=new Set();
+  (c.fx ? c.fx.a : [fwd,rev]).forEach(f=>acc.add(normF(f)));
+  c.xf.forEach(f=>acc.add(normF(f)));
+  etylVarianter(acc); etylVarianter(acc);
+  c.acc=acc;
+  c.counts=countEl(acc.values().next().value);
+  /* namn */
+  c.okSet=new Set();
+  expandName(namn).forEach(nm=>c.okSet.add(normN(nm)));
+  c.alt.forEach(a=>expandName(a).forEach(nm=>c.okSet.add(normN(nm))));
+  c.warnMap=new Map();
+  c.warn.forEach(w=>expandName(w[0]).forEach(nm=>{
+    if(!c.okSet.has(normN(nm))) c.warnMap.set(normN(nm),{skal:w[1],visat:w[0]});
+  }));
+  c.hasLok=/\d/.test(namn);
+  c.lokSet=new Set();
+  if(c.hasLok){
+    [namn].concat(c.alt).forEach(nm=>c.lokSet.add(normN(nm).replace(/[\d,]/g,'')));
+  }
+  return c;
+});
+
+/* --- kontroll: struktur -> namn --- */
+function checkNamn(c, userStr){
+  const u=normN(userStr);
+  if(!u) return {status:'invalid'};
+  if(c.okSet.has(u)) return {status:'ok'};
+  if(c.warnMap.has(u)){
+    const w=c.warnMap.get(u);
+    return {status:'warn', skal:w.skal, visat:w.visat};
+  }
+  if(c.hasLok && c.lokSet.has(u.replace(/[\d,]/g,''))){
+    return /\d/.test(u) ? {status:'fel', skal:'fellok'} : {status:'fel', skal:'lokant'};
+  }
+  return {status:'fel', skal:'namn'};
+}
+
+/* --- kontroll: namn -> formel --- */
+function checkFormel(c, userStr){
+  let s=String(userStr).trim()
+    .replace(/[\s\u00a0]+/g,'')
+    .replace(/[\u2080-\u2089]/g,ch=>SUBDIGITS[ch])
+    .replace(/[-=\u2212\u2261\u2260\u00b7*.\u2013]/g,'');
+  if(!s) return {status:'invalid'};
+  if(!/^[A-Za-z0-9()]+$/.test(s)) return {status:'invalid'};
+  const u=normF(userStr);
+  if(c.acc.has(u)) return {status:'ok'};
+  let comp=null;
+  try{ comp=countEl(u); }catch(e){ return {status:'fel', skal:'tolkning'}; }
+  for(const k in comp){ if(comp[k]<=0) return {status:'fel', skal:'tolkning'}; }
+  if(compEqual(comp, c.counts)){
+    if(/^C\d+H\d/.test(u)) return {status:'fel', skal:'summa'};
+    return {status:'fel', skal:'struktur'};
+  }
+  return {status:'fel', skal:'fel'};
+}
+
+/* --- uppgiftsgenerering med repetitionsskydd --- */
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const seenSignatures=new Set();
+const recent=[];
+function poolFor(diff, grupp){
+  let p=BANK.filter(c=>c.diff===diff && (grupp==='alla'||GRUPPMAP[c.klass]===grupp));
+  if(!p.length) p=BANK.filter(c=>grupp==='alla'||GRUPPMAP[c.klass]===grupp);
+  return p;
+}
+function makeProblem(mode, diff, grupp){
+  const p=poolFor(diff, grupp);
+  let c=p[0];
+  for(let i=0;i<80;i++){
+    c=pick(p);
+    if(i<40 && recent.includes(c.id)) continue;
+    const sig=mode+'|'+c.id;
+    if(seenSignatures.has(sig) && i<60) continue;
+    seenSignatures.add(sig);
+    break;
+  }
+  recent.push(c.id);
+  if(recent.length>8) recent.shift();
+  return {mode, c, namn:c.namn, plain:c.plain,
+    viz:(diff==='latt'||c.st.c.length<2)?'text':'svg',
+    signature:mode+'|'+c.id};
+}
+function generateFresh(type, diff, grupp){
+  const mode = type==='mix' ? pick(['namn','formel']) : type;
+  return makeProblem(mode, diff, grupp);
+}
+
+if(typeof module!=='undefined' && module.exports){
+  module.exports={BANK, buildCond, normF, normN, expandName, countEl,
+    compEqual, checkNamn, checkFormel, makeProblem, generateFresh, GRUPPMAP};
+}
+
+/* ================================================================
+   UI
+   ================================================================ */
+if(typeof document!=='undefined'){
+
+const TYPES=[
+  {id:'namn', label:'Struktur &#8594; namn'},
+  {id:'formel', label:'Namn &#8594; formel'},
+  {id:'mix', label:'Blandat'}
+];
+const GRUPPER=[
+  {id:'alla', label:'Alla'},
+  {id:'kolv', label:'Kolväten'},
+  {id:'alko', label:'Alkoholer &amp; etrar'},
+  {id:'karb', label:'Aldehyder &amp; ketoner'},
+  {id:'syra', label:'Syror &amp; estrar'},
+  {id:'amha', label:'Aminer &amp; halogener'}
+];
+const DIFFS=[
+  {id:'latt', label:'Lätt'},
+  {id:'medel', label:'Medel'},
+  {id:'svar', label:'Svår'}
+];
+const MODENAMN={namn:'Struktur \u2192 namn', formel:'Namn \u2192 formel'};
+let curType='mix', curGrupp='alla', curDiff='latt';
+let problem=null, answered=false, revealed=false;
+let score={ok:0,tot:0,streak:0};
+let history=[], histCounter=0, currentEntry=null;
+let reviewing=false, savedState=null;
+
+const $=id=>document.getElementById(id);
+const fSub=str=>String(str).replace(/(\d+)/g,'<sub>$1</sub>');
+
+function buildChips(elId, items, cur, onSet){
+  const el=$(elId); el.innerHTML='';
+  items.forEach(it=>{
+    const b=document.createElement('button');
+    b.className='chip'+(it.id===cur?' on':'');
+    b.innerHTML=it.label;
+    b.onclick=()=>onSet(it.id);
+    el.appendChild(b);
+  });
+}
+function refreshChips(){
+  buildChips('typeChips',TYPES,curType,id=>{curType=id;newProblem();});
+  buildChips('klassChips',GRUPPER,curGrupp,id=>{curGrupp=id;newProblem();});
+  buildChips('diffChips',DIFFS,curDiff,id=>{curDiff=id;newProblem();});
+}
+
+/* ---------- SVG-ritare för streckformler ---------- */
+function drawMol(st){
+  const atoms=st.c.split('');
+  const n=atoms.length;
+  const bonds=atomBonds(st);
+  const subs=subsByIndex(st);
+  const DX=30, DY=17;
+  const px=i=>i*DX;
+  const py=i=>((i%2)+2)%2===0 ? DY : 0;
+  const parts=[];
+  let minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;
+  const ext=(x,y,rx,ry)=>{minx=Math.min(minx,x-rx);maxx=Math.max(maxx,x+rx);
+    miny=Math.min(miny,y-ry);maxy=Math.max(maxy,y+ry);};
+  function line(x1,y1,x2,y2){
+    parts.push('<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+
+      '" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'"/>');
+    ext(x1,y1,2,2); ext(x2,y2,2,2);
+  }
+  function txt(x,y,html,len){
+    parts.push('<text x="'+x.toFixed(1)+'" y="'+(y+4.5).toFixed(1)+
+      '" text-anchor="middle">'+html+'</text>');
+    ext(x,y,5+4.6*len,9);
+  }
+  const gapOf=i=>{
+    if(atoms[i]==='C') return 0;
+    const h=hFor(atoms,bonds,subs,i);
+    return atoms[i]==='N'&&h>0 ? 13 : 9;
+  };
+  /* kedjans bindningar */
+  for(let j=0;j<n-1;j++){
+    const x1=px(j),y1=py(j),x2=px(j+1),y2=py(j+1);
+    const len=Math.hypot(x2-x1,y2-y1);
+    const ux=(x2-x1)/len, uy=(y2-y1)/len;
+    const g1=gapOf(j), g2=gapOf(j+1);
+    const a={x:x1+ux*g1,y:y1+uy*g1}, b={x:x2-ux*g2,y:y2-uy*g2};
+    const nx=-uy, ny=ux;
+    const o=bonds[j];
+    if(o===1) line(a.x,a.y,b.x,b.y);
+    else if(o===2){
+      line(a.x+nx*2.6,a.y+ny*2.6,b.x+nx*2.6,b.y+ny*2.6);
+      line(a.x-nx*2.6,a.y-ny*2.6,b.x-nx*2.6,b.y-ny*2.6);
+    } else {
+      line(a.x,a.y,b.x,b.y);
+      line(a.x+nx*3.4,a.y+ny*3.4,b.x+nx*3.4,b.y+ny*3.4);
+      line(a.x-nx*3.4,a.y-ny*3.4,b.x-nx*3.4,b.y-ny*3.4);
+    }
+  }
+  /* heteroatomer i kedjan */
+  for(let i=0;i<n;i++){
+    if(atoms[i]==='C') continue;
+    const h=hFor(atoms,bonds,subs,i);
+    const label=atoms[i]+(h>0?'H':'');
+    txt(px(i),py(i),label,label.length);
+  }
+  /* sidogrupper */
+  function extPoint(i){
+    const k = i===0 ? -1 : i+1;
+    return {x:px(k), y:py(k)};
+  }
+  for(let i=0;i<n;i++){
+    const list=(subs[i]||[]).slice();
+    if(atoms[i]!=='C') continue;
+    /* explicit H på formylkol */
+    if(list.includes('=O') && (i===0||i===n-1) && hFor(atoms,bonds,subs,i)===1 && n>1){
+      list.push('Hx');
+    }
+    const d0=py(i)===DY ? 1 : -1;
+    let vert=0;
+    list.forEach(g=>{
+      const x=px(i), y=py(i);
+      if(g==='OHx' || g==='Hx'){
+        const q=extPoint(i);
+        const len=Math.hypot(q.x-x,q.y-y);
+        const ux=(q.x-x)/len, uy=(q.y-y)/len;
+        const gap=g==='OHx'?12:8;
+        line(x,y,q.x-ux*gap,q.y-uy*gap);
+        txt(q.x,q.y,g==='OHx'?'OH':'H',g==='OHx'?2:1);
+        return;
+      }
+      const d=vert===0?d0:-d0; vert++;
+      if(g==='=O'){
+        line(x-2.6,y+d*4,x-2.6,y+d*20);
+        line(x+2.6,y+d*4,x+2.6,y+d*20);
+        txt(x,y+d*30,'O',1);
+      } else if(g==='CH3'){
+        line(x,y+d*3,x,y+d*27);
+      } else if(g==='C2H5'){
+        line(x,y+d*3,x,y+d*23);
+        line(x,y+d*23,x+17,y+d*33);
+      } else {
+        line(x,y+d*3,x,y+d*20);
+        let html=g, len=g.length;
+        if(g==='NH2'){ html='NH<tspan dy="3" font-size="10">2</tspan>'; len=3; }
+        txt(x,y+d*31,html,len);
+      }
+    });
+  }
+  const W=maxx-minx+16, H=maxy-miny+16;
+  return '<svg class="molsvg" role="img" aria-label="Strukturformel" viewBox="'+
+    (minx-8).toFixed(1)+' '+(miny-8).toFixed(1)+' '+W.toFixed(1)+' '+H.toFixed(1)+
+    '" width="'+Math.round(W*1.25)+'" height="'+Math.round(H*1.25)+'">'+
+    parts.join('')+'</svg>';
+}
+function molHTML(p){
+  if(p.viz==='text') return '<span class="molvisning">'+fSub(p.plain)+'</span>';
+  p.c._svg = p.c._svg || drawMol(p.c.st);
+  return p.c._svg;
+}
+
+/* ---------- lösningssteg ---------- */
+function ipos(c,p){ return c.st.rev ? (c.st.c.length+1-p) : p; }
+function cCount(c){ return c.st.c.split('').filter(a=>a==='C').length; }
+function grenPrefix(c){
+  const m={};
+  (c.st.s||[]).forEach(s=>{
+    if(s[1]==='CH3'||s[1]==='C2H5'){
+      const nm=s[1]==='CH3'?'metyl':'etyl';
+      (m[nm]=m[nm]||[]).push(ipos(c,s[0]));
+    }
+  });
+  return m;
+}
+function grenText(m){
+  const MULT={1:'',2:'di',3:'tri'};
+  return Object.keys(m).sort().map(nm=>{
+    const ps=m[nm].slice().sort((a,b)=>a-b);
+    return ps.join(',')+'-'+MULT[ps.length]+nm;
+  }).join(' och ');
+}
+function grenBeskrivning(m){
+  return Object.keys(m).sort().map(nm=>{
+    const ps=m[nm].slice().sort((a,b)=>a-b);
+    return nm+' på kolatom '+ps.join(' och ');
+  }).join(', ');
+}
+function solutionSteps(c){
+  const steps=[];
+  const cn=cCount(c);
+  const stam=STAM[cn]||('C'+cn+'-kedja');
+  const grenar=grenPrefix(c);
+  const harGrenar=Object.keys(grenar).length>0;
+  const formelM='<b>'+c.namn+'</b> \u00b7 '+fSub(c.plain);
+  const grenSteg={text:'Numrera kedjan så att lokanterna blir så låga som möjligt och ange sidogrupperna som prefix, i alfabetisk ordning.',
+    math:grenBeskrivning(grenar)+' ger prefixet '+grenText(grenar)+'-'};
+
+  if(c.klass==='eter'){
+    const oi=c.st.c.indexOf('O');
+    const g1=ALKYL[oi], g2=ALKYL[c.st.c.length-1-oi];
+    const delar = g1===g2 ? 'två lika grupper ('+g1+') ger prefixet di-'
+      : [g1,g2].sort().join(' + ')+' i alfabetisk ordning';
+    steps.push({text:'Två kolkedjor sitter på samma syreatom: föreningen är en eter.',
+      math:fSub(c.plain)});
+    steps.push({text:'Namnge alkylgrupperna på syrets båda sidor och avsluta med eter.',
+      math:delar});
+    steps.push({text:'Sätt ihop namnet.', math:formelM});
+    return steps;
+  }
+  if(c.klass==='ester'){
+    const oi=c.st.c.indexOf('O');
+    const co=c.st.s.find(s=>s[1]==='=O')[0]-1;
+    const acidC = co<oi ? oi : c.st.c.length-1-oi;
+    const alkC = co<oi ? c.st.c.length-1-oi : oi;
+    steps.push({text:'Estern har två delar: syradelen med C=O och alkoholdelen som sitter fast via syreatomen.',
+      math:fSub(c.plain)});
+    steps.push({text:'Alkoholdelens kolkedja ger alkylprefixet. Syradelens kolkedja ger stammen med ändelsen -oat.',
+      math:ALKYL[alkC]+' + '+STAM[acidC]+'oat'});
+    steps.push({text:'Sätt ihop namnet: alkylgruppen först, sedan syradelen.', math:formelM});
+    return steps;
+  }
+
+  steps.push({text:'Räkna kolatomerna i den längsta kedjan. Antalet ger stammen.',
+    math:cn+' kolatomer ger stammen '+stam});
+
+  if(c.klass==='alkan'){
+    if(harGrenar) steps.push(grenSteg);
+    else steps.push({text:'Kedjan är ogrenad och har bara enkelbindningar. Ändelsen för alkaner är -an.',
+      math:stam});
+  } else if(c.klass==='alken'||c.klass==='alkyn'){
+    const bonds=atomBonds(c.st);
+    const j=bonds.findIndex(b=>b>1);
+    const lo=Math.min(ipos(c,j+1),ipos(c,j+2));
+    const typ=c.klass==='alken'?'Dubbelbindningen':'Trippelbindningen';
+    const and=c.klass==='alken'?'-en':'-yn';
+    steps.push({text:typ+' ger ändelsen '+and+' och ska få lägsta möjliga lokant. Numrera från det håll där bindningen kommer först.',
+      math:'bindningen sitter mellan kolatom '+lo+' och '+(lo+1)+
+        (c.hasLok?' och får lokanten '+lo:', ingen lokant behövs här')});
+    if(harGrenar) steps.push(grenSteg);
+  } else if(c.klass==='alkohol'||c.klass==='diol'||c.klass==='triol'){
+    const ohs=(c.st.s||[]).filter(s=>s[1]==='OH').map(s=>ipos(c,s[0])).sort((a,b)=>a-b);
+    const and=c.klass==='alkohol'?'-ol':(c.klass==='diol'?'-diol':'-triol');
+    const t=c.klass==='alkohol'
+      ? 'OH-gruppen ger ändelsen -ol och styr numreringen: den ska få lägsta möjliga lokant.'
+      : 'Flera OH-grupper ger ändelsen '+and+', och alla lokanter anges i namnet.';
+    steps.push({text:t, math:'OH på kolatom '+ohs.join(', ')});
+    if(harGrenar) steps.push(grenSteg);
+  } else if(c.klass==='aldehyd'){
+    steps.push({text:'CHO-gruppen sitter alltid i kedjans ände och är kolatom 1. Ändelsen är -al och gruppen behöver ingen lokant.',
+      math:'CHO = kolatom 1'});
+    if(harGrenar) steps.push(grenSteg);
+  } else if(c.klass==='keton'){
+    const p=ipos(c,c.st.s.find(s=>s[1]==='=O')[0]);
+    steps.push({text:'Karbonylgruppen C=O sitter inne i kedjan: föreningen är en keton med ändelsen -on. Numrera så att gruppen får lägsta möjliga lokant.',
+      math:'C=O på kolatom '+p});
+    if(harGrenar) steps.push(grenSteg);
+  } else if(c.klass==='syra'){
+    steps.push({text:'COOH-gruppen sitter alltid i kedjans ände och är kolatom 1. Ändelsen är -syra och gruppen behöver ingen lokant.',
+      math:'COOH = kolatom 1'});
+    if(harGrenar) steps.push(grenSteg);
+  } else if(c.klass==='amin'){
+    const p=ipos(c,c.st.s.find(s=>s[1]==='NH2')[0]);
+    steps.push({text:'NH2-gruppen ger ändelsen -amin med lokant. Korta aminer kan också namnges som alkylamin.',
+      math:'NH2 på kolatom '+p});
+    if(harGrenar) steps.push(grenSteg);
+  } else if(c.klass==='halogen'){
+    const hs={};
+    (c.st.s||[]).forEach(s=>{ if(HALS.includes(s[1])){
+      const nm=HALNAMN[s[1]]; (hs[nm]=hs[nm]||[]).push(ipos(c,s[0])); }});
+    const desc=Object.keys(hs).sort().map(nm=>nm+' på kolatom '+
+      hs[nm].sort((a,b)=>a-b).join(' och ')).join(', ');
+    steps.push({text:'Halogener anges som prefix: fluor-, klor-, brom- eller jod-. Numrera så att lokanterna blir så låga som möjligt.',
+      math:desc});
+    if(harGrenar) steps.push(grenSteg);
+  }
+  steps.push({text:'Sätt ihop namnet: prefix med lokanter, sedan stammen med ändelsen.',
+    math:formelM});
+  return steps;
+}
+
+function renderSteps(p){
+  const st=$('steps'); st.innerHTML='';
+  solutionSteps(p.c).forEach((s,i)=>{
+    const div=document.createElement('div');
+    div.className='step';
+    div.innerHTML='<span class="n">'+(i+1)+'</span><span class="t">'+s.text+
+      '<span class="m">'+s.math+'</span></span>';
+    st.appendChild(div);
+  });
+}
+
+/* ---------- rendering ---------- */
+function qTextFor(p){
+  if(p.mode==='namn')
+    return 'Vad heter föreningen nedan? Ange det systematiska namnet.';
+  return 'Skriv den kondenserade strukturformeln för <b>'+p.namn+'</b>.';
+}
+function renderProblem(p, review){
+  const diffLabel = review ? 'Historik' : DIFFS.find(d=>d.id===curDiff).label;
+  $('qtag').innerHTML=MODENAMN[p.mode]+' \u00b7 '+diffLabel;
+  $('qtag').className='qtype-tag'+(review?' review-tag':'');
+  $('qtext').innerHTML=qTextFor(p);
+  const g=$('given');
+  if(p.mode==='namn' && p.viz==='text' && p.c.diff==='latt' && !review){
+    g.style.display='block';
+    g.textContent='Ämnesklass: '+KLASSNAMN[p.c.klass];
+  } else g.style.display='none';
+  const my=$('molyta');
+  if(p.mode==='namn'){ my.style.display='flex'; my.innerHTML=molHTML(p); }
+  else { my.style.display='none'; my.innerHTML=''; }
+  const hint=$('inputHint');
+  if(review){ hint.style.display='none'; }
+  else if(p.mode==='formel'){
+    hint.style.display='block';
+    hint.textContent='Skriv med vanliga siffror och parenteser för grenar, t.ex. CH3CH(CH3)CH2OH. Bindestreck och = går bra men behövs inte.';
+  } else {
+    hint.style.display='block';
+    hint.textContent='Skriv namnet med små bokstäver, t.ex. butan-2-ol eller 2-metylpentan.';
+  }
+  $('feedback').className='feedback'; $('feedback').innerHTML='';
+  $('solution').className='solution';
+}
+
+function newProblem(){
+  reviewing=false; savedState=null;
+  refreshChips();
+  problem=generateFresh(curType, curDiff, curGrupp);
+  answered=false; revealed=false; currentEntry=null;
+  renderProblem(problem, false);
+  $('textsvar').value=''; $('textsvar').readOnly=false;
+  $('checkBtn').style.display='inline-block';
+  $('solBtn').style.display='inline-block';
+  $('nextBtn').style.display='inline-block';
+  $('backBtn').style.display='none';
+  $('textsvar').focus();
+}
+
+/* ---------- historik ---------- */
+function ensureEntry(){
+  if(currentEntry) return currentEntry;
+  histCounter++;
+  currentEntry={n:histCounter, problem, user:'', status:'fel'};
+  history.unshift(currentEntry);
+  renderHistory();
+  return currentEntry;
+}
+const STATUS_LABEL={ok:'rätt \u2713', warn:'rätt (detalj)', fel:'fel \u2717', reveal:'visade lösning'};
+
+function renderHistory(){
+  const panel=$('histPanel');
+  if(!history.length){ panel.style.display='none'; return; }
+  panel.style.display='block';
+  const list=$('histList'); list.innerHTML='';
+  history.forEach(e=>{
+    const b=document.createElement('button');
+    b.className='hist-item';
+    b.innerHTML='<span class="hn">#'+e.n+'</span><span class="ht">'+
+      MODENAMN[e.problem.mode]+': '+e.problem.namn+' ('+fSub(e.problem.plain)+')</span>'+
+      '<span class="hs s-'+e.status+'">'+STATUS_LABEL[e.status]+'</span>';
+    b.onclick=()=>openReview(e);
+    list.appendChild(b);
+  });
+}
+
+function openReview(entry){
+  if(!reviewing){
+    savedState={problem, answered, revealed,
+      input:$('textsvar').value,
+      fbClass:$('feedback').className, fbHTML:$('feedback').innerHTML,
+      solOpen:$('solution').classList.contains('open')};
+  }
+  reviewing=true;
+  problem=entry.problem;
+  renderProblem(problem, true);
+  $('molyta').style.display='flex'; $('molyta').innerHTML=molHTML(problem);
+  $('textsvar').value=typeof entry.user==='string'?entry.user:'';
+  $('textsvar').readOnly=true;
+  $('checkBtn').style.display='none';
+  $('solBtn').style.display='none';
+  $('backBtn').style.display='inline-block';
+  const fb=$('feedback');
+  fb.className='feedback '+(entry.status==='ok'?'ok':entry.status==='fel'?'fel':'warn');
+  fb.innerHTML='Resultat: '+STATUS_LABEL[entry.status]+'. Facit: <b>'+entry.problem.namn+
+    '</b> ('+fSub(entry.problem.plain)+').<br>Klicka <b>\u2190 Fortsätt träna</b> för att återgå, eller <b>Ny uppgift</b> för att börja en ny.';
+  $('solution').className='solution open';
+  renderSteps(entry.problem);
+  window.scrollTo({top:0});
+}
+
+function closeReview(){
+  reviewing=false;
+  const s=savedState; savedState=null;
+  if(!s){ newProblem(); return; }
+  problem=s.problem; answered=s.answered; revealed=s.revealed;
+  renderProblem(problem, false);
+  $('textsvar').value=s.input; $('textsvar').readOnly=false;
+  $('feedback').className=s.fbClass; $('feedback').innerHTML=s.fbHTML;
+  $('solution').className='solution'+(s.solOpen?' open':'');
+  if(s.solOpen) renderSteps(problem);
+  $('checkBtn').style.display='inline-block';
+  $('solBtn').style.display='inline-block';
+  $('backBtn').style.display='none';
+}
+
+/* ---------- kontroll ---------- */
+function registerResult(correct, userRepr, isFel){
+  if(!answered && !revealed){
+    score.tot++;
+    if(correct){ score.ok++; score.streak++; } else score.streak=0;
+    answered=true; updateScore();
+  }
+  const entry=ensureEntry();
+  entry.user=userRepr;
+  if(entry.status!=='reveal' && entry.status!=='ok')
+    entry.status = isFel ? 'fel' : (correct==='warn'?'warn':'ok');
+  renderHistory();
+}
+
+function check(){
+  if(reviewing) return;
+  const fb=$('feedback');
+  const raw=$('textsvar').value;
+  const c=problem.c;
+  if(problem.mode==='namn'){
+    const res=checkNamn(c, raw);
+    if(res.status==='invalid'){
+      fb.className='feedback fel';
+      fb.innerHTML='Skriv ett namn, t.ex. butan eller propan-2-ol.';
+      return;
+    }
+    const correct=res.status!=='fel';
+    registerResult(res.status==='warn'?'warn':correct, raw, !correct);
+    if(res.status==='ok'){
+      fb.className='feedback ok';
+      fb.innerHTML='Rätt! \u2713 Föreningen heter <b>'+c.namn+'</b>.';
+    } else if(res.status==='warn'){
+      fb.className='feedback warn';
+      if(res.skal==='trivial')
+        fb.innerHTML='Rätt ämne! Det där är trivialnamnet. Det systematiska namnet är <b>'+c.namn+'</b>. Räknas som rätt.';
+      else if(res.skal==='riktning')
+        fb.innerHTML='Rätt molekyl, men lokanterna ska väljas så låga som möjligt: <b>'+c.namn+'</b>. Räknas som rätt.';
+      else if(res.skal==='onodig')
+        fb.innerHTML='Rätt namn, men lokanten behövs inte här. Det räcker med <b>'+c.namn+'</b>. Räknas som rätt.';
+      else if(res.skal==='ordning')
+        fb.innerHTML='Rätt grupper, men de anges i alfabetisk ordning: <b>'+c.namn+'</b>. Räknas som rätt.';
+      else if(res.skal==='lokfri')
+        fb.innerHTML='Rätt förening! Gruppens plats är entydig här, men skriv gärna lokanten ändå: <b>'+c.namn+'</b>. Räknas som rätt.';
+      else
+        fb.innerHTML='Rätt! \u2713 <b>'+c.namn+'</b>. Räknas som rätt.';
+    } else if(res.skal==='lokant'){
+      fb.className='feedback fel';
+      fb.innerHTML='Nästan! Namnet behöver lokanter som visar var grupperna sitter. Numrera huvudkedjan och ange positionerna med siffror.';
+    } else if(res.skal==='fellok'){
+      fb.className='feedback fel';
+      fb.innerHTML='Nästan! Kedjan och ämnesklassen stämmer, men lokanten stämmer inte. Numrera från det håll som ger lägsta möjliga lokant.';
+    } else {
+      fb.className='feedback fel';
+      fb.innerHTML='Inte riktigt. Kontrollera längsta kedjan, ämnesklassens ändelse och lokanterna. Ändelserna hittar du i Mafys tabeller.';
+    }
+  } else {
+    const res=checkFormel(c, raw);
+    if(res.status==='invalid'){
+      fb.className='feedback fel';
+      fb.innerHTML='Skriv en strukturformel med bokstäver, siffror och eventuella parenteser, t.ex. CH3CH2OH.';
+      return;
+    }
+    const correct=res.status==='ok';
+    registerResult(correct, raw, !correct);
+    if(correct){
+      fb.className='feedback ok';
+      fb.innerHTML='Rätt! \u2713 '+fSub(c.plain)+' är '+c.namn+'.';
+    } else if(res.skal==='summa'){
+      fb.className='feedback fel';
+      fb.innerHTML='Det där är summaformeln. Skriv strukturformeln som visar hur atomerna sitter ihop, t.ex. CH3CH2CH2CH3 i stället för C4H10.';
+    } else if(res.skal==='struktur'){
+      fb.className='feedback fel';
+      fb.innerHTML='Summaformeln stämmer, men det där motsvarar inte strukturen för <b>'+c.namn+'</b>. Kontrollera var grupperna sitter och jämför med lösningen.';
+    } else if(res.skal==='tolkning'){
+      fb.className='feedback fel';
+      fb.innerHTML='Formeln kunde inte tolkas. Skriv i stil med CH3CH(CH3)CH2OH, med vanliga siffror och parenteser för grenar.';
+    } else {
+      fb.className='feedback fel';
+      fb.innerHTML='Inte riktigt. Räkna kolatomerna i namnet och kontrollera gruppernas platser.';
+    }
+  }
+}
+
+function reveal(){
+  if(reviewing) return;
+  if(!answered){
+    const entry=ensureEntry();
+    entry.status='reveal';
+    renderHistory();
+  }
+  revealed=true;
+  $('textsvar').value = problem.mode==='namn' ? problem.namn : problem.plain;
+  $('solution').className='solution open';
+  renderSteps(problem);
+}
+
+function updateScore(){
+  $('scoreOk').textContent=score.ok;
+  $('scoreTot').textContent=score.tot;
+  $('streak').textContent = score.streak>=2 ? '🔥 '+score.streak+' i rad' : '';
+}
+
+$('checkBtn').onclick=check;
+$('textsvar').addEventListener('keydown',e=>{ if(e.key==='Enter') check(); });
+$('solBtn').onclick=reveal;
+$('nextBtn').onclick=newProblem;
+$('backBtn').onclick=closeReview;
+
+window.__felContext=()=>problem?{
+  Uppgift:qTextFor(problem).replace(/<[^>]*>/g,''),
+  Facit:problem.namn+' = '+problem.plain,
+  Signatur:problem.signature
+}:null;
+
+newProblem();
+}
+</script>
+<button class="felknapp" id="felBtn">Hittade du ett fel?</button>
+<div class="felpanel" id="felPanel" hidden>
+  <h3>Rapportera ett fel</h3>
+  <textarea id="felText" placeholder="Beskriv felet: vad gjorde du, vad hände, vad förväntade du dig?"></textarea>
+  <div class="felmeta" id="felMeta"></div>
+  <div class="felrad">
+    <button class="btn-primary" id="felSkicka">Skicka via e-post</button>
+    <button class="btn-ghost" id="felKopiera">Kopiera rapporten</button>
+  </div>
+  <div class="felok" id="felOk"></div>
+</div>
+<script>
+(function(){
+const FELMAIL='kauremaa.aleksi@gmail.com';
+const $=id=>document.getElementById(id);
+function ctx(){ try{return (window.__felContext&&window.__felContext())||null;}catch(e){return null;} }
+function report(){
+  let s='Sida: '+document.title+'\nAdress: '+location.href+'\nTid: '+new Date().toLocaleString('sv-FI');
+  const c=ctx();
+  if(c){ for(const k in c) s+='\n'+k+': '+c[k]; }
+  s+='\nWebbläsare: '+navigator.userAgent;
+  return s;
+}
+$('felBtn').onclick=()=>{
+  const p=$('felPanel'); p.hidden=!p.hidden;
+  if(!p.hidden){ $('felMeta').textContent=report(); $('felOk').style.display='none'; }
+};
+$('felSkicka').onclick=()=>{
+  const body=($('felText').value||'(ingen beskrivning)')+'\n\n--- Automatisk information ---\n'+report();
+  location.href='mailto:'+FELMAIL+'?subject='+encodeURIComponent('Felrapport: '+document.title)+'&body='+encodeURIComponent(body);
+};
+$('felKopiera').onclick=async()=>{
+  const t=($('felText').value||'(ingen beskrivning)')+'\n\n--- Automatisk information ---\n'+report();
+  try{ await navigator.clipboard.writeText(t); $('felOk').textContent='Kopierad! Klistra in i Wilma eller e-post.'; }
+  catch(e){ $('felOk').textContent='Kopiering blockerades. Markera texten ovan och kopiera manuellt.'; }
+  $('felOk').style.display='block';
+};
+})();
+</script>
+</body>
+</html>
