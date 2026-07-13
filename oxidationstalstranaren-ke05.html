@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oxidationstalstränaren · KE05</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5FAFC;
+    --grid:#E0EFF4;
+    --grid-major:#CFE5ED;
+    --ink:#12262E;
+    --ink-soft:#4E6B76;
+    --accent:#0E6E8C;
+    --accent-hover:#0A5870;
+    --accent-soft:#E2F0F5;
+    --green:#1D7A33;
+    --green-soft:#E4F3E6;
+    --amber:#B2590B;
+    --amber-soft:#FBEFE0;
+    --red:#A8332C;
+    --red-soft:#F8E7E5;
+    --card:#FFFFFF;
+    --line:#CFE0E7;
+    --radius:10px;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sans:'IBM Plex Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:var(--sans);color:var(--ink);
+    background-color:var(--paper);
+    background-image:
+      linear-gradient(var(--grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:100px 100px,100px 100px,20px 20px,20px 20px;
+    min-height:100vh;padding:24px 16px 64px;line-height:1.5;
+  }
+  .wrap{max-width:840px;margin:0 auto}
+  .hem{display:inline-block;font-family:var(--mono);font-size:13px;font-weight:600;
+    color:var(--ink-soft);text-decoration:none;margin-bottom:10px;padding:4px 0}
+  .hem:hover{color:var(--accent)}
+  .hem:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  header{margin-bottom:20px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-size:clamp(26px,5vw,36px);font-weight:700;letter-spacing:-.01em;line-height:1.15}
+  .sub{color:var(--ink-soft);font-size:15px;margin-top:4px}
+
+  .panel{background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:16px;margin-bottom:14px;
+    box-shadow:0 1px 3px rgba(18,38,46,.06)}
+  .controls{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+  .ctrl-group{display:flex;flex-direction:column;gap:6px}
+  .ctrl-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-family:var(--sans);font-size:14px;font-weight:500;
+    padding:7px 13px;border-radius:999px;border:1.5px solid var(--line);
+    background:var(--card);color:var(--ink);cursor:pointer;transition:all .12s}
+  .chip:hover{border-color:var(--accent)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .chip:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .scorebar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;
+    font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+  .scorebar b{color:var(--ink);font-weight:600}
+  .streak{color:var(--amber);font-weight:600}
+
+  .qtype-tag{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;
+    color:var(--accent);background:var(--accent-soft);
+    padding:3px 10px;border-radius:6px;margin-bottom:12px;letter-spacing:.04em}
+  .review-tag{background:var(--amber-soft);color:var(--amber)}
+  .qtext{font-size:16.5px;margin-bottom:6px}
+  .qtext b{font-weight:600}
+  .qtext sub{font-size:.7em} .qtext sup{font-size:.7em}
+
+  .formelruta{
+    font-family:var(--mono);font-weight:600;font-size:clamp(20px,4.4vw,27px);
+    background:var(--accent-soft);color:var(--accent);
+    padding:14px 18px;border-radius:10px;text-align:center;margin:14px 0 6px;
+    overflow-x:auto;white-space:nowrap;
+  }
+  .formelruta sub{font-size:.66em} .formelruta sup{font-size:.66em}
+  .ekvruta{font-size:clamp(16px,3.6vw,22px)}
+  .markerad{background:#fff;border-radius:6px;padding:1px 5px;
+    box-shadow:inset 0 0 0 2px var(--accent)}
+
+  .valrad{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .valknapp{font-family:var(--mono);font-size:16px;font-weight:600;
+    padding:12px 18px;border-radius:9px;border:1.5px solid var(--line);
+    background:var(--card);color:var(--ink);cursor:pointer;flex:1;min-width:120px}
+  .valknapp sub{font-size:.7em} .valknapp sup{font-size:.7em}
+  .valknapp:hover{border-color:var(--accent);color:var(--accent)}
+  .valknapp.vald{background:var(--accent);border-color:var(--accent);color:#fff}
+  .valknapp:disabled{cursor:default;opacity:.75}
+  .valknapp.vald:disabled{opacity:1}
+
+  .answer-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+  input.textsvar{font-family:var(--mono);font-size:19px;font-weight:600;
+    padding:10px 14px;border:1.5px solid var(--line);border-radius:8px;
+    width:150px;color:var(--ink);background:var(--card);text-align:center}
+  input.textsvar:focus{border-color:var(--accent)}
+  input.textsvar[readonly]{background:var(--paper);color:var(--ink-soft)}
+  button{font-family:var(--sans);font-size:15px;font-weight:600;
+    padding:10px 18px;border-radius:8px;cursor:pointer;border:1.5px solid transparent;transition:all .12s}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-hover)}
+  .btn-ghost{background:var(--card);border-color:var(--line);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .hint{font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-top:8px}
+
+  .feedback{margin-top:12px;padding:12px 14px;border-radius:8px;font-size:15px;display:none;font-weight:500}
+  .feedback.ok{display:block;background:var(--green-soft);color:var(--green);border:1px solid #BFE3C4}
+  .feedback.warn{display:block;background:var(--amber-soft);color:var(--amber);border:1px solid #EFD3B2}
+  .feedback.fel{display:block;background:var(--red-soft);color:var(--red);border:1px solid #EBC4C0}
+  .feedback sub{font-size:.7em} .feedback sup{font-size:.7em}
+
+  .solution{margin-top:14px;display:none}
+  .solution.open{display:block}
+  .sol-head{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:8px}
+  .step{background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    padding:10px 14px;margin-bottom:8px;font-size:15px;display:flex;gap:12px;align-items:baseline}
+  .step .n{font-family:var(--mono);font-weight:600;color:var(--accent);font-size:13px;flex-shrink:0}
+  .step .t{flex:1}
+  .step .t .m{font-family:var(--mono);font-size:14.5px;display:block;margin-top:3px;color:var(--ink);overflow-x:auto}
+  .step sub{font-size:.7em} .step sup{font-size:.7em}
+
+  .hist-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
+  .hist-note{font-size:12px;color:var(--ink-soft);font-family:var(--mono)}
+  .hist-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+  .hist-item{display:flex;gap:10px;align-items:baseline;text-align:left;
+    font-family:var(--sans);font-size:14px;
+    background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;width:100%}
+  .hist-item:hover{border-color:var(--accent)}
+  .hist-item .hn{font-family:var(--mono);font-weight:600;color:var(--ink-soft);font-size:12px;flex-shrink:0}
+  .hist-item .ht{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hist-item .ht sub{font-size:.7em} .hist-item .ht sup{font-size:.7em}
+  .hist-item .hs{font-family:var(--mono);font-size:12px;font-weight:600;flex-shrink:0}
+  .hs.s-ok{color:var(--green)} .hs.s-warn{color:var(--amber)} .hs.s-fel{color:var(--red)} .hs.s-reveal{color:var(--ink-soft)}
+
+  .felknapp{position:fixed;right:16px;bottom:16px;z-index:50;font-size:13px;
+    background:var(--card);color:var(--ink-soft);border:1.5px solid var(--line);
+    border-radius:999px;padding:9px 14px;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+  .felknapp:hover{color:var(--accent);border-color:var(--accent)}
+  .felpanel{position:fixed;right:16px;bottom:64px;z-index:50;
+    width:min(340px,calc(100vw - 32px));background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:14px;
+    box-shadow:0 8px 28px rgba(0,0,0,.2)}
+  .felpanel h3{font-size:14px;margin-bottom:6px}
+  .felpanel textarea{width:100%;height:70px;font-family:var(--sans);font-size:13px;
+    padding:8px;border:1.5px solid var(--line);border-radius:8px;
+    background:var(--paper);color:var(--ink);resize:vertical}
+  .felmeta{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);
+    background:var(--paper);border-radius:6px;padding:6px 8px;margin:8px 0;
+    max-height:70px;overflow:auto;white-space:pre-wrap}
+  .felrad{display:flex;gap:6px}
+  .felrad button{flex:1;font-size:12.5px;padding:8px 6px}
+  .felok{font-size:12px;color:var(--green);margin-top:6px;display:none}
+
+  footer{margin-top:24px;font-size:13px;color:var(--ink-soft);text-align:center;
+    font-family:var(--mono);line-height:1.7}
+  @media (max-width:560px){
+    body{padding:16px 10px 48px}
+    .panel{padding:13px}
+    .valknapp{min-width:100%}
+  }
+  @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="hem" href="index.html">&#8592; Startsidan</a>
+  <header>
+    <div class="eyebrow">KE05 · Kemisk energi och cirkulär ekonomi · GLP2019</div>
+    <h1>Oxidationstalstränaren</h1>
+    <div class="sub">Bestäm oxidationstal, avgör vad som oxideras och reduceras, och hitta oxidationsmedlet. Oxidationstal skrivs med romerska siffror.</div>
+  </header>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="ctrl-group">
+        <span class="ctrl-label">Uppgiftstyp</span>
+        <div class="chips" id="typeChips" role="group" aria-label="Uppgiftstyp"></div>
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">Svårighetsgrad</span>
+        <div class="chips" id="diffChips" role="group" aria-label="Svårighetsgrad"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="scorebar">
+      <span>Rätt: <b id="scoreOk">0</b> / <b id="scoreTot">0</b></span>
+      <span class="streak" id="streak"></span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <span class="qtype-tag" id="qtag"></span>
+    <div class="qtext" id="qtext"></div>
+    <div class="formelruta" id="formelruta"></div>
+
+    <div class="valrad" id="valrad" style="display:none"></div>
+
+    <div class="answer-row">
+      <input type="text" class="textsvar" id="textsvar" autocomplete="off" autocapitalize="characters" spellcheck="false" style="display:none" aria-label="Oxidationstal">
+      <button class="btn-primary" id="checkBtn">Kontrollera</button>
+      <button class="btn-ghost" id="solBtn">Visa lösning</button>
+      <button class="btn-ghost" id="nextBtn">Ny uppgift &#8594;</button>
+      <button class="btn-primary" id="backBtn" style="display:none">&#8592; Fortsätt träna</button>
+    </div>
+    <div class="hint" id="inputHint" style="display:none"></div>
+
+    <div class="feedback" id="feedback" role="status"></div>
+
+    <div class="solution" id="solution">
+      <div class="sol-head">Lösning steg för steg</div>
+      <div id="steps"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="histPanel" style="display:none">
+    <div class="hist-head">
+      <span class="ctrl-label">Historik</span>
+      <span class="hist-note">rensas när sidan laddas om</span>
+    </div>
+    <div class="hist-list" id="histList"></div>
+  </div>
+
+  <footer>
+    Summan av alla oxidationstal är noll i en neutral förening,<br>
+    och lika med laddningen i en jon.
+  </footer>
+</div>
+
+<script>
+'use strict';
+/* ================================================================
+   LOGIK: ren och testbar
+   ================================================================ */
+
+const ELEMENTNAMN = {
+  H:'väte', C:'kol', N:'kväve', O:'syre', F:'fluor', Na:'natrium',
+  Mg:'magnesium', Al:'aluminium', P:'fosfor', S:'svavel', Cl:'klor',
+  K:'kalium', Ca:'kalcium', Cr:'krom', Mn:'mangan', Fe:'järn',
+  Cu:'koppar', Zn:'zink', Ag:'silver', Ba:'barium', I:'jod'
+};
+
+/* Föreningar och joner. Varje ox-värde kontrolleras av testsviten
+   mot summaregeln: summa(antal * oxtal) = laddning. */
+const FORENINGAR = [
+  /* lätt: grundämnen, enkla binära föreningar */
+  {f:'Fe',    q:0, ox:{Fe:0}, ask:['Fe'], diff:'latt', grund:true},
+  {f:'O2',    q:0, ox:{O:0},  ask:['O'],  diff:'latt', grund:true},
+  {f:'N2',    q:0, ox:{N:0},  ask:['N'],  diff:'latt', grund:true},
+  {f:'Cl2',   q:0, ox:{Cl:0}, ask:['Cl'], diff:'latt', grund:true},
+  {f:'NaCl',  q:0, ox:{Na:1, Cl:-1},  ask:['Na','Cl'], diff:'latt'},
+  {f:'MgO',   q:0, ox:{Mg:2, O:-2},   ask:['Mg'],      diff:'latt'},
+  {f:'CaCl2', q:0, ox:{Ca:2, Cl:-1},  ask:['Ca','Cl'], diff:'latt'},
+  {f:'Al2O3', q:0, ox:{Al:3, O:-2},   ask:['Al'],      diff:'latt'},
+  {f:'H2O',   q:0, ox:{H:1, O:-2},    ask:['O','H'],   diff:'latt'},
+  {f:'HCl',   q:0, ox:{H:1, Cl:-1},   ask:['Cl'],      diff:'latt'},
+  {f:'CO2',   q:0, ox:{C:4, O:-2},    ask:['C'],       diff:'latt'},
+  {f:'SO2',   q:0, ox:{S:4, O:-2},    ask:['S'],       diff:'latt'},
+  {f:'SO3',   q:0, ox:{S:6, O:-2},    ask:['S'],       diff:'latt'},
+  {f:'NH3',   q:0, ox:{N:-3, H:1},    ask:['N'],       diff:'latt'},
+  {f:'FeCl3', q:0, ox:{Fe:3, Cl:-1},  ask:['Fe'],      diff:'latt'},
+  {f:'FeCl2', q:0, ox:{Fe:2, Cl:-1},  ask:['Fe'],      diff:'latt'},
+  {f:'CuO',   q:0, ox:{Cu:2, O:-2},   ask:['Cu'],      diff:'latt'},
+  {f:'Cu2O',  q:0, ox:{Cu:1, O:-2},   ask:['Cu'],      diff:'latt'},
+  {f:'ZnS',   q:0, ox:{Zn:2, S:-2},   ask:['Zn','S'],  diff:'latt'},
+  {f:'H2S',   q:0, ox:{H:1, S:-2},    ask:['S'],       diff:'latt'},
+
+  /* medel: syror, salter, sammansatta joner */
+  {f:'H2SO4',  q:0, ox:{H:1, S:6, O:-2},   ask:['S'],  diff:'medel'},
+  {f:'HNO3',   q:0, ox:{H:1, N:5, O:-2},   ask:['N'],  diff:'medel'},
+  {f:'H2CO3',  q:0, ox:{H:1, C:4, O:-2},   ask:['C'],  diff:'medel'},
+  {f:'H3PO4',  q:0, ox:{H:1, P:5, O:-2},   ask:['P'],  diff:'medel'},
+  {f:'KMnO4',  q:0, ox:{K:1, Mn:7, O:-2},  ask:['Mn'], diff:'medel'},
+  {f:'K2Cr2O7',q:0, ox:{K:1, Cr:6, O:-2},  ask:['Cr'], diff:'medel'},
+  {f:'Na2SO4', q:0, ox:{Na:1, S:6, O:-2},  ask:['S'],  diff:'medel'},
+  {f:'CaCO3',  q:0, ox:{Ca:2, C:4, O:-2},  ask:['C'],  diff:'medel'},
+  {f:'NaNO3',  q:0, ox:{Na:1, N:5, O:-2},  ask:['N'],  diff:'medel'},
+  {f:'Fe2O3',  q:0, ox:{Fe:3, O:-2},       ask:['Fe'], diff:'medel'},
+  {f:'CH4',    q:0, ox:{C:-4, H:1},        ask:['C'],  diff:'medel'},
+  {f:'SO4',  q:-2, jon:true, ox:{S:6, O:-2},  ask:['S'],  diff:'medel'},
+  {f:'NO3',  q:-1, jon:true, ox:{N:5, O:-2},  ask:['N'],  diff:'medel'},
+  {f:'MnO4', q:-1, jon:true, ox:{Mn:7, O:-2}, ask:['Mn'], diff:'medel'},
+  {f:'CO3',  q:-2, jon:true, ox:{C:4, O:-2},  ask:['C'],  diff:'medel'},
+  {f:'PO4',  q:-3, jon:true, ox:{P:5, O:-2},  ask:['P'],  diff:'medel'},
+  {f:'NH4',  q:1,  jon:true, ox:{N:-3, H:1},  ask:['N'],  diff:'medel'},
+
+  /* svår: undantag och flera obekanta grupper */
+  {f:'H2O2',  q:0, ox:{H:1, O:-1},  ask:['O'], diff:'svar',
+   not:'I peroxider har syre oxidationstalet -I, inte -II.'},
+  {f:'Na2O2', q:0, ox:{Na:1, O:-1}, ask:['O'], diff:'svar',
+   not:'Natrium har alltid +I, så syret måste ha -I. Det här är en peroxid.'},
+  {f:'NaH',   q:0, ox:{Na:1, H:-1}, ask:['H'], diff:'svar',
+   not:'I metallhydrider har väte oxidationstalet -I, inte +I.'},
+  {f:'CaH2',  q:0, ox:{Ca:2, H:-1}, ask:['H'], diff:'svar',
+   not:'I metallhydrider har väte oxidationstalet -I.'},
+  {f:'OF2',   q:0, ox:{O:2, F:-1},  ask:['O'], diff:'svar',
+   not:'Fluor är det mest elektronegativa grundämnet och har alltid -I. Därför blir syret positivt här.'},
+  {f:'Cr2O7', q:-2, jon:true, ox:{Cr:6, O:-2}, ask:['Cr'], diff:'svar'},
+  {f:'S2O3',  q:-2, jon:true, ox:{S:2, O:-2},  ask:['S'],  diff:'svar',
+   not:'Här blir svavlets oxidationstal ett medelvärde för de två svavelatomerna.'},
+  {f:'ClO',   q:-1, jon:true, ox:{Cl:1, O:-2}, ask:['Cl'], diff:'svar'},
+  {f:'ClO3',  q:-1, jon:true, ox:{Cl:5, O:-2}, ask:['Cl'], diff:'svar'},
+  {f:'ClO4',  q:-1, jon:true, ox:{Cl:7, O:-2}, ask:['Cl'], diff:'svar'},
+  {f:'KClO3', q:0, ox:{K:1, Cl:5, O:-2},  ask:['Cl'], diff:'svar'},
+  {f:'N2H4',  q:0, ox:{N:-2, H:1},        ask:['N'],  diff:'svar'},
+  {f:'FeSO4', q:0, ox:{Fe:2, S:6, O:-2},  ask:['Fe'], diff:'svar',
+   not:'Sulfatjonen SO4(2-) är en känd grupp, så järnet måste balansera dess laddning.'},
+  {f:'Fe2(SO4)3', q:0, ox:{Fe:3, S:6, O:-2}, ask:['Fe'], diff:'svar',
+   not:'Sulfatjonen SO4(2-) är en känd grupp, så järnet måste balansera dess laddning.'},
+  {f:'CH3OH', q:0, ox:{C:-2, H:1, O:-2}, ask:['C'], diff:'svar',
+   not:'I organiska föreningar räknar vi ut kolets medeloxidationstal.'},
+  {f:'C2H6',  q:0, ox:{C:-3, H:1}, ask:['C'], diff:'svar',
+   not:'Kolets oxidationstal är ett medelvärde för de två kolatomerna.'},
+  {f:'C2H4',  q:0, ox:{C:-2, H:1}, ask:['C'], diff:'svar',
+   not:'Kolets oxidationstal är ett medelvärde för de två kolatomerna.'}
+];
+
+/* Balanserade redoxreaktioner. Testsviten kontrollerar atombalans,
+   summaregeln per ämne, och att elektronerna går jämnt ut. */
+const REAKTIONER = [
+  {id:'r1', diff:'latt',
+   r:[{k:2,f:'Mg',ox:{Mg:0}},{k:1,f:'O2',ox:{O:0}}],
+   p:[{k:2,f:'MgO',ox:{Mg:2,O:-2}}]},
+  {id:'r2', diff:'latt',
+   r:[{k:2,f:'Na',ox:{Na:0}},{k:1,f:'Cl2',ox:{Cl:0}}],
+   p:[{k:2,f:'NaCl',ox:{Na:1,Cl:-1}}]},
+  {id:'r3', diff:'latt',
+   r:[{k:2,f:'H2',ox:{H:0}},{k:1,f:'O2',ox:{O:0}}],
+   p:[{k:2,f:'H2O',ox:{H:1,O:-2}}]},
+  {id:'r4', diff:'latt',
+   r:[{k:2,f:'Al',ox:{Al:0}},{k:3,f:'Cl2',ox:{Cl:0}}],
+   p:[{k:2,f:'AlCl3',ox:{Al:3,Cl:-1}}]},
+  {id:'r5', diff:'latt',
+   r:[{k:1,f:'Zn',ox:{Zn:0}},{k:1,f:'S',ox:{S:0}}],
+   p:[{k:1,f:'ZnS',ox:{Zn:2,S:-2}}]},
+
+  {id:'r6', diff:'medel',
+   r:[{k:1,f:'Zn',ox:{Zn:0}},{k:2,f:'HCl',ox:{H:1,Cl:-1}}],
+   p:[{k:1,f:'ZnCl2',ox:{Zn:2,Cl:-1}},{k:1,f:'H2',ox:{H:0}}]},
+  {id:'r7', diff:'medel',
+   r:[{k:1,f:'Mg',ox:{Mg:0}},{k:2,f:'HCl',ox:{H:1,Cl:-1}}],
+   p:[{k:1,f:'MgCl2',ox:{Mg:2,Cl:-1}},{k:1,f:'H2',ox:{H:0}}]},
+  {id:'r8', diff:'medel',
+   r:[{k:1,f:'Zn',ox:{Zn:0}},{k:1,f:'CuSO4',ox:{Cu:2,S:6,O:-2}}],
+   p:[{k:1,f:'ZnSO4',ox:{Zn:2,S:6,O:-2}},{k:1,f:'Cu',ox:{Cu:0}}]},
+  {id:'r9', diff:'medel',
+   r:[{k:1,f:'Cu',ox:{Cu:0}},{k:2,f:'AgNO3',ox:{Ag:1,N:5,O:-2}}],
+   p:[{k:1,f:'Cu(NO3)2',ox:{Cu:2,N:5,O:-2}},{k:2,f:'Ag',ox:{Ag:0}}]},
+  {id:'r10', diff:'medel',
+   r:[{k:2,f:'KI',ox:{K:1,I:-1}},{k:1,f:'Cl2',ox:{Cl:0}}],
+   p:[{k:2,f:'KCl',ox:{K:1,Cl:-1}},{k:1,f:'I2',ox:{I:0}}]},
+  {id:'r11', diff:'medel',
+   r:[{k:4,f:'Fe',ox:{Fe:0}},{k:3,f:'O2',ox:{O:0}}],
+   p:[{k:2,f:'Fe2O3',ox:{Fe:3,O:-2}}]},
+
+  {id:'r12', diff:'svar',
+   r:[{k:1,f:'Fe2O3',ox:{Fe:3,O:-2}},{k:3,f:'CO',ox:{C:2,O:-2}}],
+   p:[{k:2,f:'Fe',ox:{Fe:0}},{k:3,f:'CO2',ox:{C:4,O:-2}}]},
+  {id:'r13', diff:'svar',
+   r:[{k:1,f:'CH4',ox:{C:-4,H:1}},{k:2,f:'O2',ox:{O:0}}],
+   p:[{k:1,f:'CO2',ox:{C:4,O:-2}},{k:2,f:'H2O',ox:{H:1,O:-2}}]},
+  {id:'r14', diff:'svar',
+   r:[{k:2,f:'H2S',ox:{H:1,S:-2}},{k:3,f:'O2',ox:{O:0}}],
+   p:[{k:2,f:'SO2',ox:{S:4,O:-2}},{k:2,f:'H2O',ox:{H:1,O:-2}}]},
+  {id:'r15', diff:'svar',
+   r:[{k:2,f:'Mg',ox:{Mg:0}},{k:1,f:'CO2',ox:{C:4,O:-2}}],
+   p:[{k:2,f:'MgO',ox:{Mg:2,O:-2}},{k:1,f:'C',ox:{C:0}}]},
+  {id:'r16', diff:'svar',
+   r:[{k:4,f:'NH3',ox:{N:-3,H:1}},{k:3,f:'O2',ox:{O:0}}],
+   p:[{k:2,f:'N2',ox:{N:0}},{k:6,f:'H2O',ox:{H:1,O:-2}}]}
+];
+
+/* ---------- formelverktyg ---------- */
+function parseFormula(f){
+  const out={};
+  let i=0;
+  function add(o,el,n){ o[el]=(o[el]||0)+n; }
+  function block(target){
+    while(i<f.length){
+      const ch=f[i];
+      if(ch==='('){
+        i++;
+        const inner={};
+        block(inner);
+        let num=''; while(i<f.length && /\d/.test(f[i])) num+=f[i++];
+        const m=num?+num:1;
+        for(const k in inner) add(target,k,inner[k]*m);
+      } else if(ch===')'){ i++; return; }
+      else if(/[A-Z]/.test(ch)){
+        let el=ch; i++;
+        if(i<f.length && /[a-z]/.test(f[i])) el+=f[i++];
+        let num=''; while(i<f.length && /\d/.test(f[i])) num+=f[i++];
+        add(target, el, num?+num:1);
+      }
+      else throw new Error('ogiltigt tecken: '+ch);
+    }
+  }
+  block(out);
+  return out;
+}
+function laddningssumma(entry){
+  const c=parseFormula(entry.f);
+  let s=0;
+  for(const el in c) s += c[el]*entry.ox[el];
+  return s;
+}
+
+/* ---------- romerska siffror ---------- */
+const ROM = {1:'I',2:'II',3:'III',4:'IV',5:'V',6:'VI',7:'VII',8:'VIII'};
+const ROM_REV = {I:1, II:2, III:3, IV:4, V:5, VI:6, VII:7, VIII:8};
+function romanOf(n){
+  if(n===0) return '0';
+  return (n>0?'+':'\u2212') + ROM[Math.abs(n)];
+}
+function normOx(str){
+  return String(str).trim().toUpperCase()
+    .replace(/[\s\u00a0]+/g,'')
+    .replace(/[\u2212\u2013]/g,'-');
+}
+/* returnerar {val, form:'romersk'|'arabisk', tecken:true|false} eller null */
+function parseOx(str){
+  const s=normOx(str);
+  if(s==='') return null;
+  if(s==='0' || s==='+0' || s==='-0') return {val:0, form:'arabisk', tecken:false};
+  let m=s.match(/^([+-]?)(I|II|III|IV|V|VI|VII|VIII)$/);
+  if(m){
+    const v=ROM_REV[m[2]];
+    return {val: m[1]==='-' ? -v : v, form:'romersk', tecken: m[1]!==''};
+  }
+  m=s.match(/^([+-]?)(\d)$/);
+  if(m){
+    const v=+m[2];
+    if(v>8) return null;
+    return {val: m[1]==='-' ? -v : v, form:'arabisk', tecken: m[1]!==''};
+  }
+  return null;
+}
+function checkOx(korrekt, userStr){
+  const p=parseOx(userStr);
+  if(!p) return {status:'invalid'};
+  if(p.val===korrekt){
+    if(korrekt===0) return {status:'ok'};
+    if(p.form==='arabisk') return {status:'warn', skal:'arabisk'};
+    if(!p.tecken) return {status:'warn', skal:'tecken'};
+    return {status:'ok'};
+  }
+  if(korrekt!==0 && p.val===-korrekt) return {status:'fel', skal:'teckenfel'};
+  return {status:'fel', skal:'varde'};
+}
+
+/* ---------- redoxanalys ur en reaktion ---------- */
+function oxPaSida(sida, el){
+  for(const s of sida){ if(el in s.ox) return s.ox[el]; }
+  return null;
+}
+function elementIn(reaktion){
+  const set=new Set();
+  for(const s of reaktion.r.concat(reaktion.p)) for(const el in s.ox) set.add(el);
+  return [...set];
+}
+function analysera(reaktion){
+  const res={andring:{}, oxideras:null, reduceras:null};
+  for(const el of elementIn(reaktion)){
+    const a=oxPaSida(reaktion.r, el), b=oxPaSida(reaktion.p, el);
+    if(a===null || b===null) continue;
+    const d=b-a;
+    res.andring[el]={fore:a, efter:b, delta:d,
+      status: d>0 ? 'oxideras' : (d<0 ? 'reduceras' : 'ofor')};
+    if(d>0) res.oxideras=el;
+    if(d<0) res.reduceras=el;
+  }
+  res.reduktionsmedel = reaktion.r.find(s => res.oxideras in s.ox) || null;
+  res.oxidationsmedel = reaktion.r.find(s => res.reduceras in s.ox) || null;
+  return res;
+}
+
+/* ---------- uppgiftsgenerering ---------- */
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const seenSignatures = new Set();
+const recent = [];
+
+function genTal(diff){
+  let e, el, sig;
+  for(let i=0;i<80;i++){
+    e = pick(FORENINGAR.filter(x=>x.diff===diff));
+    el = pick(e.ask);
+    sig = 'tal|'+e.f+'|'+el;
+    if(i<40 && recent.includes(sig)) continue;
+    if(seenSignatures.has(sig) && i<60) continue;
+    break;
+  }
+  recent.push(sig); if(recent.length>8) recent.shift();
+  seenSignatures.add(sig);
+  return {mode:'tal', entry:e, el, svar:e.ox[el], signature:sig};
+}
+function genAndring(diff){
+  let rk, el, sig;
+  for(let i=0;i<80;i++){
+    rk = pick(REAKTIONER.filter(x=>x.diff===diff));
+    const a = analysera(rk);
+    el = pick(Object.keys(a.andring));
+    sig = 'andr|'+rk.id+'|'+el;
+    if(i<40 && recent.includes(sig)) continue;
+    if(seenSignatures.has(sig) && i<60) continue;
+    break;
+  }
+  recent.push(sig); if(recent.length>8) recent.shift();
+  seenSignatures.add(sig);
+  const an = analysera(rk);
+  return {mode:'andring', rk, el, analys:an, svar:an.andring[el].status, signature:sig};
+}
+function genRoll(diff){
+  let rk, fraga, sig;
+  for(let i=0;i<80;i++){
+    rk = pick(REAKTIONER.filter(x=>x.diff===diff));
+    fraga = Math.random()<0.5 ? 'oxidationsmedel' : 'reduktionsmedel';
+    sig = 'roll|'+rk.id+'|'+fraga;
+    if(i<40 && recent.includes(sig)) continue;
+    if(seenSignatures.has(sig) && i<60) continue;
+    break;
+  }
+  recent.push(sig); if(recent.length>8) recent.shift();
+  seenSignatures.add(sig);
+  const an = analysera(rk);
+  const ratt = fraga==='oxidationsmedel' ? an.oxidationsmedel : an.reduktionsmedel;
+  return {mode:'roll', rk, fraga, analys:an, svar:ratt.f, signature:sig};
+}
+const GENS = {tal:genTal, andring:genAndring, roll:genRoll};
+const MIXPOOL = ['tal','andring','roll'];
+function generateFresh(type, diff){
+  const t = type==='mix' ? pick(MIXPOOL) : type;
+  const p = GENS[t](diff);
+  p.displayTag = type==='mix' ? 'Blandat' : null;
+  return p;
+}
+
+if(typeof module!=='undefined' && module.exports){
+  module.exports = {FORENINGAR, REAKTIONER, ELEMENTNAMN, parseFormula, laddningssumma,
+    romanOf, parseOx, normOx, checkOx, analysera, elementIn, oxPaSida,
+    genTal, genAndring, genRoll, generateFresh, seenSignatures};
+}
+
+/* ================================================================
+   UI
+   ================================================================ */
+if(typeof document!=='undefined'){
+
+const TYPES = [
+  {id:'tal', label:'Oxidationstal'},
+  {id:'andring', label:'Oxideras eller reduceras'},
+  {id:'roll', label:'Oxidations- och reduktionsmedel'},
+  {id:'mix', label:'Blandat'}
+];
+const DIFFS = [
+  {id:'latt', label:'Lätt'},
+  {id:'medel', label:'Medel'},
+  {id:'svar', label:'Svår'}
+];
+const MODENAMN = {tal:'Oxidationstal', andring:'Oxideras eller reduceras', roll:'Oxidations- och reduktionsmedel'};
+let curType='tal', curDiff='latt';
+let problem=null, answered=false, revealed=false, valt=null;
+let score={ok:0,tot:0,streak:0};
+let history=[], histCounter=0, currentEntry=null;
+let reviewing=false, savedState=null;
+
+const $ = id => document.getElementById(id);
+const fSub = s => s.replace(/(\d+)/g,'<sub>$1</sub>');
+
+function formelHTML(e){
+  let h = fSub(e.f);
+  if(e.jon){
+    const m=Math.abs(e.q);
+    h += '<sup>'+(m>1?m:'')+(e.q>0?'+':'\u2212')+'</sup>';
+  }
+  return h;
+}
+function ekvHTML(rk, markera){
+  const sida = arr => arr.map(s=>{
+    let f = fSub(s.f);
+    if(markera && markera in s.ox) f = '<span class="markerad">'+f+'</span>';
+    return (s.k>1 ? s.k+' ' : '') + f;
+  }).join(' + ');
+  return sida(rk.r) + ' \u2192 ' + sida(rk.p);
+}
+
+function buildChips(elId, items, cur, onSet){
+  const el=$(elId); el.innerHTML='';
+  items.forEach(it=>{
+    const b=document.createElement('button');
+    b.className='chip'+(it.id===cur?' on':'');
+    b.textContent=it.label;
+    b.onclick=()=>onSet(it.id);
+    el.appendChild(b);
+  });
+}
+function refreshChips(){
+  buildChips('typeChips',TYPES,curType,id=>{curType=id;newProblem();});
+  buildChips('diffChips',DIFFS,curDiff,id=>{curDiff=id;newProblem();});
+}
+
+function qTextFor(p){
+  if(p.mode==='tal'){
+    const namn = ELEMENTNAMN[p.el] || p.el;
+    const vad = p.entry.jon ? 'jonen' : 'föreningen';
+    return 'Bestäm oxidationstalet för <b>'+namn+' ('+p.el+')</b> i '+vad+' nedan.';
+  }
+  if(p.mode==='andring'){
+    const namn = ELEMENTNAMN[p.el] || p.el;
+    return 'Vad händer med <b>'+namn+' ('+p.el+')</b> i reaktionen nedan?';
+  }
+  return 'Vilket ämne är <b>'+p.fraga+'</b> i reaktionen nedan?';
+}
+
+function optionsFor(p){
+  if(p.mode==='andring') return [
+    {v:'oxideras', label:'Oxideras'},
+    {v:'reduceras', label:'Reduceras'},
+    {v:'ofor', label:'Oförändrat'}
+  ];
+  if(p.mode==='roll') return p.rk.r.map(s=>({v:s.f, label:fSub(s.f), html:true}));
+  return [];
+}
+
+function renderOptions(p, interactive){
+  const rad=$('valrad');
+  const opts=optionsFor(p);
+  if(!opts.length){ rad.style.display='none'; rad.innerHTML=''; return; }
+  rad.style.display='flex'; rad.innerHTML='';
+  opts.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='valknapp'+(valt===o.v?' vald':'');
+    if(o.html) b.innerHTML=o.label; else b.textContent=o.label;
+    b.disabled=!interactive;
+    b.onclick=()=>{ valt=o.v; renderOptions(p, true); };
+    rad.appendChild(b);
+  });
+}
+
+function solutionSteps(p){
+  const steps=[];
+  if(p.mode==='tal'){
+    const e=p.entry, el=p.el;
+    const c=parseFormula(e.f);
+    if(e.grund){
+      steps.push({text:'Ämnet är ett grundämne i fri form. Alla grundämnen i fri form har oxidationstalet noll.',
+        math:'oxidationstal('+el+') = 0'});
+      return steps;
+    }
+    const kanda=Object.keys(e.ox).filter(x=>x!==el);
+    const reglist=kanda.map(x=>ELEMENTNAMN[x]+' ('+x+') har '+romanOf(e.ox[x]));
+    steps.push({text:'Skriv upp de oxidationstal du känner till. Reglerna hittar du i Mafys tabeller.'+(e.not?' '+e.not:''),
+      math: reglist.join(', ')});
+    const termer=[];
+    for(const x in c){
+      if(x===el) termer.push(c[x]+' \u00b7 x');
+      else termer.push(c[x]+' \u00b7 ('+romanOf(e.ox[x])+')');
+    }
+    const hoger = e.jon ? String(e.q) : '0';
+    steps.push({text: e.jon
+        ? 'Summan av alla oxidationstal i en jon är lika med jonens laddning.'
+        : 'Summan av alla oxidationstal i en neutral förening är noll.',
+      math: termer.join(' + ')+' = '+hoger});
+    let kant=0;
+    for(const x in c){ if(x!==el) kant += c[x]*e.ox[x]; }
+    const antal=c[el];
+    steps.push({text:'Lös ut x och skriv svaret med romersk siffra.',
+      math: antal+' \u00b7 x = '+(e.jon?e.q:0)+' \u2212 ('+kant+') = '+((e.jon?e.q:0)-kant)+
+        '  \u21d2  x = <b>'+romanOf(e.ox[el])+'</b>'});
+    return steps;
+  }
+  if(p.mode==='andring'){
+    const a=p.analys.andring[p.el];
+    const namn=ELEMENTNAMN[p.el]||p.el;
+    steps.push({text:'Bestäm oxidationstalet för '+namn+' på båda sidorna av reaktionspilen.',
+      math:'före: '+romanOf(a.fore)+'   efter: '+romanOf(a.efter)});
+    const ord = a.status==='oxideras'
+      ? 'Oxidationstalet stiger, alltså avger ämnet elektroner. Det oxideras.'
+      : a.status==='reduceras'
+        ? 'Oxidationstalet sjunker, alltså tar ämnet upp elektroner. Det reduceras.'
+        : 'Oxidationstalet är oförändrat, alltså varken oxideras eller reduceras ämnet. Det är en åskådarjon.';
+    steps.push({text:ord, math:'\u0394 = '+(a.delta>0?'+':'')+a.delta});
+    return steps;
+  }
+  const an=p.analys;
+  const oxEl=an.oxideras, redEl=an.reduceras;
+  const ao=an.andring[oxEl], ar=an.andring[redEl];
+  steps.push({text:'Bestäm vilka grundämnen som ändrar oxidationstal.',
+    math:(ELEMENTNAMN[oxEl]||oxEl)+': '+romanOf(ao.fore)+' \u2192 '+romanOf(ao.efter)+' (stiger, oxideras)<br>'+
+         (ELEMENTNAMN[redEl]||redEl)+': '+romanOf(ar.fore)+' \u2192 '+romanOf(ar.efter)+' (sjunker, reduceras)'});
+  steps.push({text:'Oxidationsmedlet är det ämne som tar upp elektroner, alltså det som innehåller grundämnet som reduceras. Reduktionsmedlet är det ämne som avger elektroner.',
+    math:'oxidationsmedel: <b>'+fSub(an.oxidationsmedel.f)+'</b> (innehåller '+redEl+')<br>'+
+         'reduktionsmedel: <b>'+fSub(an.reduktionsmedel.f)+'</b> (innehåller '+oxEl+')'});
+  return steps;
+}
+
+function renderSteps(p){
+  const st=$('steps'); st.innerHTML='';
+  solutionSteps(p).forEach((s,i)=>{
+    const div=document.createElement('div');
+    div.className='step';
+    div.innerHTML='<span class="n">'+(i+1)+'</span><span class="t">'+s.text+'<span class="m">'+s.math+'</span></span>';
+    st.appendChild(div);
+  });
+}
+
+function renderProblem(p, review){
+  const tag = review ? 'Historik' : DIFFS.find(d=>d.id===curDiff).label;
+  $('qtag').textContent = MODENAMN[p.mode]+' \u00b7 '+tag;
+  $('qtag').className='qtype-tag'+(review?' review-tag':'');
+  $('qtext').innerHTML=qTextFor(p);
+  const ruta=$('formelruta');
+  if(p.mode==='tal'){
+    ruta.className='formelruta';
+    ruta.innerHTML=formelHTML(p.entry);
+  } else {
+    ruta.className='formelruta ekvruta';
+    ruta.innerHTML=ekvHTML(p.rk, p.mode==='andring' ? p.el : null);
+  }
+  const isTal = p.mode==='tal';
+  $('textsvar').style.display = isTal ? 'inline-block' : 'none';
+  renderOptions(p, !review);
+  const hint=$('inputHint');
+  if(isTal && !review){
+    hint.style.display='block';
+    hint.textContent='Skriv med romersk siffra och tecken, t.ex. +VII, -II eller 0.';
+  } else hint.style.display='none';
+  $('feedback').className='feedback'; $('feedback').innerHTML='';
+  $('solution').className='solution';
+}
+
+function newProblem(){
+  reviewing=false; savedState=null; valt=null;
+  refreshChips();
+  problem=generateFresh(curType, curDiff);
+  answered=false; revealed=false; currentEntry=null;
+  renderProblem(problem, false);
+  $('textsvar').value=''; $('textsvar').readOnly=false;
+  $('checkBtn').style.display='inline-block';
+  $('solBtn').style.display='inline-block';
+  $('nextBtn').style.display='inline-block';
+  $('backBtn').style.display='none';
+  if(problem.mode==='tal') $('textsvar').focus();
+}
+
+const STATUS_LABEL={ok:'rätt \u2713', warn:'rätt (skrivsätt)', fel:'fel \u2717', reveal:'visade lösning'};
+function kortText(p){
+  if(p.mode==='tal') return p.el+' i '+p.entry.f;
+  if(p.mode==='andring') return p.el+' i reaktion '+p.rk.id;
+  return p.fraga+' i reaktion '+p.rk.id;
+}
+function ensureEntry(){
+  if(currentEntry) return currentEntry;
+  histCounter++;
+  currentEntry={n:histCounter, problem, user:'', status:'fel'};
+  history.unshift(currentEntry);
+  renderHistory();
+  return currentEntry;
+}
+function renderHistory(){
+  const panel=$('histPanel');
+  if(!history.length){ panel.style.display='none'; return; }
+  panel.style.display='block';
+  const list=$('histList'); list.innerHTML='';
+  history.forEach(e=>{
+    const b=document.createElement('button');
+    b.className='hist-item';
+    b.innerHTML='<span class="hn">#'+e.n+'</span><span class="ht">'+MODENAMN[e.problem.mode]+': '+fSub(kortText(e.problem))+'</span><span class="hs s-'+e.status+'">'+STATUS_LABEL[e.status]+'</span>';
+    b.onclick=()=>openReview(e);
+    list.appendChild(b);
+  });
+}
+function facitText(p){
+  if(p.mode==='tal') return romanOf(p.svar);
+  if(p.mode==='andring') return p.svar==='ofor' ? 'oförändrat' : p.svar;
+  return fSub(p.svar);
+}
+
+function openReview(entry){
+  if(!reviewing){
+    savedState={problem, answered, revealed, valt,
+      input:$('textsvar').value,
+      fbClass:$('feedback').className, fbHTML:$('feedback').innerHTML,
+      solOpen:$('solution').classList.contains('open')};
+  }
+  reviewing=true;
+  problem=entry.problem;
+  valt = problem.mode==='tal' ? null : entry.user;
+  renderProblem(problem, true);
+  $('textsvar').value = problem.mode==='tal' ? entry.user : '';
+  $('textsvar').readOnly=true;
+  $('checkBtn').style.display='none';
+  $('solBtn').style.display='none';
+  $('backBtn').style.display='inline-block';
+  const fb=$('feedback');
+  fb.className='feedback '+(entry.status==='ok'?'ok':entry.status==='fel'?'fel':'warn');
+  fb.innerHTML='Resultat: '+STATUS_LABEL[entry.status]+'. Facit: <b>'+facitText(problem)+'</b>.<br>Klicka <b>\u2190 Fortsätt träna</b> för att återgå, eller <b>Ny uppgift</b> för att börja en ny.';
+  $('solution').className='solution open';
+  renderSteps(problem);
+  window.scrollTo({top:0});
+}
+function closeReview(){
+  reviewing=false;
+  const s=savedState; savedState=null;
+  if(!s){ newProblem(); return; }
+  problem=s.problem; answered=s.answered; revealed=s.revealed; valt=s.valt;
+  renderProblem(problem, false);
+  $('textsvar').value=s.input; $('textsvar').readOnly=false;
+  $('feedback').className=s.fbClass; $('feedback').innerHTML=s.fbHTML;
+  $('solution').className='solution'+(s.solOpen?' open':'');
+  if(s.solOpen) renderSteps(problem);
+  $('checkBtn').style.display='inline-block';
+  $('solBtn').style.display='inline-block';
+  $('backBtn').style.display='none';
+}
+
+function registrera(res, userRepr){
+  const korrekt = res.status!=='fel';
+  if(!answered && !revealed){
+    score.tot++;
+    if(korrekt){ score.ok++; score.streak++; } else score.streak=0;
+    answered=true; updateScore();
+  }
+  const entry=ensureEntry();
+  entry.user=userRepr;
+  if(entry.status!=='reveal' && entry.status!=='ok')
+    entry.status = res.status==='fel' ? 'fel' : (res.status==='warn' ? 'warn' : 'ok');
+  renderHistory();
+}
+
+function check(){
+  if(reviewing) return;
+  const fb=$('feedback');
+  if(problem.mode==='tal'){
+    const raw=$('textsvar').value;
+    const res=checkOx(problem.svar, raw);
+    if(res.status==='invalid'){
+      fb.className='feedback fel';
+      fb.innerHTML='Skriv oxidationstalet med romersk siffra och tecken, t.ex. +VII, -II eller 0.';
+      return;
+    }
+    registrera(res, raw);
+    const facit='<b>'+romanOf(problem.svar)+'</b>';
+    if(res.status==='ok'){
+      fb.className='feedback ok';
+      fb.innerHTML='Rätt! \u2713 Oxidationstalet är '+facit+'.';
+    } else if(res.skal==='arabisk'){
+      fb.className='feedback warn';
+      fb.innerHTML='Rätt värde, men oxidationstal skrivs med romerska siffror: '+facit+'. Räknas som rätt.';
+    } else if(res.skal==='tecken'){
+      fb.className='feedback warn';
+      fb.innerHTML='Rätt värde, men skriv alltid ut tecknet: '+facit+'. Räknas som rätt.';
+    } else if(res.skal==='teckenfel'){
+      fb.className='feedback fel';
+      fb.innerHTML='Rätt siffra men fel tecken. Kontrollera vilket grundämne som är mest elektronegativt: det får det negativa oxidationstalet.';
+    } else {
+      fb.className='feedback fel';
+      fb.innerHTML='Inte riktigt. Ställ upp summan av alla oxidationstal och lös ut det okända.';
+    }
+    return;
+  }
+  if(valt===null){
+    fb.className='feedback fel';
+    fb.innerHTML='Välj ett alternativ först.';
+    return;
+  }
+  const korrekt = valt===problem.svar;
+  registrera({status: korrekt?'ok':'fel'}, valt);
+  renderOptions(problem, true);
+  if(problem.mode==='andring'){
+    const a=problem.analys.andring[problem.el];
+    if(korrekt){
+      fb.className='feedback ok';
+      fb.innerHTML='Rätt! \u2713 '+romanOf(a.fore)+' \u2192 '+romanOf(a.efter)+', alltså '+
+        (a.status==='ofor'?'oförändrat oxidationstal':a.status)+'.';
+    } else {
+      fb.className='feedback fel';
+      fb.innerHTML='Inte riktigt. Jämför oxidationstalet före och efter reaktionspilen, och kom ihåg att ett stigande oxidationstal betyder oxidation.';
+    }
+  } else {
+    if(korrekt){
+      fb.className='feedback ok';
+      fb.innerHTML='Rätt! \u2713 '+fSub(problem.svar)+' är '+problem.fraga+'et.';
+    } else {
+      fb.className='feedback fel';
+      fb.innerHTML='Inte riktigt. Oxidationsmedlet tar upp elektroner och innehåller alltså grundämnet som reduceras. Reduktionsmedlet avger elektroner.';
+    }
+  }
+}
+
+function reveal(){
+  if(reviewing) return;
+  if(!answered){
+    const entry=ensureEntry();
+    entry.status='reveal';
+    renderHistory();
+  }
+  revealed=true;
+  if(problem.mode==='tal'){
+    $('textsvar').value=romanOf(problem.svar);
+  } else {
+    valt=problem.svar;
+    renderOptions(problem, true);
+  }
+  $('solution').className='solution open';
+  renderSteps(problem);
+}
+
+function updateScore(){
+  $('scoreOk').textContent=score.ok;
+  $('scoreTot').textContent=score.tot;
+  $('streak').textContent = score.streak>=2 ? '🔥 '+score.streak+' i rad' : '';
+}
+
+$('checkBtn').onclick=check;
+$('textsvar').addEventListener('keydown',e=>{ if(e.key==='Enter') check(); });
+$('solBtn').onclick=reveal;
+$('nextBtn').onclick=newProblem;
+$('backBtn').onclick=closeReview;
+
+window.__felContext=()=>problem?{
+  Uppgift: qTextFor(problem).replace(/<[^>]*>/g,'')+' '+
+    (problem.mode==='tal' ? problem.entry.f : ekvHTML(problem.rk,null).replace(/<[^>]*>/g,'')),
+  Facit: facitText(problem).replace(/<[^>]*>/g,''),
+  Signatur: problem.signature
+}:null;
+
+newProblem();
+}
+</script>
+<button class="felknapp" id="felBtn">Hittade du ett fel?</button>
+<div class="felpanel" id="felPanel" hidden>
+  <h3>Rapportera ett fel</h3>
+  <textarea id="felText" placeholder="Beskriv felet: vad gjorde du, vad hände, vad förväntade du dig?"></textarea>
+  <div class="felmeta" id="felMeta"></div>
+  <div class="felrad">
+    <button class="btn-primary" id="felSkicka">Skicka via e-post</button>
+    <button class="btn-ghost" id="felKopiera">Kopiera rapporten</button>
+  </div>
+  <div class="felok" id="felOk"></div>
+</div>
+<script>
+(function(){
+const FELMAIL='kauremaa.aleksi@gmail.com';
+const $=id=>document.getElementById(id);
+function ctx(){ try{return (window.__felContext&&window.__felContext())||null;}catch(e){return null;} }
+function report(){
+  let s='Sida: '+document.title+'\nAdress: '+location.href+'\nTid: '+new Date().toLocaleString('sv-FI');
+  const c=ctx();
+  if(c){ for(const k in c) s+='\n'+k+': '+c[k]; }
+  s+='\nWebbläsare: '+navigator.userAgent;
+  return s;
+}
+$('felBtn').onclick=()=>{
+  const p=$('felPanel'); p.hidden=!p.hidden;
+  if(!p.hidden){ $('felMeta').textContent=report(); $('felOk').style.display='none'; }
+};
+$('felSkicka').onclick=()=>{
+  const body=($('felText').value||'(ingen beskrivning)')+'\n\n--- Automatisk information ---\n'+report();
+  location.href='mailto:'+FELMAIL+'?subject='+encodeURIComponent('Felrapport: '+document.title)+'&body='+encodeURIComponent(body);
+};
+$('felKopiera').onclick=async()=>{
+  const t=($('felText').value||'(ingen beskrivning)')+'\n\n--- Automatisk information ---\n'+report();
+  try{ await navigator.clipboard.writeText(t); $('felOk').textContent='Kopierad! Klistra in i Wilma eller e-post.'; }
+  catch(e){ $('felOk').textContent='Kopiering blockerades. Markera texten ovan och kopiera manuellt.'; }
+  $('felOk').style.display='block';
+};
+})();
+</script>
+</body>
+</html>

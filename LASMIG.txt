@@ -20,6 +20,29 @@ moltranaren-ke01.html
     lösningsvägen. Utspädningens klassiska fälla, att skilja
     på slutvolym och tillsatt vatten, tränas uttryckligen.
 
+ph-tranaren-ke06.html
+    pH-tränaren (KE06 Kemisk jämvikt). Fyra uppgiftstyper:
+    sambandet mellan pH och oxoniumjonkoncentration i båda
+    riktningarna, starka syror och baser (även tvåprotoniga
+    och tvåvärda), svaga syror och baser med approximationen
+    roten ur Ka gånger koncentrationen, samt buffertlösningar
+    med Henderson-Hasselbalch. Ka och pKa ges i uppgiften och
+    matchar Mafys tabeller. Specialregeln för gällande siffror
+    hålls: antalet decimaler i pH följer koncentrationens
+    gällande siffror, och ett rätt värde med fel antal
+    decimaler räknas som rätt med en påminnelse.
+
+oxidationstalstranaren-ke05.html
+    Oxidationstalstränaren (KE05 Kemisk energi och cirkulär
+    ekonomi). Tre lägen: bestäm oxidationstalet för ett
+    grundämne i en förening eller jon, avgör om ett grundämne
+    oxideras, reduceras eller är oförändrat i en reaktion,
+    och identifiera oxidations- respektive reduktionsmedlet.
+    Oxidationstal skrivs med romerska siffror. Arabiska
+    siffror godkänns men ger en påminnelse om notationen.
+    Banken innehåller undantagen: peroxider, metallhydrider
+    och fluorföreningar. 16 balanserade redoxreaktioner.
+
 jonforeningstranaren-ke02.html
     Jonföreningstränaren (KE02 Kemi och en hållbar framtid).
     Tre lägen: bygg jonföreningen av katjoner och anjoner med

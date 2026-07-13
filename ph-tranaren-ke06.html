@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pH-tränaren · KE06</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F5FC;
+    --grid:#E6E3F3;
+    --grid-major:#D8D3EC;
+    --ink:#1B1830;
+    --ink-soft:#585279;
+    --accent:#4B41A6;
+    --accent-hover:#372F82;
+    --accent-soft:#E9E7F7;
+    --green:#1D7A33;
+    --green-soft:#E4F3E6;
+    --amber:#B2590B;
+    --amber-soft:#FBEFE0;
+    --red:#A8332C;
+    --red-soft:#F8E7E5;
+    --card:#FFFFFF;
+    --line:#D6D1E8;
+    --radius:10px;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sans:'IBM Plex Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:var(--sans);color:var(--ink);
+    background-color:var(--paper);
+    background-image:
+      linear-gradient(var(--grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:100px 100px,100px 100px,20px 20px,20px 20px;
+    min-height:100vh;padding:24px 16px 64px;line-height:1.5;
+  }
+  .wrap{max-width:840px;margin:0 auto}
+  .hem{display:inline-block;font-family:var(--mono);font-size:13px;font-weight:600;
+    color:var(--ink-soft);text-decoration:none;margin-bottom:10px;padding:4px 0}
+  .hem:hover{color:var(--accent)}
+  .hem:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  header{margin-bottom:20px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-size:clamp(26px,5vw,36px);font-weight:700;letter-spacing:-.01em;line-height:1.15}
+  .sub{color:var(--ink-soft);font-size:15px;margin-top:4px}
+
+  .panel{background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:16px;margin-bottom:14px;
+    box-shadow:0 1px 3px rgba(27,24,48,.06)}
+  .controls{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+  .ctrl-group{display:flex;flex-direction:column;gap:6px}
+  .ctrl-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-family:var(--sans);font-size:14px;font-weight:500;
+    padding:7px 13px;border-radius:999px;border:1.5px solid var(--line);
+    background:var(--card);color:var(--ink);cursor:pointer;transition:all .12s}
+  .chip:hover{border-color:var(--accent)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .chip:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .scorebar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;
+    font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+  .scorebar b{color:var(--ink);font-weight:600}
+  .streak{color:var(--amber);font-weight:600}
+
+  .qtype-tag{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;
+    color:var(--accent);background:var(--accent-soft);
+    padding:3px 10px;border-radius:6px;margin-bottom:12px;letter-spacing:.04em}
+  .review-tag{background:var(--amber-soft);color:var(--amber)}
+  .qtext{font-size:16.5px;margin-bottom:6px}
+  .qtext b{font-weight:600}
+  .qtext sub{font-size:.7em} .qtext sup{font-size:.7em}
+
+  .given{font-family:var(--mono);font-size:15px;color:var(--ink);
+    background:var(--accent-soft);border-radius:9px;padding:11px 14px;margin:12px 0 4px;
+    display:flex;flex-direction:column;gap:4px}
+  .given .rad{display:flex;gap:8px}
+  .given b{color:var(--accent)}
+  .given sub{font-size:.7em} .given sup{font-size:.7em}
+
+  .answer-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+  .svarfalt{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:17px;font-weight:600}
+  .svarfalt .etikett{color:var(--ink-soft)}
+  input.textsvar{font-family:var(--mono);font-size:18px;font-weight:600;
+    padding:10px 14px;border:1.5px solid var(--line);border-radius:8px;
+    width:190px;color:var(--ink);background:var(--card)}
+  input.textsvar:focus{border-color:var(--accent)}
+  input.textsvar[readonly]{background:var(--paper);color:var(--ink-soft)}
+  .enhet{font-family:var(--mono);font-size:15px;color:var(--ink-soft)}
+  .enhet sup{font-size:.7em}
+  button{font-family:var(--sans);font-size:15px;font-weight:600;
+    padding:10px 18px;border-radius:8px;cursor:pointer;border:1.5px solid transparent;transition:all .12s}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-hover)}
+  .btn-ghost{background:var(--card);border-color:var(--line);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .hint{font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-top:8px}
+
+  .feedback{margin-top:12px;padding:12px 14px;border-radius:8px;font-size:15px;display:none;font-weight:500}
+  .feedback.ok{display:block;background:var(--green-soft);color:var(--green);border:1px solid #BFE3C4}
+  .feedback.warn{display:block;background:var(--amber-soft);color:var(--amber);border:1px solid #EFD3B2}
+  .feedback.fel{display:block;background:var(--red-soft);color:var(--red);border:1px solid #EBC4C0}
+  .feedback sub{font-size:.7em} .feedback sup{font-size:.7em}
+
+  .solution{margin-top:14px;display:none}
+  .solution.open{display:block}
+  .sol-head{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:8px}
+  .step{background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    padding:10px 14px;margin-bottom:8px;font-size:15px;display:flex;gap:12px;align-items:baseline}
+  .step .n{font-family:var(--mono);font-weight:600;color:var(--accent);font-size:13px;flex-shrink:0}
+  .step .t{flex:1}
+  .step .t .m{font-family:var(--mono);font-size:14.5px;display:block;margin-top:3px;color:var(--ink);overflow-x:auto}
+  .step sub{font-size:.7em} .step sup{font-size:.7em}
+
+  .hist-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
+  .hist-note{font-size:12px;color:var(--ink-soft);font-family:var(--mono)}
+  .hist-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+  .hist-item{display:flex;gap:10px;align-items:baseline;text-align:left;
+    font-family:var(--sans);font-size:14px;
+    background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;width:100%}
+  .hist-item:hover{border-color:var(--accent)}
+  .hist-item .hn{font-family:var(--mono);font-weight:600;color:var(--ink-soft);font-size:12px;flex-shrink:0}
+  .hist-item .ht{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hist-item .ht sub{font-size:.7em} .hist-item .ht sup{font-size:.7em}
+  .hist-item .hs{font-family:var(--mono);font-size:12px;font-weight:600;flex-shrink:0}
+  .hs.s-ok{color:var(--green)} .hs.s-warn{color:var(--amber)} .hs.s-fel{color:var(--red)} .hs.s-reveal{color:var(--ink-soft)}
+
+  .felknapp{position:fixed;right:16px;bottom:16px;z-index:50;font-size:13px;
+    background:var(--card);color:var(--ink-soft);border:1.5px solid var(--line);
+    border-radius:999px;padding:9px 14px;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+  .felknapp:hover{color:var(--accent);border-color:var(--accent)}
+  .felpanel{position:fixed;right:16px;bottom:64px;z-index:50;
+    width:min(340px,calc(100vw - 32px));background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:14px;
+    box-shadow:0 8px 28px rgba(0,0,0,.2)}
+  .felpanel h3{font-size:14px;margin-bottom:6px}
+  .felpanel textarea{width:100%;height:70px;font-family:var(--sans);font-size:13px;
+    padding:8px;border:1.5px solid var(--line);border-radius:8px;
+    background:var(--paper);color:var(--ink);resize:vertical}
+  .felmeta{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);
+    background:var(--paper);border-radius:6px;padding:6px 8px;margin:8px 0;
+    max-height:70px;overflow:auto;white-space:pre-wrap}
+  .felrad{display:flex;gap:6px}
+  .felrad button{flex:1;font-size:12.5px;padding:8px 6px}
+  .felok{font-size:12px;color:var(--green);margin-top:6px;display:none}
+
+  footer{margin-top:24px;font-size:13px;color:var(--ink-soft);text-align:center;
+    font-family:var(--mono);line-height:1.7}
+  @media (max-width:560px){
+    body{padding:16px 10px 48px}
+    .panel{padding:13px}
+    input.textsvar{width:100%}
+  }
+  @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="hem" href="index.html">&#8592; Startsidan</a>
+  <header>
+    <div class="eyebrow">KE06 · Kemisk jämvikt · GLP2019</div>
+    <h1>pH-tränaren</h1>
+    <div class="sub">Räkna pH för starka och svaga syror och baser, och för buffertlösningar. Antalet decimaler i pH följer koncentrationens gällande siffror.</div>
+  </header>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="ctrl-group">
+        <span class="ctrl-label">Uppgiftstyp</span>
+        <div class="chips" id="typeChips" role="group" aria-label="Uppgiftstyp"></div>
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">Svårighetsgrad</span>
+        <div class="chips" id="diffChips" role="group" aria-label="Svårighetsgrad"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="scorebar">
+      <span>Rätt: <b id="scoreOk">0</b> / <b id="scoreTot">0</b></span>
+      <span class="streak" id="streak"></span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <span class="qtype-tag" id="qtag"></span>
+    <div class="qtext" id="qtext"></div>
+    <div class="given" id="given" style="display:none"></div>
+
+    <div class="answer-row">
+      <div class="svarfalt">
+        <span class="etikett" id="svarEtikett">pH =</span>
+        <input type="text" class="textsvar" id="textsvar" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Ditt svar">
+        <span class="enhet" id="svarEnhet"></span>
+      </div>
+    </div>
+    <div class="answer-row">
+      <button class="btn-primary" id="checkBtn">Kontrollera</button>
+      <button class="btn-ghost" id="solBtn">Visa lösning</button>
+      <button class="btn-ghost" id="nextBtn">Ny uppgift &#8594;</button>
+      <button class="btn-primary" id="backBtn" style="display:none">&#8592; Fortsätt träna</button>
+    </div>
+    <div class="hint" id="inputHint" style="display:none"></div>
+
+    <div class="feedback" id="feedback" role="status"></div>
+
+    <div class="solution" id="solution">
+      <div class="sol-head">Lösning steg för steg</div>
+      <div id="steps"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="histPanel" style="display:none">
+    <div class="hist-head">
+      <span class="ctrl-label">Historik</span>
+      <span class="hist-note">rensas när sidan laddas om</span>
+    </div>
+    <div class="hist-list" id="histList"></div>
+  </div>
+
+  <footer>
+    Alla värden gäller vid 25 °C, då Kw = 1,0·10&#8315;&#185;&#8308; och pH + pOH = 14,00.<br>
+    Ka-värdena hittar du i Mafys tabeller.
+  </footer>
+</div>
+
+<script>
+'use strict';
+/* ================================================================
+   LOGIK: ren och testbar
+   ================================================================ */
+
+/* ---------- talhantering ---------- */
+const SUP = {'0':'\u2070','1':'\u00b9','2':'\u00b2','3':'\u00b3','4':'\u2074',
+  '5':'\u2075','6':'\u2076','7':'\u2077','8':'\u2078','9':'\u2079','-':'\u207b','+':'\u207a'};
+const SUPMAP = {'\u2070':'0','\u00b9':'1','\u00b2':'2','\u00b3':'3','\u2074':'4',
+  '\u2075':'5','\u2076':'6','\u2077':'7','\u2078':'8','\u2079':'9','\u207b':'-','\u207a':'+'};
+function supExp(e){ return String(e).split('').map(c=>SUP[c]||c).join(''); }
+
+function parseNum(str){
+  if(str==null) return null;
+  let s=String(str).trim().toLowerCase().replace(/\s/g,'');
+  if(s==='') return null;
+  s=s.replace(/[\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079\u207b\u207a]/g, ch=>SUPMAP[ch]);
+  s=s.replace(/,/g,'.');
+  s=s.replace(/[·\u00d7x]10\^?/g,'e').replace(/\*10\^?/g,'e').replace(/\^/g,'');
+  if(!/^[-+]?\d*\.?\d+(e[-+]?\d+)?$/.test(s)) return null;
+  const v=parseFloat(s);
+  return isFinite(v)?v:null;
+}
+function countDecimals(str){
+  let s=String(str).trim().replace(/\s/g,'').replace(/,/g,'.');
+  s=s.split(/e|·|\u00d7|x|\*|\^/i)[0];
+  const m=s.match(/\.(\d+)/);
+  return m?m[1].length:0;
+}
+function mantissaSF(m){
+  m=String(m).replace(/^[+-]/,'');
+  if(!/\d/.test(m)) return 0;
+  const hasDot=m.includes('.');
+  let d=m.replace('.', '').replace(/^0+/, '');
+  if(d==='') return 1;
+  if(hasDot) return d.length;
+  return (d.replace(/0+$/,'')||'0').length;
+}
+function countSF(str){
+  let s=String(str).trim().toLowerCase().replace(/\s/g,'').replace(/,/g,'.');
+  s=s.replace(/[\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079\u207b\u207a]/g, ch=>SUPMAP[ch]);
+  const mant=s.split(/e|·10|\u00d710|x10|\*10|\^/i)[0];
+  return mantissaSF(mant);
+}
+function log10(x){ return Math.log(x)/Math.LN10; }
+
+/* ---------- formatering ---------- */
+function fmtPh(x, dec){ return x.toFixed(dec).replace('.', ','); }
+function fmtConc(x, sf){
+  if(x<=0) return '0';
+  let e=Math.floor(log10(x));
+  let m=x/Math.pow(10,e);
+  m=parseFloat(m.toPrecision(sf));
+  if(m>=10){ m/=10; e++; }
+  const mStr=m.toFixed(Math.max(0,sf-1)).replace('.', ',');
+  return mStr+'\u00b710'+supExp(e);
+}
+function fmtNum(x){
+  if(Math.abs(x)>=0.001 && Math.abs(x)<10000){
+    let s=x.toFixed(4);
+    s=s.replace(/0+$/,'').replace(/\.$/,'');
+    return s.replace('.', ',');
+  }
+  return fmtConc(x, 3);
+}
+
+/* ---------- data ---------- */
+const CONC = [
+  {v:0.010, str:'0,010', sf:2}, {v:0.020, str:'0,020', sf:2},
+  {v:0.025, str:'0,025', sf:2}, {v:0.040, str:'0,040', sf:2},
+  {v:0.050, str:'0,050', sf:2}, {v:0.075, str:'0,075', sf:2},
+  {v:0.10, str:'0,10', sf:2},   {v:0.15, str:'0,15', sf:2},
+  {v:0.20, str:'0,20', sf:2},   {v:0.25, str:'0,25', sf:2},
+  {v:0.50, str:'0,50', sf:2},   {v:1.0, str:'1,0', sf:2},
+  {v:0.0010, str:'0,0010', sf:2}, {v:0.0050, str:'0,0050', sf:2}
+];
+const CONC3 = [
+  {v:0.100, str:'0,100', sf:3}, {v:0.0250, str:'0,0250', sf:3},
+  {v:0.200, str:'0,200', sf:3}, {v:0.0500, str:'0,0500', sf:3}
+];
+const NICE = [
+  {v:1.0, str:'1,0', sf:2}, {v:0.10, str:'0,10', sf:2},
+  {v:0.010, str:'0,010', sf:2}, {v:0.0010, str:'0,0010', sf:2}
+];
+const PH_POOL = [
+  {str:'2,00', dec:2}, {str:'3,00', dec:2}, {str:'1,50', dec:2},
+  {str:'3,40', dec:2}, {str:'4,20', dec:2}, {str:'5,60', dec:2},
+  {str:'2,80', dec:2}, {str:'4,50', dec:2}
+];
+
+const STARKA_SYROR = [
+  {f:'HCl', namn:'saltsyra', nH:1},
+  {f:'HNO3', namn:'salpetersyra', nH:1},
+  {f:'HBr', namn:'vätebromid', nH:1},
+  {f:'HI', namn:'vätejodid', nH:1}
+];
+const STARKA_BASER = [
+  {f:'NaOH', namn:'natriumhydroxid', nOH:1},
+  {f:'KOH', namn:'kaliumhydroxid', nOH:1}
+];
+const STARKA_BASER2 = [
+  {f:'Ba(OH)2', namn:'bariumhydroxid', nOH:2},
+  {f:'Ca(OH)2', namn:'kalciumhydroxid', nOH:2}
+];
+const SVAGA_SYROR = [
+  {namn:'ättiksyra', formel:'CH3COOH', Ka:1.8e-5, KaStr:'1,8\u00b710\u207b\u2075'},
+  {namn:'myrsyra', formel:'HCOOH', Ka:1.8e-4, KaStr:'1,8\u00b710\u207b\u2074'},
+  {namn:'bensoesyra', formel:'C6H5COOH', Ka:6.3e-5, KaStr:'6,3\u00b710\u207b\u2075'},
+  {namn:'salpetersyrlighet', formel:'HNO2', Ka:4.5e-4, KaStr:'4,5\u00b710\u207b\u2074'},
+  {namn:'vätefluorid', formel:'HF', Ka:6.8e-4, KaStr:'6,8\u00b710\u207b\u2074'},
+  {namn:'mjölksyra', formel:'C3H6O3', Ka:1.4e-4, KaStr:'1,4\u00b710\u207b\u2074'}
+];
+const SVAGA_BASER = [
+  {namn:'ammoniak', formel:'NH3', Kb:1.8e-5, KbStr:'1,8\u00b710\u207b\u2075'},
+  {namn:'metylamin', formel:'CH3NH2', Kb:4.4e-4, KbStr:'4,4\u00b710\u207b\u2074'}
+];
+const BUFFERTAR = [
+  {syra:'ättiksyra', bas:'acetatjon', Ka:1.8e-5},
+  {syra:'myrsyra', bas:'formiatjon', Ka:1.8e-4},
+  {syra:'ammoniumjon', bas:'ammoniak', Ka:5.6e-10},
+  {syra:'bensoesyra', bas:'bensoatjon', Ka:6.3e-5}
+];
+const KA_SF = 2;              /* alla Ka anges med 2 gällande siffror */
+const MIN_RATIO = 100;        /* c/Ka för att approximationen ska gälla */
+
+/* ---------- pH-beräkningar ---------- */
+function phFromH(h){ return -log10(h); }
+function hFromPh(ph){ return Math.pow(10, -ph); }
+function phStarkSyra(c, nH){ return -log10(nH*c); }
+function phStarkBas(c, nOH){ return 14 + log10(nOH*c); }
+function phSvagSyra(Ka, c){ return -log10(Math.sqrt(Ka*c)); }
+function phSvagBas(Kb, c){ return 14 + log10(Math.sqrt(Kb*c)); }
+function pKa(Ka){ return -log10(Ka); }
+function phBuffert(Ka, nSyra, nBas){ return pKa(Ka) + log10(nBas/nSyra); }
+
+/* ---------- kontroll ---------- */
+function checkPh(exactPh, reqDec, userStr){
+  const v=parseNum(userStr);
+  if(v==null) return {status:'invalid'};
+  if(Math.abs(v-exactPh)>0.06){
+    if(Math.abs((14-v)-exactPh)<0.06) return {status:'fel', skal:'pohfel'};
+    return {status:'fel', skal:'varde'};
+  }
+  const dec=countDecimals(userStr);
+  if(dec===reqDec) return {status:'ok'};
+  return {status:'warn', skal:'decimaler', reqDec};
+}
+function checkConc(exactVal, reqSf, userStr){
+  const v=parseNum(userStr);
+  if(v==null || v<=0) return {status:'invalid'};
+  const rel=Math.abs(v-exactVal)/exactVal;
+  if(rel>0.06) return {status:'fel', skal:'varde'};
+  const sf=countSF(userStr);
+  if(sf===reqSf) return {status:'ok'};
+  return {status:'warn', skal:'gallande', reqSf};
+}
+
+/* ---------- generering ---------- */
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const seenSignatures = new Set();
+const recent = [];
+function fresh(sig){
+  if(recent.includes(sig)) return false;
+  recent.push(sig); if(recent.length>8) recent.shift();
+  return true;
+}
+
+function decRad(sf, ord){
+  return {text:`${ord} har ${sf} gällande siffror, så pH anges med ${sf} decimaler.`,
+    _sf:true};
+}
+
+function genSamband(diff){
+  const rikt = Math.random()<0.5 ? 'h2ph' : 'ph2h';
+  if(rikt==='h2ph'){
+    const pool = diff==='latt' ? NICE : (diff==='svar' ? CONC3 : CONC);
+    let cc, sig;
+    for(let i=0;i<40;i++){ cc=pick(pool); sig='samb|h|'+cc.str; if(fresh(sig))break; }
+    const ph=phFromH(cc.v);
+    const steps=[
+      {text:'pH definieras som den negativa tiologaritmen av oxoniumjonkoncentrationen.',
+        math:'pH = \u2212log[H\u2083O\u207a]'},
+      {text:'Sätt in värdet.', math:`pH = \u2212log(${cc.str}) = ${fmtPh(ph,6)}`},
+      {text:`Koncentrationen har ${cc.sf} gällande siffror, så pH avrundas till ${cc.sf} decimaler.`,
+        math:`pH = <b>${fmtPh(ph,cc.sf)}</b>`}
+    ];
+    return {mode:'samband', kind:'h2ph', ansType:'ph', answer:ph, reqDec:cc.sf,
+      qtext:'Beräkna pH i en vattenlösning med den angivna oxoniumjonkoncentrationen.',
+      given:[`[H\u2083O\u207a] = <b>${cc.str}</b> mol/dm\u00b3`],
+      steps, signature:sig, dbg:{kind:'h2ph', c:cc.v, sf:cc.sf}};
+  } else {
+    let pp, sig;
+    for(let i=0;i<40;i++){ pp=pick(PH_POOL); sig='samb|p|'+pp.str; if(fresh(sig))break; }
+    const phv=parseNum(pp.str);
+    const h=hFromPh(phv);
+    const steps=[
+      {text:'Lös ut oxoniumjonkoncentrationen ur pH-definitionen.',
+        math:'[H\u2083O\u207a] = 10\u207b\u1d56\u1d34'},
+      {text:'Sätt in värdet.', math:`[H\u2083O\u207a] = 10\u207b${supExp(pp.str.replace(',','\u00b7'))} = ${fmtConc(h,4)} mol/dm\u00b3`.replace('\u00b7','\u22c5')},
+      {text:`pH-värdet har ${pp.dec} decimaler, så koncentrationen anges med ${pp.dec} gällande siffror.`,
+        math:`[H\u2083O\u207a] = <b>${fmtConc(h,pp.dec)}</b> mol/dm\u00b3`}
+    ];
+    return {mode:'samband', kind:'ph2h', ansType:'conc', answer:h, reqSf:pp.dec,
+      qtext:'Beräkna oxoniumjonkoncentrationen i en vattenlösning med det angivna pH-värdet.',
+      given:[`pH = <b>${pp.str}</b>`],
+      steps, signature:sig, dbg:{kind:'ph2h', ph:phv, dec:pp.dec}};
+  }
+}
+
+function genStark(diff){
+  if(diff==='latt'){
+    let syra, cc, sig;
+    for(let i=0;i<40;i++){ syra=pick(STARKA_SYROR); cc=pick(CONC.filter(c=>c.v<=1)); sig='sa|'+syra.f+'|'+cc.str; if(fresh(sig))break; }
+    const ph=phStarkSyra(cc.v, 1);
+    const steps=[
+      {text:`${syra.namn.charAt(0).toUpperCase()+syra.namn.slice(1)} är en stark syra som protolyseras fullständigt, så oxoniumjonkoncentrationen är lika med syrans koncentration.`,
+        math:`[H\u2083O\u207a] = ${cc.str} mol/dm\u00b3`},
+      {text:'Beräkna pH.', math:`pH = \u2212log(${cc.str}) = ${fmtPh(ph,6)}`},
+      {text:`Koncentrationen har ${cc.sf} gällande siffror, så pH anges med ${cc.sf} decimaler.`,
+        math:`pH = <b>${fmtPh(ph,cc.sf)}</b>`}
+    ];
+    return {mode:'stark', kind:'sa', ansType:'ph', answer:ph, reqDec:cc.sf,
+      qtext:`Beräkna pH i en lösning av ${syra.namn}.`,
+      given:[`c(${sub(syra.f)}) = <b>${cc.str}</b> mol/dm\u00b3`],
+      steps, signature:sig, dbg:{kind:'sa', c:cc.v, nH:1, sf:cc.sf}};
+  }
+  if(diff==='medel'){
+    let bas, cc, sig;
+    for(let i=0;i<40;i++){ bas=pick(STARKA_BASER); cc=pick(CONC.filter(c=>c.v<=1)); sig='sb|'+bas.f+'|'+cc.str; if(fresh(sig))break; }
+    const poh=-log10(cc.v);
+    const ph=phStarkBas(cc.v, 1);
+    const steps=[
+      {text:`${bas.namn.charAt(0).toUpperCase()+bas.namn.slice(1)} är en stark bas, så hydroxidjonkoncentrationen är lika med basens koncentration.`,
+        math:`[OH\u207b] = ${cc.str} mol/dm\u00b3`},
+      {text:'Beräkna först pOH.', math:`pOH = \u2212log(${cc.str}) = ${fmtPh(poh,cc.sf)}`},
+      {text:'Vid 25 °C gäller pH + pOH = 14,00. Lös ut pH.',
+        math:`pH = 14,00 \u2212 ${fmtPh(poh,cc.sf)} = ${fmtPh(ph,6)}`},
+      {text:`Koncentrationen har ${cc.sf} gällande siffror, så pH anges med ${cc.sf} decimaler.`,
+        math:`pH = <b>${fmtPh(ph,cc.sf)}</b>`}
+    ];
+    return {mode:'stark', kind:'sb', ansType:'ph', answer:ph, reqDec:cc.sf,
+      qtext:`Beräkna pH i en lösning av ${bas.namn}.`,
+      given:[`c(${sub(bas.f)}) = <b>${cc.str}</b> mol/dm\u00b3`],
+      steps, signature:sig, dbg:{kind:'sb', c:cc.v, nOH:1, sf:cc.sf}};
+  }
+  /* svar: tvåprotonig syra, tvåvärd bas, eller omvänt pH -> c */
+  const val = pick(['sa2','sb2','sa_rev']);
+  if(val==='sa2'){
+    let cc, sig;
+    for(let i=0;i<40;i++){ cc=pick(CONC.filter(c=>c.v<=0.5)); sig='sa2|'+cc.str; if(fresh(sig))break; }
+    const ph=phStarkSyra(cc.v, 2);
+    const steps=[
+      {text:'Svavelsyra är en stark, tvåprotonig syra. Varje formelenhet ger två oxoniumjoner, så oxoniumjonkoncentrationen är dubbelt så stor som syrans koncentration.',
+        math:`[H\u2083O\u207a] = 2 \u00b7 ${cc.str} = ${fmtNum(2*cc.v)} mol/dm\u00b3`},
+      {text:'Beräkna pH.', math:`pH = \u2212log(${fmtNum(2*cc.v)}) = ${fmtPh(ph,6)}`},
+      {text:`Koncentrationen har ${cc.sf} gällande siffror, så pH anges med ${cc.sf} decimaler.`,
+        math:`pH = <b>${fmtPh(ph,cc.sf)}</b>`}
+    ];
+    return {mode:'stark', kind:'sa2', ansType:'ph', answer:ph, reqDec:cc.sf,
+      qtext:'Beräkna pH i en lösning av svavelsyra. Anta att båda protolysstegen är fullständiga.',
+      given:[`c(H\u2082SO\u2084) = <b>${cc.str}</b> mol/dm\u00b3`],
+      steps, signature:sig, dbg:{kind:'sa2', c:cc.v, nH:2, sf:cc.sf}};
+  }
+  if(val==='sb2'){
+    let bas, cc, sig;
+    for(let i=0;i<40;i++){ bas=pick(STARKA_BASER2); cc=pick(CONC.filter(c=>c.v<=0.2)); sig='sb2|'+bas.f+'|'+cc.str; if(fresh(sig))break; }
+    const poh=-log10(2*cc.v);
+    const ph=phStarkBas(cc.v, 2);
+    const steps=[
+      {text:`${bas.namn.charAt(0).toUpperCase()+bas.namn.slice(1)} är en stark bas. Varje formelenhet ger två hydroxidjoner, så hydroxidjonkoncentrationen är dubbelt så stor som basens koncentration.`,
+        math:`[OH\u207b] = 2 \u00b7 ${cc.str} = ${fmtNum(2*cc.v)} mol/dm\u00b3`},
+      {text:'Beräkna pOH.', math:`pOH = \u2212log(${fmtNum(2*cc.v)}) = ${fmtPh(poh,cc.sf)}`},
+      {text:'Vid 25 °C gäller pH + pOH = 14,00.',
+        math:`pH = 14,00 \u2212 ${fmtPh(poh,cc.sf)} = ${fmtPh(ph,6)}`},
+      {text:`Koncentrationen har ${cc.sf} gällande siffror, så pH anges med ${cc.sf} decimaler.`,
+        math:`pH = <b>${fmtPh(ph,cc.sf)}</b>`}
+    ];
+    return {mode:'stark', kind:'sb2', ansType:'ph', answer:ph, reqDec:cc.sf,
+      qtext:`Beräkna pH i en lösning av ${bas.namn}.`,
+      given:[`c(${sub(bas.f)}) = <b>${cc.str}</b> mol/dm\u00b3`],
+      steps, signature:sig, dbg:{kind:'sb2', c:cc.v, nOH:2, sf:cc.sf}};
+  }
+  /* sa_rev: given pH, hitta c för stark syra */
+  let syra, pp, sig;
+  for(let i=0;i<40;i++){ syra=pick(STARKA_SYROR); pp=pick(PH_POOL.filter(p=>parseNum(p.str)<=6)); sig='sarev|'+syra.f+'|'+pp.str; if(fresh(sig))break; }
+  const phv=parseNum(pp.str);
+  const c=hFromPh(phv);
+  const steps=[
+    {text:`${syra.namn.charAt(0).toUpperCase()+syra.namn.slice(1)} är en stark syra, så syrans koncentration är lika med oxoniumjonkoncentrationen.`,
+      math:'c = [H\u2083O\u207a] = 10\u207b\u1d56\u1d34'},
+    {text:'Sätt in pH.', math:`c = 10\u207b${supExp(pp.str.replace(',','\u22c5'))} = ${fmtConc(c,4)} mol/dm\u00b3`},
+    {text:`pH-värdet har ${pp.dec} decimaler, så koncentrationen anges med ${pp.dec} gällande siffror.`,
+      math:`c = <b>${fmtConc(c,pp.dec)}</b> mol/dm\u00b3`}
+  ];
+  return {mode:'stark', kind:'sa_rev', ansType:'conc', answer:c, reqSf:pp.dec,
+    qtext:`En lösning av ${syra.namn} har det angivna pH-värdet. Beräkna syrans koncentration.`,
+    given:[`pH = <b>${pp.str}</b>`],
+    steps, signature:sig, dbg:{kind:'sa_rev', ph:phv, dec:pp.dec}};
+}
+
+function genSvag(diff){
+  if(diff!=='svar'){
+    let syra, cc, sig, ratio;
+    for(let i=0;i<80;i++){
+      syra=pick(SVAGA_SYROR);
+      const pool = (diff==='medel' && Math.random()<0.4) ? CONC3 : CONC;
+      cc=pick(pool.filter(c=>c.v>=0.010));
+      ratio=cc.v/syra.Ka;
+      sig='wa|'+syra.namn+'|'+cc.str;
+      if(ratio>=MIN_RATIO && fresh(sig)) break;
+    }
+    const h=Math.sqrt(syra.Ka*cc.v);
+    const ph=phSvagSyra(syra.Ka, cc.v);
+    const reqDec=Math.min(KA_SF, cc.sf);
+    const steps=[
+      {text:`${syra.namn.charAt(0).toUpperCase()+syra.namn.slice(1)} är en svag syra. För en svag syra gäller approximationen [H\u2083O\u207a] = \u221a(Ka \u00b7 c) när c är mycket större än Ka.`,
+        math:`c / Ka = ${cc.str} / ${syra.KaStr} \u2248 ${Math.round(ratio)} \u226b 1, alltså gäller approximationen`},
+      {text:'Sätt in Ka och koncentrationen.',
+        math:`[H\u2083O\u207a] = \u221a(${syra.KaStr} \u00b7 ${cc.str}) = ${fmtConc(h,4)} mol/dm\u00b3`},
+      {text:'Beräkna pH.', math:`pH = \u2212log(${fmtConc(h,4)}) = ${fmtPh(ph,6)}`},
+      {text:`Ka har ${KA_SF} gällande siffror och begränsar noggrannheten, så pH anges med ${reqDec} decimaler.`,
+        math:`pH = <b>${fmtPh(ph,reqDec)}</b>`}
+    ];
+    return {mode:'svag', kind:'wa', ansType:'ph', answer:ph, reqDec,
+      qtext:`Beräkna pH i en lösning av ${syra.namn} (${sub(syra.formel)}).`,
+      given:[`c = <b>${cc.str}</b> mol/dm\u00b3`, `Ka = <b>${syra.KaStr}</b>`],
+      steps, signature:sig, dbg:{kind:'wa', Ka:syra.Ka, c:cc.v, sf:cc.sf, ratio}};
+  }
+  /* svar: svag bas med Kb */
+  let bas, cc, sig, ratio;
+  for(let i=0;i<80;i++){
+    bas=pick(SVAGA_BASER);
+    cc=pick(CONC.filter(c=>c.v>=0.010));
+    ratio=cc.v/bas.Kb;
+    sig='wb|'+bas.namn+'|'+cc.str;
+    if(ratio>=MIN_RATIO && fresh(sig)) break;
+  }
+  const oh=Math.sqrt(bas.Kb*cc.v);
+  const poh=-log10(oh);
+  const ph=phSvagBas(bas.Kb, cc.v);
+  const reqDec=Math.min(KA_SF, cc.sf);
+  const steps=[
+    {text:`${bas.namn.charAt(0).toUpperCase()+bas.namn.slice(1)} är en svag bas. För en svag bas gäller [OH\u207b] = \u221a(Kb \u00b7 c) när c är mycket större än Kb.`,
+      math:`c / Kb = ${cc.str} / ${bas.KbStr} \u2248 ${Math.round(ratio)} \u226b 1`},
+    {text:'Sätt in Kb och koncentrationen.',
+      math:`[OH\u207b] = \u221a(${bas.KbStr} \u00b7 ${cc.str}) = ${fmtConc(oh,4)} mol/dm\u00b3`},
+    {text:'Beräkna pOH och sedan pH.',
+      math:`pOH = \u2212log(${fmtConc(oh,4)}) = ${fmtPh(poh,reqDec)}<br>pH = 14,00 \u2212 ${fmtPh(poh,reqDec)} = ${fmtPh(ph,6)}`},
+    {text:`Kb har ${KA_SF} gällande siffror, så pH anges med ${reqDec} decimaler.`,
+      math:`pH = <b>${fmtPh(ph,reqDec)}</b>`}
+  ];
+  return {mode:'svag', kind:'wb', ansType:'ph', answer:ph, reqDec,
+    qtext:`Beräkna pH i en lösning av ${bas.namn} (${sub(bas.formel)}).`,
+    given:[`c = <b>${cc.str}</b> mol/dm\u00b3`, `Kb = <b>${bas.KbStr}</b>`],
+    steps, signature:sig, dbg:{kind:'wb', Kb:bas.Kb, c:cc.v, sf:cc.sf, ratio}};
+}
+
+function genBuffert(diff){
+  let buf, sig;
+  const AMT=['0,10','0,20','0,050','0,15','0,25','0,30'];
+  const MOL=['0,10','0,20','0,050','0,15','0,25','0,30','0,40'];
+  for(let i=0;i<40;i++){ buf=pick(BUFFERTAR); sig='buf|'+buf.syra+'|'+diff+'|'+Math.floor(Math.random()*1000); if(fresh(sig))break; }
+  const pk=pKa(buf.Ka);
+  const pkStr=fmtPh(pk,2);
+  if(diff==='latt'){
+    const c=pick(AMT);
+    const ph=pk;
+    const steps=[
+      {text:'I en buffertlösning ges pH av Henderson-Hasselbalch-ekvationen.',
+        math:'pH = pKa + log( [bas] / [syra] )'},
+      {text:'Beräkna pKa ur Ka.', math:`pKa = \u2212log(${buf.Ka<1e-6?'5,6\u00b710\u207b\u00b9\u2070':buf.Ka.toExponential(1).replace('.',',').replace('e','\u00b710')}) = ${pkStr}`},
+      {text:'Syran och basen har samma koncentration, så kvoten är 1 och logaritmen blir noll.',
+        math:`pH = ${pkStr} + log(1) = ${pkStr}`},
+      {text:'pKa anges med 2 decimaler, så pH anges med 2 decimaler.',
+        math:`pH = <b>${pkStr}</b>`}
+    ];
+    return {mode:'buffert', kind:'buf_lika', ansType:'ph', answer:ph, reqDec:2,
+      qtext:`En buffertlösning innehåller lika stora koncentrationer av ${buf.syra} och ${buf.bas}. Beräkna pH.`,
+      given:[`c(${buf.syra}) = c(${buf.bas}) = <b>${c}</b> mol/dm\u00b3`, `pKa = <b>${pkStr}</b>`],
+      steps, signature:sig, dbg:{kind:'buf', Ka:buf.Ka, rSyra:1, rBas:1}};
+  }
+  if(diff==='medel'){
+    let cS, cB;
+    do{ cS=pick(AMT); cB=pick(AMT); }while(cS===cB);
+    const nS=parseNum(cS), nB=parseNum(cB);
+    const ph=phBuffert(buf.Ka, nS, nB);
+    const steps=[
+      {text:'Använd Henderson-Hasselbalch-ekvationen.',
+        math:'pH = pKa + log( [bas] / [syra] )'},
+      {text:'Sätt in koncentrationerna. Eftersom syra och bas finns i samma lösning kan koncentrationerna användas direkt.',
+        math:`pH = ${pkStr} + log( ${cB} / ${cS} ) = ${pkStr} + log(${fmtNum(nB/nS)})`},
+      {text:'Beräkna.', math:`pH = ${pkStr} + ${fmtPh(log10(nB/nS),4).replace('-','\u2212')} = ${fmtPh(ph,6)}`},
+      {text:'pKa anges med 2 decimaler, så pH anges med 2 decimaler.',
+        math:`pH = <b>${fmtPh(ph,2)}</b>`}
+    ];
+    return {mode:'buffert', kind:'buf_c', ansType:'ph', answer:ph, reqDec:2,
+      qtext:`En buffertlösning innehåller ${buf.syra} och ${buf.bas}. Beräkna pH.`,
+      given:[`c(${buf.syra}) = <b>${cS}</b> mol/dm\u00b3`, `c(${buf.bas}) = <b>${cB}</b> mol/dm\u00b3`, `pKa = <b>${pkStr}</b>`],
+      steps, signature:sig, dbg:{kind:'buf', Ka:buf.Ka, rSyra:nS, rBas:nB}};
+  }
+  /* svar: substansmängder */
+  let nS, nB;
+  do{ nS=pick(MOL); nB=pick(MOL); }while(nS===nB);
+  const aS=parseNum(nS), aB=parseNum(nB);
+  const ph=phBuffert(buf.Ka, aS, aB);
+  const steps=[
+    {text:'I Henderson-Hasselbalch-ekvationen kan substansmängder användas i stället för koncentrationer, eftersom syra och bas finns i samma volym och volymen förkortas bort i kvoten.',
+      math:'pH = pKa + log( n(bas) / n(syra) )'},
+    {text:'Sätt in substansmängderna.',
+      math:`pH = ${pkStr} + log( ${nB} / ${nS} ) = ${pkStr} + log(${fmtNum(aB/aS)})`},
+    {text:'Beräkna.', math:`pH = ${pkStr} + ${fmtPh(log10(aB/aS),4).replace('-','\u2212')} = ${fmtPh(ph,6)}`},
+    {text:'pKa anges med 2 decimaler, så pH anges med 2 decimaler.',
+      math:`pH = <b>${fmtPh(ph,2)}</b>`}
+  ];
+  return {mode:'buffert', kind:'buf_n', ansType:'ph', answer:ph, reqDec:2,
+    qtext:`En buffertlösning innehåller ${buf.syra} och ${buf.bas} lösta i samma volym. Beräkna pH.`,
+    given:[`n(${buf.syra}) = <b>${nS}</b> mol`, `n(${buf.bas}) = <b>${nB}</b> mol`, `pKa = <b>${pkStr}</b>`],
+    steps, signature:sig, dbg:{kind:'buf', Ka:buf.Ka, rSyra:aS, rBas:aB}};
+}
+
+const GENS = {samband:genSamband, stark:genStark, svag:genSvag, buffert:genBuffert};
+const MIXPOOL = ['samband','stark','svag','buffert'];
+function generateFresh(type, diff){
+  const t = type==='mix' ? pick(MIXPOOL) : type;
+  const p = GENS[t](diff);
+  if(!seenSignatures.has(p.signature)) seenSignatures.add(p.signature);
+  p.displayTag = type==='mix' ? 'Blandat' : null;
+  return p;
+}
+
+function sub(f){ return String(f).replace(/(\d+)/g,'<sub>$1</sub>'); }
+
+if(typeof module!=='undefined' && module.exports){
+  module.exports = {parseNum, countDecimals, countSF, mantissaSF, log10,
+    fmtPh, fmtConc, fmtNum, supExp,
+    CONC, CONC3, NICE, PH_POOL, SVAGA_SYROR, SVAGA_BASER, BUFFERTAR, STARKA_BASER2, KA_SF, MIN_RATIO,
+    phFromH, hFromPh, phStarkSyra, phStarkBas, phSvagSyra, phSvagBas, pKa, phBuffert,
+    checkPh, checkConc,
+    genSamband, genStark, genSvag, genBuffert, generateFresh, seenSignatures};
+}
+
+/* ================================================================
+   UI
+   ================================================================ */
+if(typeof document!=='undefined'){
+
+const TYPES = [
+  {id:'samband', label:'pH och [H\u2083O\u207a]'},
+  {id:'stark', label:'Stark syra och bas'},
+  {id:'svag', label:'Svag syra och bas'},
+  {id:'buffert', label:'Buffertlösning'},
+  {id:'mix', label:'Blandat'}
+];
+const DIFFS = [
+  {id:'latt', label:'Lätt'},
+  {id:'medel', label:'Medel'},
+  {id:'svar', label:'Svår'}
+];
+const MODENAMN = {samband:'pH och [H\u2083O\u207a]', stark:'Stark syra och bas', svag:'Svag syra och bas', buffert:'Buffertlösning'};
+let curType='samband', curDiff='latt';
+let problem=null, answered=false, revealed=false;
+let score={ok:0,tot:0,streak:0};
+let history=[], histCounter=0, currentEntry=null;
+let reviewing=false, savedState=null;
+
+const $ = id => document.getElementById(id);
+
+function buildChips(elId, items, cur, onSet){
+  const el=$(elId); el.innerHTML='';
+  items.forEach(it=>{
+    const b=document.createElement('button');
+    b.className='chip'+(it.id===cur?' on':'');
+    b.innerHTML=it.label;
+    b.onclick=()=>onSet(it.id);
+    el.appendChild(b);
+  });
+}
+function refreshChips(){
+  buildChips('typeChips',TYPES,curType,id=>{curType=id;newProblem();});
+  buildChips('diffChips',DIFFS,curDiff,id=>{curDiff=id;newProblem();});
+}
+
+function renderSteps(p){
+  const st=$('steps'); st.innerHTML='';
+  p.steps.forEach((s,i)=>{
+    const div=document.createElement('div');
+    div.className='step';
+    div.innerHTML='<span class="n">'+(i+1)+'</span><span class="t">'+s.text+'<span class="m">'+s.math+'</span></span>';
+    st.appendChild(div);
+  });
+}
+
+function renderProblem(p, review){
+  const tag = review ? 'Historik' : DIFFS.find(d=>d.id===curDiff).label;
+  $('qtag').innerHTML = MODENAMN[p.mode]+' \u00b7 '+tag;
+  $('qtag').className='qtype-tag'+(review?' review-tag':'');
+  $('qtext').innerHTML=p.qtext;
+  const g=$('given');
+  if(p.given && p.given.length){
+    g.style.display='flex';
+    g.innerHTML=p.given.map(x=>'<div class="rad">'+x+'</div>').join('');
+  } else g.style.display='none';
+  $('svarEtikett').innerHTML = p.ansType==='ph' ? 'pH =' : '[H\u2083O\u207a] =';
+  $('svarEnhet').innerHTML = p.ansType==='ph' ? '' : 'mol/dm\u00b3';
+  const hint=$('inputHint');
+  if(!review){
+    hint.style.display='block';
+    hint.innerHTML = p.ansType==='ph'
+      ? 'Skriv pH med rätt antal decimaler, t.ex. 2,00.'
+      : 'Skriv koncentrationen i mol/dm\u00b3, t.ex. 3,2\u00b710\u207b\u00b3 eller 3,2e-3.';
+  } else hint.style.display='none';
+  $('feedback').className='feedback'; $('feedback').innerHTML='';
+  $('solution').className='solution';
+}
+
+function newProblem(){
+  reviewing=false; savedState=null;
+  refreshChips();
+  problem=generateFresh(curType, curDiff);
+  answered=false; revealed=false; currentEntry=null;
+  renderProblem(problem, false);
+  $('textsvar').value=''; $('textsvar').readOnly=false;
+  $('checkBtn').style.display='inline-block';
+  $('solBtn').style.display='inline-block';
+  $('nextBtn').style.display='inline-block';
+  $('backBtn').style.display='none';
+  $('textsvar').focus();
+}
+
+const STATUS_LABEL={ok:'rätt \u2713', warn:'rätt (skrivsätt)', fel:'fel \u2717', reveal:'visade lösning'};
+function kortText(p){
+  const svar = p.ansType==='ph' ? 'pH' : '[H\u2083O\u207a]';
+  return MODENAMN[p.mode]+': '+svar;
+}
+function facitText(p){
+  return p.ansType==='ph' ? fmtPh(p.answer, p.reqDec) : fmtConc(p.answer, p.reqSf)+' mol/dm\u00b3';
+}
+function ensureEntry(){
+  if(currentEntry) return currentEntry;
+  histCounter++;
+  currentEntry={n:histCounter, problem, user:'', status:'fel'};
+  history.unshift(currentEntry);
+  renderHistory();
+  return currentEntry;
+}
+function renderHistory(){
+  const panel=$('histPanel');
+  if(!history.length){ panel.style.display='none'; return; }
+  panel.style.display='block';
+  const list=$('histList'); list.innerHTML='';
+  history.forEach(e=>{
+    const b=document.createElement('button');
+    b.className='hist-item';
+    b.innerHTML='<span class="hn">#'+e.n+'</span><span class="ht">'+kortText(e.problem)+' = '+facitText(e.problem)+'</span><span class="hs s-'+e.status+'">'+STATUS_LABEL[e.status]+'</span>';
+    b.onclick=()=>openReview(e);
+    list.appendChild(b);
+  });
+}
+
+function openReview(entry){
+  if(!reviewing){
+    savedState={problem, answered, revealed,
+      input:$('textsvar').value,
+      fbClass:$('feedback').className, fbHTML:$('feedback').innerHTML,
+      solOpen:$('solution').classList.contains('open')};
+  }
+  reviewing=true;
+  problem=entry.problem;
+  renderProblem(problem, true);
+  $('textsvar').value=entry.user; $('textsvar').readOnly=true;
+  $('checkBtn').style.display='none';
+  $('solBtn').style.display='none';
+  $('backBtn').style.display='inline-block';
+  const fb=$('feedback');
+  fb.className='feedback '+(entry.status==='ok'?'ok':entry.status==='fel'?'fel':'warn');
+  fb.innerHTML='Resultat: '+STATUS_LABEL[entry.status]+'. Facit: <b>'+facitText(problem)+'</b>.<br>Klicka <b>\u2190 Fortsätt träna</b> för att återgå, eller <b>Ny uppgift</b> för att börja en ny.';
+  $('solution').className='solution open';
+  renderSteps(problem);
+  window.scrollTo({top:0});
+}
+function closeReview(){
+  reviewing=false;
+  const s=savedState; savedState=null;
+  if(!s){ newProblem(); return; }
+  problem=s.problem; answered=s.answered; revealed=s.revealed;
+  renderProblem(problem, false);
+  $('textsvar').value=s.input; $('textsvar').readOnly=false;
+  $('feedback').className=s.fbClass; $('feedback').innerHTML=s.fbHTML;
+  $('solution').className='solution'+(s.solOpen?' open':'');
+  if(s.solOpen) renderSteps(problem);
+  $('checkBtn').style.display='inline-block';
+  $('solBtn').style.display='inline-block';
+  $('backBtn').style.display='none';
+}
+
+function registrera(res, userRepr){
+  const korrekt = res.status!=='fel';
+  if(!answered && !revealed){
+    score.tot++;
+    if(korrekt){ score.ok++; score.streak++; } else score.streak=0;
+    answered=true; updateScore();
+  }
+  const entry=ensureEntry();
+  entry.user=userRepr;
+  if(entry.status!=='reveal' && entry.status!=='ok')
+    entry.status = res.status==='fel' ? 'fel' : (res.status==='warn' ? 'warn' : 'ok');
+  renderHistory();
+}
+
+function check(){
+  if(reviewing) return;
+  const fb=$('feedback');
+  const raw=$('textsvar').value;
+  const facit='<b>'+facitText(problem)+'</b>';
+  if(problem.ansType==='ph'){
+    const res=checkPh(problem.answer, problem.reqDec, raw);
+    if(res.status==='invalid'){
+      fb.className='feedback fel';
+      fb.innerHTML='Skriv pH som ett tal, t.ex. 2,00.'; return;
+    }
+    registrera(res, raw);
+    if(res.status==='ok'){
+      fb.className='feedback ok';
+      fb.innerHTML='Rätt! \u2713 pH = '+facit+'.';
+    } else if(res.skal==='decimaler'){
+      fb.className='feedback warn';
+      fb.innerHTML='Rätt värde, men antalet decimaler ska följa koncentrationens gällande siffror: pH = '+facit+'. Räknas som rätt.';
+    } else if(res.skal==='pohfel'){
+      fb.className='feedback fel';
+      fb.innerHTML='Det där ser ut som pOH, inte pH. Kom ihåg att pH + pOH = 14,00 vid 25 °C.';
+    } else {
+      fb.className='feedback fel';
+      fb.innerHTML='Inte riktigt. Kontrollera uppställningen och räkna om. Facit får du med Visa lösning.';
+    }
+  } else {
+    const res=checkConc(problem.answer, problem.reqSf, raw);
+    if(res.status==='invalid'){
+      fb.className='feedback fel';
+      fb.innerHTML='Skriv koncentrationen som ett positivt tal, t.ex. 3,2\u00b710\u207b\u00b3 eller 3,2e-3.'; return;
+    }
+    registrera(res, raw);
+    if(res.status==='ok'){
+      fb.className='feedback ok';
+      fb.innerHTML='Rätt! \u2713 [H\u2083O\u207a] = '+facit+'.';
+    } else if(res.skal==='gallande'){
+      fb.className='feedback warn';
+      fb.innerHTML='Rätt värde, men antalet gällande siffror ska följa pH-värdets decimaler: '+facit+'. Räknas som rätt.';
+    } else {
+      fb.className='feedback fel';
+      fb.innerHTML='Inte riktigt. Kom ihåg att [H\u2083O\u207a] = 10\u207b\u1d56\u1d34. Facit får du med Visa lösning.';
+    }
+  }
+}
+
+function reveal(){
+  if(reviewing) return;
+  if(!answered){
+    const entry=ensureEntry();
+    entry.status='reveal';
+    renderHistory();
+  }
+  revealed=true;
+  $('textsvar').value = problem.ansType==='ph'
+    ? fmtPh(problem.answer, problem.reqDec)
+    : fmtConc(problem.answer, problem.reqSf);
+  $('solution').className='solution open';
+  renderSteps(problem);
+}
+
+function updateScore(){
+  $('scoreOk').textContent=score.ok;
+  $('scoreTot').textContent=score.tot;
+  $('streak').textContent = score.streak>=2 ? '🔥 '+score.streak+' i rad' : '';
+}
+
+$('checkBtn').onclick=check;
+$('textsvar').addEventListener('keydown',e=>{ if(e.key==='Enter') check(); });
+$('solBtn').onclick=reveal;
+$('nextBtn').onclick=newProblem;
+$('backBtn').onclick=closeReview;
+
+window.__felContext=()=>problem?{
+  Uppgift: problem.qtext+' | '+problem.given.map(x=>x.replace(/<[^>]*>/g,'')).join('; '),
+  Facit: facitText(problem).replace(/<[^>]*>/g,''),
+  Signatur: problem.signature
+}:null;
+
+newProblem();
+}
+</script>
+<button class="felknapp" id="felBtn">Hittade du ett fel?</button>
+<div class="felpanel" id="felPanel" hidden>
+  <h3>Rapportera ett fel</h3>
+  <textarea id="felText" placeholder="Beskriv felet: vad gjorde du, vad hände, vad förväntade du dig?"></textarea>
+  <div class="felmeta" id="felMeta"></div>
+  <div class="felrad">
+    <button class="btn-primary" id="felSkicka">Skicka via e-post</button>
+    <button class="btn-ghost" id="felKopiera">Kopiera rapporten</button>
+  </div>
+  <div class="felok" id="felOk"></div>
+</div>
+<script>
+(function(){
+const FELMAIL='kauremaa.aleksi@gmail.com';
+const $=id=>document.getElementById(id);
+function ctx(){ try{return (window.__felContext&&window.__felContext())||null;}catch(e){return null;} }
+function report(){
+  let s='Sida: '+document.title+'\nAdress: '+location.href+'\nTid: '+new Date().toLocaleString('sv-FI');
+  const c=ctx();
+  if(c){ for(const k in c) s+='\n'+k+': '+c[k]; }
+  s+='\nWebbläsare: '+navigator.userAgent;
+  return s;
+}
+$('felBtn').onclick=()=>{
+  const p=$('felPanel'); p.hidden=!p.hidden;
+  if(!p.hidden){ $('felMeta').textContent=report(); $('felOk').style.display='none'; }
+};
+$('felSkicka').onclick=()=>{
+  const body=($('felText').value||'(ingen beskrivning)')+'\n\n--- Automatisk information ---\n'+report();
+  location.href='mailto:'+FELMAIL+'?subject='+encodeURIComponent('Felrapport: '+document.title)+'&body='+encodeURIComponent(body);
+};
+$('felKopiera').onclick=async()=>{
+  const t=($('felText').value||'(ingen beskrivning)')+'\n\n--- Automatisk information ---\n'+report();
+  try{ await navigator.clipboard.writeText(t); $('felOk').textContent='Kopierad! Klistra in i Wilma eller e-post.'; }
+  catch(e){ $('felOk').textContent='Kopiering blockerades. Markera texten ovan och kopiera manuellt.'; }
+  $('felOk').style.display='block';
+};
+})();
+</script>
+</body>
+</html>

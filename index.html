@@ -15,6 +15,8 @@
     --ink:#17241E; --soft:#4C5B53;
     --ke01:#1D5FA8; --ke01-soft:#E4EEF9; --ke01-hover:#174C86;
     --ke04:#0B6E5F; --ke04-soft:#E3F1ED; --ke04-hover:#095C50;
+    --ke05:#0E6E8C; --ke05-soft:#E2F0F5; --ke05-hover:#0A5870;
+    --ke06:#4B41A6; --ke06-soft:#E9E7F7; --ke06-hover:#372F82;
     --neutral:#8A968E; --card:#FFFFFF; --linje:#CFDAD2; --varning:#B25A0B;
     --mono:'IBM Plex Mono',ui-monospace,monospace;
     --sans:'IBM Plex Sans',system-ui,sans-serif;
@@ -107,6 +109,14 @@
     padding:11px 22px;border-radius:8px;white-space:nowrap;display:inline-block;
   }
   .ke01 a.knapp{background:var(--ke01)} .ke01 a.knapp:hover{background:var(--ke01-hover)}
+  .ke05 .kurs-head{border-color:var(--ke05);background:var(--ke05-soft)}
+  .ke05 .kurskod{color:var(--ke05)}
+  .ke05 a.knapp{background:var(--ke05)}
+  .ke05 a.knapp:hover{background:var(--ke05-hover)}
+  .ke06 .kurs-head{border-color:var(--ke06);background:var(--ke06-soft)}
+  .ke06 .kurskod{color:var(--ke06)}
+  .ke06 a.knapp{background:var(--ke06)}
+  .ke06 a.knapp:hover{background:var(--ke06-hover)}
   .ke04 a.knapp{background:var(--ke04)} .ke04 a.knapp:hover{background:var(--ke04-hover)}
   @media (prefers-color-scheme: dark){
     a.knapp{color:#0E1512}
@@ -298,6 +308,46 @@
       </div>
     </div>
 
+    <div class="kurs kort-bas ke05">
+      <div class="kurs-head">
+        <span class="kurskod">KE05</span>
+        <span class="kursnamn">Kemisk energi och cirkulär ekonomi</span>
+      </div>
+      <div class="kurs-body">
+        <div class="verktygsrad">
+          <div>
+            <h3>Oxidationstalstränaren</h3>
+            <p>Bestäm oxidationstal med romerska siffror, avgör vad som oxideras och reduceras, och hitta oxidationsmedlet. Med undantagen: peroxider, metallhydrider och fluor.</p>
+          </div>
+          <a class="knapp" href="oxidationstalstranaren-ke05.html">Öppna tränaren</a>
+        </div>
+        <div class="chips">
+          <span class="chip">3 uppgiftstyper</span><span class="chip">3 nivåer</span>
+          <span class="chip">16 redoxreaktioner</span><span class="chip">ny juli 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="kurs kort-bas ke06">
+      <div class="kurs-head">
+        <span class="kurskod">KE06</span>
+        <span class="kursnamn">Kemisk jämvikt</span>
+      </div>
+      <div class="kurs-body">
+        <div class="verktygsrad">
+          <div>
+            <h3>pH-tränaren</h3>
+            <p>Räkna pH för starka och svaga syror och baser samt buffertlösningar. Antalet decimaler i pH följer koncentrationens gällande siffror, precis som på studentprovet.</p>
+          </div>
+          <a class="knapp" href="ph-tranaren-ke06.html">Öppna tränaren</a>
+        </div>
+        <div class="chips">
+          <span class="chip">4 uppgiftstyper</span><span class="chip">3 nivåer</span>
+          <span class="chip">Ka ur Mafy</span><span class="chip">ny juli 2026</span>
+        </div>
+      </div>
+    </div>
+
     <div class="resurs kort-bas">
       <div>
         <h3>Räkneguiden</h3>
@@ -307,7 +357,7 @@
     </div>
 
     <div class="kommande">
-      <span class="kurskod">KE02&ndash;KE06</span>
+      <span class="kurskod">KE03</span>
       <p>Fler verktyg är på väg. Sidan uppdateras under läsåret.</p>
     </div>
   </section>
