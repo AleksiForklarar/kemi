@@ -83,6 +83,8 @@
   .scorebar b{color:var(--ink);font-weight:600}
   .streak{color:var(--amber);font-weight:600}
 
+  .provinfo{font-family:var(--mono);font-size:14px;color:var(--accent);font-weight:600}
+
   .qtype-tag{
     display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;
     color:var(--accent);background:var(--accent-soft);
@@ -229,6 +231,8 @@
     <div class="scorebar">
       <span>Rätt: <b id="scoreOk">0</b> / <b id="scoreTot">0</b></span>
       <span class="streak" id="streak"></span>
+      <span class="provinfo" id="provInfo"></span>
+      <button class="btn-ghost" id="provBtn" style="margin-left:auto;font-size:13px;padding:8px 14px">Provsimulering: 5 uppgifter</button>
     </div>
   </div>
 
@@ -488,9 +492,9 @@ function genMass(diff){
       `m(${sub(fB)}) = n · M = ${fmt(nB)} mol · ${fmtM(MB)} g/mol`, answer, sf, unit));
   }
   const given=[];
-  if(diff==='latt'){ given.push(givenM(fA)); if(!useGas) given.push(givenM(fB)); }
+  
   return {tag:'Massaberäkningar', eq:eqHTML(rx), qtext:q, given,
-    atomEls: diff==='latt'?[]:elementsOf([fA,fB]), answer, sf, unit, steps,
+    atomEls: [], answer, sf, unit, steps,
     rxIdx, signature:['mass',rxIdx,fA,fB,useGas?'g':'m',mA.str].join('|'),
     dbg:{kind:useGas?'gas':'mass', mA:mA.v, MA, MB, cA, cB}};
 }
@@ -536,9 +540,9 @@ function genLimit(diff){
       `m(${sub(fP)}) = ${fmt(nP)} mol · ${fmtM(MP)} g/mol`, answer, sf, unit));
   }
   const given=[];
-  if(diff==='latt') given.push(givenM(fA),givenM(fB),givenM(fP));
+  
   return {tag:'Begränsande faktor', eq:eqHTML(rx), qtext:q, given,
-    atomEls: diff==='latt'?[]:elementsOf([fA,fB,fP]), answer, sf, unit, steps,
+    atomEls: [], answer, sf, unit, steps,
     rxIdx, signature:['limit',rxIdx,variant,mA.str,mB.str].join('|'),
     dbg:{kind:variant, mA:mA.v, mB:mB.v, MA, MB, MP, cA, cB, cP, limA}};
 }
@@ -570,9 +574,9 @@ function genYield(diff){
     steps=[...baseSteps, finalStep(`Beräkna det praktiska utbytet.`,
       `m(prakt.) = ${fmt(mTeor)} g · ${pctStr}/100`, answer, sf, unit)];
     dbgExtra={pct};
-    if(diff==='latt') given.push(givenM(fA),givenM(fP));
+    
     return {tag:'Procentuellt utbyte', eq:eqHTML(rx), qtext:q, given,
-      atomEls:elementsOf([fA,fP]), answer, sf, unit, steps,
+      atomEls: [], answer, sf, unit, steps,
       rxIdx, signature:['yield',rxIdx,fP,variant,mA.str,pctStr].join('|'),
       dbg:{kind:variant, mA:mA.v, MA, MP, cA, cP, ...dbgExtra}};
   }
@@ -584,9 +588,9 @@ function genYield(diff){
   q = `<b>${mA.str} g</b> ${NAMES[fA]} får reagera enligt formeln ovan. Vid försöket erhölls <b>${mActStr} g</b> ${NAMES[fP]} (${sub(fP)}). Beräkna det <b>procentuella utbytet</b>.`;
   steps=[...baseSteps, finalStep(`Jämför praktiskt och teoretiskt utbyte.`,
     `utbyte = ${mActStr} g / ${fmt(mTeor)} g · 100 %`, answer, sf, unit)];
-  if(diff==='latt') given.push(givenM(fA),givenM(fP));
+  
   return {tag:'Procentuellt utbyte', eq:eqHTML(rx), qtext:q, given,
-    atomEls: diff==='latt'?[]:elementsOf([fA,fP]), answer, sf, unit, steps,
+    atomEls: [], answer, sf, unit, steps,
     rxIdx, signature:['yield',rxIdx,fP,variant,mA.str,mActStr].join('|'),
     dbg:{kind:variant, mA:mA.v, MA, MP, cA, cP, mAct:mActVal}};
 }
@@ -635,7 +639,6 @@ function genConc(diff){
       finalStep(`Beräkna molmassan och massan.`,
         `M(${sub(solute)}) = ${fmtM(M)} g/mol ⇒ m = ${fmt(c.v*V.v)} mol · ${fmtM(M)} g/mol`, answer, sf, unit)
     ];
-    atomEls = elementsOf([solute]);
     sigNums=[c.str,V.str]; dbg={kind:variant, c:c.v, V:V.v, M};
   } else {
     variant='mV';
@@ -652,8 +655,7 @@ function genConc(diff){
       finalStep(`Beräkna koncentrationen.`,
         `c = n/V = ${fmt(n)} mol / ${V.str} dm³`, answer, sf, unit)
     ];
-    if(diff==='latt') given.push(givenM(solute));
-    else atomEls = elementsOf([solute]);
+    
     sigNums=[m.str,V.str]; dbg={kind:variant, m:m.v, V:V.v, M};
   }
   return {tag:'Koncentration', eq:null, qtext:q, given, atomEls, answer, sf, unit, steps,
@@ -729,7 +731,7 @@ function buildChips(elId, items, cur, onSet){
     const b=document.createElement('button');
     b.className='chip'+(it.id===cur?' on':'');
     b.textContent=it.label;
-    b.onclick=()=>onSet(it.id);
+    b.onclick=()=>{ if(prov) return; onSet(it.id); };
     el.appendChild(b);
   });
 }
@@ -770,6 +772,10 @@ function newProblem(){
   $('nextBtn').style.display='inline-block';
   $('backBtn').style.display='none';
   $('stepBtn').style.display='inline-block';
+  if(prov){
+    $('solBtn').style.display='none';
+    $('provInfo').textContent='Uppgift '+(prov.i+1)+'/5';
+  }
   $('answer').focus();
 }
 
@@ -848,6 +854,7 @@ function closeReview(){
 
 function check(){
   if(reviewing) return;
+  if(prov){ provCheck(); return; }
   const raw = $('answer').value;
   const res = evaluate(raw, problem.answer, problem.sf);
   const fb = $('feedback');
@@ -897,6 +904,7 @@ function showStep(){
 
 function reveal(){
   if(reviewing) return;
+  if(prov) return;
   if(!answered){
     const entry=ensureEntry();
     entry.status='reveal';
@@ -913,12 +921,68 @@ function updateScore(){
   $('streak').textContent = score.streak>=2 ? `🔥 ${score.streak} i rad` : '';
 }
 
+let prov=null;
+
+function provToggle(){
+  if(prov){ provEnd(); newProblem(); return; }
+  prov={i:0,items:[],t0:Date.now()};
+  curType='mix';
+  $('provBtn').textContent='Avbryt provet';
+  newProblem();
+}
+function provEnd(){
+  prov=null;
+  $('provBtn').textContent='Provsimulering: 5 uppgifter';
+  $('provInfo').textContent='';
+  $('solBtn').style.display='inline-block';
+}
+function provCheck(){
+  const raw=$('answer').value;
+  const res=evaluate(raw, problem.answer, problem.sf);
+  const fb=$('feedback');
+  if(res.status==='invalid'){
+    fb.className='feedback warn';
+    fb.innerHTML='Skriv in ett tal innan du går vidare. Svaret räknas som fel om du lämnar tomt: skriv 0 för att hoppa över.';
+    if(raw.trim()==='0'){ } else return;
+  }
+  const korrekt = res.status==='ok'||res.status==='warn';
+  prov.items.push({problem, raw, korrekt});
+  prov.i++;
+  if(prov.i<5){
+    newProblem();
+  } else {
+    provSummary();
+  }
+}
+function provSummary(){
+  const items=prov.items;
+  const ratt=items.filter(x=>x.korrekt).length;
+  const sek=Math.round((Date.now()-prov.t0)/1000);
+  const min=Math.floor(sek/60), ss=sek%60;
+  score.tot+=5; score.ok+=ratt; updateScore();
+  items.forEach(it=>{
+    histCounter++;
+    history.unshift({n:histCounter, problem:it.problem, userAnswer:it.raw, status:it.korrekt?'ok':'fel'});
+  });
+  provEnd();
+  renderHistory();
+  const rows=items.map((it,i)=>
+    (i+1)+'. '+(it.korrekt?'✓':'✗')+' ditt svar: '+(it.raw||'(tomt)')+
+    ' · rätt: '+fmtSig(it.problem.answer,it.problem.sf)+' '+it.problem.unit
+  ).join('<br>');
+  const fb=$('feedback');
+  fb.className='feedback '+(ratt>=4?'ok':(ratt>=2?'warn':'fel'));
+  fb.innerHTML='<b>Provsimulering klar: '+ratt+'/5 rätt på '+min+' min '+ss+' s.</b><br>'+rows+
+    '<br>Öppna uppgifterna i historiken för fullständiga lösningar.';
+}
+
 $('checkBtn').onclick=check;
 $('answer').addEventListener('keydown',e=>{ if(e.key==='Enter') check(); });
 $('solBtn').onclick=reveal;
 $('stepBtn').onclick=showStep;
 $('nextBtn').onclick=newProblem;
 $('backBtn').onclick=closeReview;
+$('provBtn').onclick=provToggle;
 
 window.__felContext=()=>problem?{
   Uppgift: problem.qtext.replace(/<[^>]*>/g,''),
@@ -942,7 +1006,7 @@ newProblem();
 </div>
 <script>
 (function(){
-const FELMAIL='ANDRA-MIG@exempel.fi'; /* ÄNDRA till lärarens e-postadress */
+const FELMAIL='kauremaa.aleksi@gmail.com';
 const $=id=>document.getElementById(id);
 function ctx(){ try{return (window.__felContext&&window.__felContext())||null;}catch(e){return null;} }
 function report(){

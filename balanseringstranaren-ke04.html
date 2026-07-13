@@ -97,6 +97,11 @@
     font-family:var(--mono);font-size:22px;font-weight:600;min-width:34px;
     text-align:center;color:var(--accent);
   }
+  input.koef{
+    width:48px;border:1.5px solid transparent;background:transparent;
+    border-radius:6px;padding:2px 0;
+  }
+  input.koef:focus{border-color:var(--accent);outline:none;background:var(--card)}
   .koef.ett{color:var(--line)}
   .formel{
     font-family:var(--mono);font-size:clamp(17px,3.6vw,22px);font-weight:600;
@@ -106,6 +111,11 @@
   .op{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--ink-soft);padding-bottom:12px}
 
   .raknetabell{overflow-x:auto;margin-bottom:4px}
+  .tabellnot{
+    font-family:var(--mono);font-size:13px;color:var(--ink-soft);
+    text-align:center;background:var(--paper);border:1.5px dashed var(--line);
+    border-radius:8px;padding:10px 12px;margin-bottom:4px;
+  }
   table{border-collapse:collapse;margin:0 auto;font-family:var(--mono);font-size:14.5px}
   th,td{padding:6px 16px;text-align:center;border-bottom:1px solid var(--line)}
   th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-family:var(--sans);font-weight:600}
@@ -177,7 +187,7 @@
   <header>
     <div class="eyebrow">KE04 · Kemisk reaktion · GLP2019</div>
     <h1>Balanseringstränaren</h1>
-    <div class="sub">Justera koefficienterna med + och &minus; tills atomerna stämmer på båda sidor. Tabellen räknar åt dig i realtid.</div>
+    <div class="sub">Justera koefficienterna med + och &minus;, eller skriv talet direkt i rutan. På lätt nivå räknar tabellen atomerna åt dig.</div>
   </header>
 
   <div class="panel">
@@ -199,7 +209,8 @@
   <div class="panel">
     <span class="qtype-tag" id="qtag"></span>
     <div class="ekvation" id="ekvation"></div>
-    <div class="raknetabell"><table id="tabell"></table></div>
+    <div class="raknetabell" id="tabellHallare"><table id="tabell"></table></div>
+    <div class="tabellnot" id="tabellNot" style="display:none">Atomräkningen är dold på den här nivån. Räkna atomerna själv på båda sidor, precis som på provet.</div>
 
     <div class="answer-row">
       <button class="btn-primary" id="checkBtn">Kontrollera</button>
@@ -413,14 +424,28 @@ function renderEq(interactive){
       st.className='stepper';
       const minus=document.createElement('button');
       minus.textContent='\u2212'; minus.setAttribute('aria-label','Minska koefficienten för '+f);
-      const val=document.createElement('span');
-      val.className='koef'+(coeffs[i]===1?' ett':''); val.textContent=coeffs[i];
       const plus=document.createElement('button');
       plus.textContent='+'; plus.setAttribute('aria-label','Öka koefficienten för '+f);
+      const val=document.createElement('input');
+      val.type='text'; val.inputMode='numeric'; val.autocomplete='off';
+      val.className='koef'+(coeffs[i]===1?' ett':'');
+      val.value=coeffs[i];
+      val.setAttribute('aria-label','Koefficient för '+f+', skriv eller använd knapparna');
+      const setK=(k)=>{
+        if(isNaN(k)) k=1;
+        k=Math.max(1,Math.min(MAXK,Math.round(k)));
+        coeffs[i]=k; val.value=k;
+        val.className='koef'+(k===1?' ett':'');
+        minus.disabled=k<=1; plus.disabled=k>=MAXK;
+        renderTable();
+      };
       minus.disabled = coeffs[i]<=1;
       plus.disabled = coeffs[i]>=MAXK;
-      minus.onclick=()=>{ if(coeffs[i]>1){coeffs[i]--; renderEq(true); renderTable();} };
-      plus.onclick=()=>{ if(coeffs[i]<MAXK){coeffs[i]++; renderEq(true); renderTable();} };
+      minus.onclick=()=>setK(coeffs[i]-1);
+      plus.onclick=()=>setK(coeffs[i]+1);
+      val.onfocus=()=>val.select();
+      val.onchange=()=>setK(parseInt(String(val.value).replace(/[^0-9]/g,''),10));
+      val.onkeydown=(e)=>{ if(e.key==='Enter'){ val.blur(); } };
       st.append(minus,val,plus);
       art.appendChild(st);
     } else {
@@ -435,7 +460,12 @@ function renderEq(interactive){
   });
 }
 
+function tableAllowed(){ return curDiff==='latt' || reviewing || revealed; }
 function renderTable(){
+  const visa=tableAllowed();
+  $('tabellHallare').style.display = visa ? 'block' : 'none';
+  $('tabellNot').style.display = visa ? 'none' : 'block';
+  if(!visa) return;
   const {L,R}=sums(rx,coeffs);
   const els=elementsOf(rx);
   const t=$('tabell');
@@ -552,7 +582,7 @@ function check(){
   } else {
     const namn=ELNAMN[res.el]||res.el;
     fb.className='feedback fel';
-    fb.innerHTML='Inte balanserad ännu. Kolla <b>'+namn+' ('+res.el+')</b>: antalet skiljer sig mellan sidorna. Tabellen visar var.';
+    fb.innerHTML='Inte balanserad ännu. Kolla <b>'+namn+' ('+res.el+')</b>: antalet skiljer sig mellan sidorna. '+(tableAllowed()?'Tabellen visar var.':'Räkna atomerna för hand och jämför sidorna.');
   }
 }
 
@@ -612,7 +642,7 @@ newProblem();
 </div>
 <script>
 (function(){
-const FELMAIL='ANDRA-MIG@exempel.fi'; /* ÄNDRA till lärarens e-postadress */
+const FELMAIL='kauremaa.aleksi@gmail.com';
 const $=id=>document.getElementById(id);
 function ctx(){ try{return (window.__felContext&&window.__felContext())||null;}catch(e){return null;} }
 function report(){
