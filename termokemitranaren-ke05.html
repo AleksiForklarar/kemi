@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Termokemitränaren · KE05</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF9F5;
+    --grid:#F2ECE0;
+    --grid-major:#EAE1D0;
+    --ink:#2E2616;
+    --ink-soft:#6B5E47;
+    --accent:#8F6D00;
+    --accent-hover:#6F5500;
+    --accent-soft:#F7F1DE;
+    --amber:#B2590B;
+    --amber-soft:#FBEFE0;
+    --green:#1D7A33;
+    --green-soft:#E4F3E6;
+    --red:#A8332C;
+    --red-soft:#F8E7E5;
+    --card:#FFFFFF;
+    --line:#E0D7C6;
+    --radius:10px;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sans:'IBM Plex Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:var(--sans);
+    color:var(--ink);
+    background-color:var(--paper);
+    background-image:
+      linear-gradient(var(--grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:100px 100px,100px 100px,20px 20px,20px 20px;
+    min-height:100vh;
+    padding:24px 16px 64px;
+    line-height:1.5;
+  }
+  .wrap{max-width:840px;margin:0 auto}
+  .hem{display:inline-block;font-family:var(--mono);font-size:13px;font-weight:600;
+    color:var(--ink-soft);text-decoration:none;margin-bottom:10px;padding:4px 0}
+  .hem:hover{color:var(--accent)}
+  .hem:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  header{margin-bottom:20px}
+  .eyebrow{
+    font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);font-weight:600;
+  }
+  h1{font-size:clamp(26px,5vw,36px);font-weight:700;letter-spacing:-.01em;line-height:1.15}
+  .sub{color:var(--ink-soft);font-size:15px;margin-top:4px}
+
+  .panel{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:16px;margin-bottom:14px;
+    box-shadow:0 1px 3px rgba(46,38,22,.06);
+  }
+  .controls{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+  .ctrl-group{display:flex;flex-direction:column;gap:6px}
+  .ctrl-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{
+    font-family:var(--sans);font-size:14px;font-weight:500;
+    padding:7px 13px;border-radius:999px;border:1.5px solid var(--line);
+    background:var(--card);color:var(--ink);cursor:pointer;transition:all .12s;
+  }
+  .chip:hover{border-color:var(--accent)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .chip:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .scorebar{
+    display:flex;gap:20px;align-items:center;flex-wrap:wrap;
+    font-family:var(--mono);font-size:14px;color:var(--ink-soft);
+  }
+  .scorebar b{color:var(--ink);font-weight:600}
+  .streak{color:var(--accent);font-weight:600}
+  .provinfo{font-family:var(--mono);font-size:14px;color:var(--accent);font-weight:600}
+
+  .qtype-tag{
+    display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;
+    color:var(--accent);background:var(--accent-soft);
+    padding:3px 10px;border-radius:6px;margin-bottom:10px;letter-spacing:.04em;
+  }
+  .review-tag{background:#F2ECE0;color:var(--ink-soft)}
+  .qtext{font-size:16px;margin-bottom:8px}
+  .qtext b{font-weight:600}
+  .qtext sub{font-size:.7em}
+  .rxn{
+    font-family:var(--mono);font-size:15px;color:var(--ink);
+    background:var(--accent-soft);border-radius:9px;padding:10px 14px;margin:10px 0 4px;
+    overflow-x:auto;white-space:nowrap;
+  }
+  .rxn sub{font-size:.7em}
+  .given{
+    font-family:var(--mono);font-size:14px;color:var(--ink-soft);
+    margin:10px 0;display:flex;flex-direction:column;gap:3px;
+  }
+  .given sub{font-size:.7em}
+  .given b{color:var(--ink)}
+
+  .answer-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+  .answer-field{position:relative;display:flex;align-items:center}
+  .svarslabel{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--ink-soft);margin-right:8px}
+  input[type=text]{
+    font-family:var(--mono);font-size:17px;font-weight:500;
+    padding:10px 14px;border:1.5px solid var(--line);border-radius:8px;
+    width:190px;color:var(--ink);background:var(--card);
+  }
+  input[type=text]:focus{border-color:var(--accent)}
+  input[type=text][readonly]{background:var(--paper);color:var(--ink-soft)}
+  .unit{font-family:var(--mono);font-size:15px;color:var(--ink-soft);margin-left:8px;font-weight:500}
+  .hint{
+    font-family:var(--mono);font-size:13px;color:var(--ink-soft);
+    margin-top:8px;display:none;
+  }
+  .hint.show{display:block}
+  button{
+    font-family:var(--sans);font-size:15px;font-weight:600;
+    padding:10px 18px;border-radius:8px;cursor:pointer;border:1.5px solid transparent;
+    transition:all .12s;
+  }
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-hover)}
+  .btn-ghost{background:var(--card);border-color:var(--line);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+
+  .feedback{margin-top:12px;padding:12px 14px;border-radius:8px;font-size:15px;display:none;font-weight:500}
+  .feedback.ok{display:block;background:var(--green-soft);color:var(--green);border:1px solid #BFE3C4}
+  .feedback.warn{display:block;background:var(--amber-soft);color:var(--amber);border:1px solid #EFD3B2}
+  .feedback.fel{display:block;background:var(--red-soft);color:var(--red);border:1px solid #EBC4C0}
+  .feedback sub{font-size:.7em}
+
+  .solution{margin-top:14px;display:none}
+  .solution.open{display:block}
+  .sol-head{
+    font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:4px;
+  }
+  .sol-note{font-size:13px;color:var(--ink-soft);margin-bottom:10px;font-style:italic}
+  .step{
+    background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    padding:10px 14px;margin-bottom:8px;font-size:15px;
+    display:flex;gap:12px;align-items:baseline;
+  }
+  .step .n{
+    font-family:var(--mono);font-weight:600;color:var(--accent);
+    font-size:13px;flex-shrink:0;
+  }
+  .step .t{flex:1}
+  .step .t .m{font-family:var(--mono);font-size:14px;display:block;margin-top:3px;color:var(--ink);overflow-x:auto}
+  .step sub{font-size:.7em}
+
+  .hist-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
+  .hist-note{font-size:12px;color:var(--ink-soft);font-family:var(--mono)}
+  .hist-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+  .hist-item{
+    display:flex;gap:10px;align-items:baseline;text-align:left;
+    font-family:var(--sans);font-size:14px;font-weight:400;
+    background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;width:100%;
+  }
+  .hist-item:hover{border-color:var(--accent)}
+  .hist-item .hn{font-family:var(--mono);font-weight:600;color:var(--ink-soft);font-size:12px;flex-shrink:0}
+  .hist-item .ht{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hist-item .ht sub{font-size:.7em}
+  .hist-item .hs{font-family:var(--mono);font-size:12px;font-weight:600;flex-shrink:0}
+  .hs.s-ok{color:var(--green)} .hs.s-warn{color:var(--amber)} .hs.s-fel{color:var(--red)} .hs.s-reveal{color:var(--ink-soft)}
+
+  .felknapp{position:fixed;right:16px;bottom:16px;z-index:50;font-size:13px;
+    background:var(--card);color:var(--ink-soft);border:1.5px solid var(--line);
+    border-radius:999px;padding:9px 14px;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+  .felknapp:hover{color:var(--accent);border-color:var(--accent)}
+  .felpanel{position:fixed;right:16px;bottom:64px;z-index:50;
+    width:min(340px,calc(100vw - 32px));background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:14px;
+    box-shadow:0 8px 28px rgba(0,0,0,.2)}
+  .felpanel h3{font-size:14px;margin-bottom:6px}
+  .felpanel textarea{width:100%;height:70px;font-family:var(--sans);font-size:13px;
+    padding:8px;border:1.5px solid var(--line);border-radius:8px;
+    background:var(--paper);color:var(--ink);resize:vertical}
+  .felmeta{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);
+    background:var(--paper);border-radius:6px;padding:6px 8px;margin:8px 0;
+    max-height:70px;overflow:auto;white-space:pre-wrap}
+  .felrad{display:flex;gap:6px}
+  .felrad button{flex:1;font-size:12.5px;padding:8px 6px}
+  .felok{font-size:12px;color:var(--green);margin-top:6px;display:none}
+
+  footer{
+    margin-top:24px;font-size:13px;color:var(--ink-soft);text-align:center;
+    font-family:var(--mono);line-height:1.7;
+  }
+  @media (max-width:560px){
+    body{padding:16px 10px 48px}
+    .panel{padding:13px}
+    input[type=text]{width:150px}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="hem" href="index.html">&#8592; Startsidan</a>
+  <header>
+    <div class="eyebrow">KE05 · Kemisk energi och cirkulär ekonomi · GLP2019</div>
+    <h1>Termokemitränaren</h1>
+    <div class="sub">Värmeberäkningar, bildningsentalpier, Hess lag och bindningsenergier. Alla tabellvärden ges i uppgiften. Kom ihåg tecknet på &Delta;H.</div>
+  </header>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="ctrl-group">
+        <span class="ctrl-label">Uppgiftstyp</span>
+        <div class="chips" id="typeChips" role="group" aria-label="Uppgiftstyp"></div>
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">Svårighetsgrad</span>
+        <div class="chips" id="diffChips" role="group" aria-label="Svårighetsgrad"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="scorebar">
+      <span>Rätt: <b id="scoreOk">0</b> / <b id="scoreTot">0</b></span>
+      <span class="streak" id="streak"></span>
+      <span class="provinfo" id="provInfo"></span>
+      <button class="btn-ghost" id="provBtn" style="margin-left:auto;font-size:13px;padding:8px 14px">Provsimulering: 5 uppgifter</button>
+    </div>
+  </div>
+
+  <div class="panel" id="problemPanel">
+    <span class="qtype-tag" id="qtag"></span>
+    <div class="qtext" id="qtext"></div>
+    <div class="rxn" id="rxn" style="display:none"></div>
+    <div class="given" id="given"></div>
+
+    <div class="answer-row">
+      <div class="answer-field">
+        <span class="svarslabel" id="ansLabel"></span>
+        <input type="text" id="answer" inputmode="text" autocomplete="off" aria-label="Ditt svar">
+        <span class="unit" id="unit"></span>
+      </div>
+      <button class="btn-primary" id="checkBtn">Kontrollera</button>
+      <button class="btn-ghost" id="solBtn">Visa lösning</button>
+      <button class="btn-ghost" id="nextBtn">Ny uppgift &#8594;</button>
+      <button class="btn-primary" id="backBtn" style="display:none">&#8592; Fortsätt träna</button>
+    </div>
+    <div class="hint" id="signHint">Kom ihåg tecknet: exoterm reaktion har &Delta;H &lt; 0. Skriv t.ex. <b>-890,3</b></div>
+
+    <div class="feedback" id="feedback" role="status"></div>
+
+    <div class="solution" id="solution">
+      <div class="sol-head">Lösning steg för steg</div>
+      <div class="sol-note">Mellanvärden visas avrundade i presentationen, men alla beräkningar görs med fulla värden. Avrunda själv först i slutsvaret.</div>
+      <div id="steps"></div>
+      <button class="btn-ghost" id="stepBtn" style="margin-top:4px">Visa nästa steg</button>
+    </div>
+  </div>
+
+  <div class="panel" id="histPanel" style="display:none">
+    <div class="hist-head">
+      <span class="ctrl-label">Historik</span>
+      <span class="hist-note">rensas när sidan laddas om</span>
+    </div>
+    <div class="hist-list" id="histList"></div>
+  </div>
+
+  <footer>
+    Exoterm reaktion: &Delta;H &lt; 0 · Endoterm reaktion: &Delta;H &gt; 0 · c(vatten) = 4,19 kJ/(kg·&deg;C)<br>
+    I provet hittar du bildningsentalpier och bindningsenergier i Mafys tabeller.
+  </footer>
+</div>
+
+<script>
+'use strict';
+/* ================================================================
+   LOGIK: ren och testbar (körs även i Node av testsviten)
+   ================================================================ */
+
+const ATOMIC_STR = {
+  H:'1,008', C:'12,01', N:'14,01', O:'16,00', S:'32,06', Cl:'35,45'
+};
+const ATOMIC = {};
+for(const el in ATOMIC_STR) ATOMIC[el] = parseFloat(ATOMIC_STR[el].replace(',','.'));
+
+const C_VATTEN = 4.19;
+const C_VATTEN_STR = '4,19';
+
+/* ---------- kemihjälpare ---------- */
+function parseFormula(f){
+  const out = {};
+  function add(o,el,n){ o[el]=(o[el]||0)+n; }
+  let i=0;
+  function block(target){
+    while(i<f.length){
+      const ch=f[i];
+      if(ch==='('){
+        i++;
+        const inner={};
+        block(inner);
+        let num=''; while(i<f.length && /\d/.test(f[i])) num+=f[i++];
+        const m=num?+num:1;
+        for(const k in inner) add(target,k,inner[k]*m);
+      } else if(ch===')'){ i++; return; }
+      else{
+        let el=ch; i++;
+        if(i<f.length && /[a-z]/.test(f[i])) el+=f[i++];
+        let num=''; while(i<f.length && /\d/.test(f[i])) num+=f[i++];
+        add(target,el,num?+num:1);
+      }
+    }
+  }
+  block(out);
+  return out;
+}
+function molarMass(f){
+  const comp = parseFormula(f);
+  let M=0;
+  for(const el in comp){
+    if(!(el in ATOMIC)) throw new Error('Okänd atommassa: '+el+' i '+f);
+    M += ATOMIC[el]*comp[el];
+  }
+  return M;
+}
+
+/* ---------- gällande siffror & talformat ---------- */
+function stripSci(s){
+  s = String(s).trim().replace(/\s/g,'').replace(/,/g,'.').replace(/\u2212/g,'-')
+    .replace(/[·×]/g,'*').replace(/^[-+]/,'');
+  const m = s.match(/^(\d+(?:\.\d*)?|\.\d+)(?:[eE]([+-]?\d+)|\*10\^?\(?([+-]?\d+)\)?)?$/);
+  if(!m) return null;
+  const exp = m[2]!==undefined ? m[2] : (m[3]!==undefined ? m[3] : null);
+  return {mant:m[1], exp: exp===null?null:parseInt(exp)};
+}
+function countSF(str){
+  const p = stripSci(str);
+  if(!p) return null;
+  const s = p.mant;
+  const hasDot = s.includes('.');
+  const digits = s.replace('.','').replace(/^0+/,'');
+  if(digits.length===0) return {min:1,max:1};
+  if(hasDot) return {min:digits.length,max:digits.length};
+  const noTrail = digits.replace(/0+$/,'');
+  return {min:Math.max(1,noTrail.length),max:digits.length};
+}
+function parseNum(s){
+  const p = stripSci(s);
+  if(p===null) return null;
+  const neg = /^\s*[-\u2212]/.test(String(s));
+  const v = parseFloat(p.mant + (p.exp!==null ? 'e'+p.exp : ''));
+  if(isNaN(v)) return null;
+  return neg ? -v : v;
+}
+function roundSig(x,n){ return parseFloat(Number(x).toPrecision(n)); }
+const SUP = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻'};
+function supExp(e){ return String(e).split('').map(c=>SUP[c]||c).join(''); }
+function fmtSig(x,n){
+  if(!isFinite(x)) return String(x);
+  const ax = Math.abs(x);
+  if(ax!==0 && (ax>=1e5 || ax<1e-3)){
+    const exp = Math.floor(Math.log10(ax));
+    const mant = x/Math.pow(10,exp);
+    let ms = mant.toPrecision(n).replace('.',',');
+    return ms+' · 10'+supExp(exp);
+  }
+  let s = Number(x).toPrecision(n);
+  if(s.includes('e')||s.includes('E')){
+    const num=parseFloat(s);
+    const exp=Math.floor(Math.log10(Math.abs(num)));
+    const dec=Math.max(0,n-1-exp);
+    s=num.toFixed(dec);
+  }
+  return s.replace('.',',');
+}
+function fmt(x,sig=4){
+  if(x===0) return '0';
+  const ax=Math.abs(x);
+  if(ax>=1e5 || ax<1e-3){
+    const exp=Math.floor(Math.log10(ax));
+    const mant=x/Math.pow(10,exp);
+    return fmt(mant,sig)+' · 10'+supExp(exp);
+  }
+  const d = Math.max(0, sig - 1 - Math.floor(Math.log10(ax)));
+  let s = x.toFixed(Math.min(d,7));
+  if(s.includes('.')) s = s.replace(/0+$/,'').replace(/\.$/,'');
+  return s.replace('.',',');
+}
+function fmtM(x){ return fmt(x,4); }
+/* fast antal decimaler, med riktigt minustecken för presentation */
+function fmtFix(x,dec){
+  const s=Math.abs(x).toFixed(dec).replace('.',',');
+  return (x<0?'\u2212':'')+s;
+}
+/* antal gällande siffror i x avrundat till dec decimaler */
+function sfOfFixed(x,dec){
+  const s=Math.abs(x).toFixed(dec).replace('.','').replace(/^0+/,'');
+  return Math.max(1, s.length);
+}
+function mkVal(str){
+  return {str, v:parseNum(str), sf:countSF(str).min};
+}
+function dh(x,sf){ return fmtSig(x,sf).replace(/-/g,'\u2212'); }
+
+/* ---------- svarsbedömning ---------- */
+function evaluate(userStr, exact, sf){
+  const v = parseNum(userStr);
+  if(v===null) return {status:'invalid'};
+  const rounded = roundSig(exact, sf);
+  const eq = (a,b)=> Math.abs(a-b) <= Math.abs(b)*1e-9 + 1e-12;
+  const range = countSF(userStr);
+  if(eq(v, rounded)){
+    if(range && range.min<=sf && sf<=range.max) return {status:'ok', rounded};
+    return {status:'warn', reason:'sf', rounded};
+  }
+  for(let k=1;k<=7;k++){
+    if(k!==sf && eq(v, roundSig(exact,k))) return {status:'warn', reason:'sf', rounded};
+  }
+  if(exact!==0 && (eq(v,-rounded) || Math.abs(v+exact)/Math.abs(exact) <= 0.01))
+    return {status:'fel', reason:'tecken', rounded};
+  if(Math.abs(v-exact)/Math.abs(exact) <= 0.01) return {status:'warn', reason:'mellansteg', rounded};
+  return {status:'fel', rounded};
+}
+
+/* ---------- formatering av reaktionsformler ---------- */
+function eqSub(eq){ return String(eq).replace(/([A-Za-z\)])(\d+)/g,'$1<sub>$2</sub>'); }
+function stepObj(text, math){ return {text, math}; }
+
+/* ---------- slump ---------- */
+const pick = a => a[Math.floor(Math.random()*a.length)];
+
+/* ================================================================
+   DATABANKER: alla värden handverifierade mot tabellvärden
+   ================================================================ */
+
+/* Bildningsentalpier (kJ/mol). dHf-listan visas i uppgiften. */
+const BILDNING = [
+  {id:'nh3', niva:'latt', eq:'N2(g) + 3 H2(g) \u2192 2 NH3(g)',
+   prod:[{f:'NH3(g)', n:2, h:-46.1}],
+   reak:[{f:'N2(g)', n:1, h:0},{f:'H2(g)', n:3, h:0}]},
+  {id:'kalk', niva:'latt', eq:'CaCO3(s) \u2192 CaO(s) + CO2(g)',
+   prod:[{f:'CaO(s)', n:1, h:-635.1},{f:'CO2(g)', n:1, h:-393.5}],
+   reak:[{f:'CaCO3(s)', n:1, h:-1207.0}]},
+  {id:'so3', niva:'latt', eq:'2 SO2(g) + O2(g) \u2192 2 SO3(g)',
+   prod:[{f:'SO3(g)', n:2, h:-395.7}],
+   reak:[{f:'SO2(g)', n:2, h:-296.8},{f:'O2(g)', n:1, h:0}]},
+  {id:'metan', niva:'medel', eq:'CH4(g) + 2 O2(g) \u2192 CO2(g) + 2 H2O(l)',
+   prod:[{f:'CO2(g)', n:1, h:-393.5},{f:'H2O(l)', n:2, h:-285.8}],
+   reak:[{f:'CH4(g)', n:1, h:-74.8},{f:'O2(g)', n:2, h:0}]},
+  {id:'propan', niva:'medel', eq:'C3H8(g) + 5 O2(g) \u2192 3 CO2(g) + 4 H2O(l)',
+   prod:[{f:'CO2(g)', n:3, h:-393.5},{f:'H2O(l)', n:4, h:-285.8}],
+   reak:[{f:'C3H8(g)', n:1, h:-103.8},{f:'O2(g)', n:5, h:0}]},
+  {id:'etanol', niva:'medel', eq:'C2H5OH(l) + 3 O2(g) \u2192 2 CO2(g) + 3 H2O(l)',
+   prod:[{f:'CO2(g)', n:2, h:-393.5},{f:'H2O(l)', n:3, h:-285.8}],
+   reak:[{f:'C2H5OH(l)', n:1, h:-277.7},{f:'O2(g)', n:3, h:0}]},
+  {id:'peroxid', niva:'medel', eq:'2 H2O2(l) \u2192 2 H2O(l) + O2(g)',
+   prod:[{f:'H2O(l)', n:2, h:-285.8},{f:'O2(g)', n:1, h:0}],
+   reak:[{f:'H2O2(l)', n:2, h:-187.8}]},
+  {id:'eten', niva:'medel', eq:'C2H4(g) + H2(g) \u2192 C2H6(g)',
+   prod:[{f:'C2H6(g)', n:1, h:-84.7}],
+   reak:[{f:'C2H4(g)', n:1, h:52.5},{f:'H2(g)', n:1, h:0}]}
+];
+function dHrOf(rx){
+  let s=0;
+  rx.prod.forEach(a=>{ s += a.n*a.h; });
+  rx.reak.forEach(a=>{ s -= a.n*a.h; });
+  return s;
+}
+
+/* Hess lag: mål + givna reaktioner + operationer (mul, rev) */
+const HESS = [
+  {id:'co', niva:'latt', mal:'C(s) + \u00bd O2(g) \u2192 CO(g)',
+   given:[{eq:'C(s) + O2(g) \u2192 CO2(g)', h:-393.5},
+          {eq:'CO(g) + \u00bd O2(g) \u2192 CO2(g)', h:-283.0}],
+   ops:[{i:0, mul:1, rev:false},{i:1, mul:1, rev:true}]},
+  {id:'so3h', niva:'latt', mal:'SO2(g) + \u00bd O2(g) \u2192 SO3(g)',
+   given:[{eq:'S(s) + O2(g) \u2192 SO2(g)', h:-296.8},
+          {eq:'S(s) + 3/2 O2(g) \u2192 SO3(g)', h:-395.7}],
+   ops:[{i:0, mul:1, rev:true},{i:1, mul:1, rev:false}]},
+  {id:'no2', niva:'medel', mal:'N2(g) + 2 O2(g) \u2192 2 NO2(g)',
+   given:[{eq:'N2(g) + O2(g) \u2192 2 NO(g)', h:180.6},
+          {eq:'2 NO(g) + O2(g) \u2192 2 NO2(g)', h:-114.2}],
+   ops:[{i:0, mul:1, rev:false},{i:1, mul:1, rev:false}]},
+  {id:'co2x', niva:'medel', mal:'2 C(s) + O2(g) \u2192 2 CO(g)',
+   given:[{eq:'C(s) + O2(g) \u2192 CO2(g)', h:-393.5},
+          {eq:'2 CO(g) + O2(g) \u2192 2 CO2(g)', h:-566.0}],
+   ops:[{i:0, mul:2, rev:false},{i:1, mul:1, rev:true}]},
+  {id:'ch4f', niva:'svar', mal:'C(s) + 2 H2(g) \u2192 CH4(g)',
+   given:[{eq:'C(s) + O2(g) \u2192 CO2(g)', h:-393.5},
+          {eq:'H2(g) + \u00bd O2(g) \u2192 H2O(l)', h:-285.8},
+          {eq:'CH4(g) + 2 O2(g) \u2192 CO2(g) + 2 H2O(l)', h:-890.3}],
+   ops:[{i:0, mul:1, rev:false},{i:1, mul:2, rev:false},{i:2, mul:1, rev:true}]},
+  {id:'c2h4f', niva:'svar', mal:'2 C(s) + 2 H2(g) \u2192 C2H4(g)',
+   given:[{eq:'C(s) + O2(g) \u2192 CO2(g)', h:-393.5},
+          {eq:'H2(g) + \u00bd O2(g) \u2192 H2O(l)', h:-285.8},
+          {eq:'C2H4(g) + 3 O2(g) \u2192 2 CO2(g) + 2 H2O(l)', h:-1411.0}],
+   ops:[{i:0, mul:2, rev:false},{i:1, mul:2, rev:false},{i:2, mul:1, rev:true}]},
+  {id:'c2h6f', niva:'svar', mal:'2 C(s) + 3 H2(g) \u2192 C2H6(g)',
+   given:[{eq:'C(s) + O2(g) \u2192 CO2(g)', h:-393.5},
+          {eq:'H2(g) + \u00bd O2(g) \u2192 H2O(l)', h:-285.8},
+          {eq:'C2H6(g) + 7/2 O2(g) \u2192 2 CO2(g) + 3 H2O(l)', h:-1559.8}],
+   ops:[{i:0, mul:2, rev:false},{i:1, mul:3, rev:false},{i:2, mul:1, rev:true}]}
+];
+function hessSvar(hx){
+  let s=0;
+  hx.ops.forEach(op=>{
+    const h=hx.given[op.i].h;
+    s += op.mul*(op.rev ? -h : h);
+  });
+  return s;
+}
+
+/* Bindningsenergier (kJ/mol). Alla ämnen i gasfas. */
+const BINDNING = [
+  {id:'hcl', niva:'latt', eq:'H2(g) + Cl2(g) \u2192 2 HCl(g)',
+   bryts:[{b:'H\u2212H', n:1, E:436},{b:'Cl\u2212Cl', n:1, E:243}],
+   bildas:[{b:'H\u2212Cl', n:2, E:432}]},
+  {id:'hbr', niva:'latt', eq:'H2(g) + Br2(g) \u2192 2 HBr(g)',
+   bryts:[{b:'H\u2212H', n:1, E:436},{b:'Br\u2212Br', n:1, E:193}],
+   bildas:[{b:'H\u2212Br', n:2, E:366}]},
+  {id:'hf', niva:'latt', eq:'H2(g) + F2(g) \u2192 2 HF(g)',
+   bryts:[{b:'H\u2212H', n:1, E:436},{b:'F\u2212F', n:1, E:158}],
+   bildas:[{b:'H\u2212F', n:2, E:567}]},
+  {id:'nh3b', niva:'medel', eq:'N2(g) + 3 H2(g) \u2192 2 NH3(g)',
+   bryts:[{b:'N\u2261N', n:1, E:945},{b:'H\u2212H', n:3, E:436}],
+   bildas:[{b:'N\u2212H', n:6, E:391}]},
+  {id:'ch4b', niva:'medel', eq:'CH4(g) + 2 O2(g) \u2192 CO2(g) + 2 H2O(g)',
+   bryts:[{b:'C\u2212H', n:4, E:413},{b:'O=O', n:2, E:498}],
+   bildas:[{b:'C=O', n:2, E:804},{b:'O\u2212H', n:4, E:463}]},
+  {id:'etenb', niva:'medel', eq:'C2H4(g) + H2(g) \u2192 C2H6(g)',
+   bryts:[{b:'C=C', n:1, E:614},{b:'C\u2212H', n:4, E:413},{b:'H\u2212H', n:1, E:436}],
+   bildas:[{b:'C\u2212C', n:1, E:348},{b:'C\u2212H', n:6, E:413}]}
+];
+function bindSvar(bx){
+  let s=0;
+  bx.bryts.forEach(b=>{ s += b.n*b.E; });
+  bx.bildas.forEach(b=>{ s -= b.n*b.E; });
+  return s;
+}
+
+/* Bränslen för kalorimetriuppgifter. Förbränningsentalpier till H2O(l). */
+const BRANSLEN = [
+  {namn:'metanol', f:'CH3OH', dHc:-726, str:'\u2212726'},
+  {namn:'etanol', f:'C2H5OH', dHc:-1367, str:'\u22121367'},
+  {namn:'metan', f:'CH4', dHc:-890, str:'\u2212890'}
+];
+
+/* ================================================================
+   GENERATORER
+   ================================================================ */
+
+function rndMassaVatten(){ return mkVal(pick(['0,25','0,50','0,75','1,0','1,5','2,0'])); }
+function rndT1(){ return mkVal(pick(['15,0','18,0','20,0','22,0','25,0'])); }
+function rndT2(){ return mkVal(pick(['45,0','55,0','65,0','75,0','85,0','95,0'])); }
+function rndQ(){ return mkVal(pick(['84','150','210','250','340','420','500','630'])); }
+function rndDT(){ return mkVal(pick(['20,0','25,0','30,0','40,0','50,0','60,0'])); }
+function rndN(){ return mkVal(pick(['0,10','0,15','0,20','0,25','0,40','0,50'])); }
+
+function genVarme(diff){
+  const unit='kJ';
+  if(diff==='latt'){
+    const m=rndMassaVatten(), t1=rndT1(), t2=rndT2();
+    const dT=t2.v-t1.v;
+    const answer=C_VATTEN*m.v*dT;
+    const sf=Math.min(m.sf, t1.sf, t2.sf);
+    const steps=[
+      stepObj('Temperaturändringen är sluttemperaturen minus starttemperaturen.',
+        `\u0394T = ${t2.str} \u2212 ${t1.str} = ${fmt(dT)} \u00b0C`),
+      stepObj('Värmemängden ges av q = c \u00b7 m \u00b7 \u0394T. Vattnets specifika värmekapacitet är given.',
+        `q = ${C_VATTEN_STR} \u00b7 ${m.str} \u00b7 ${fmt(dT)} = <b>${dh(answer,sf)} kJ</b>`)
+    ];
+    return {tag:'q = cm\u0394T', qtext:`<b>${m.str} kg</b> vatten värms från <b>${t1.str} \u00b0C</b> till <b>${t2.str} \u00b0C</b>. Hur stor värmemängd tar vattnet upp?`,
+      rxn:null, given:[`c(vatten) = ${C_VATTEN_STR} kJ/(kg\u00b7\u00b0C)`],
+      ansLabel:'q =', answer, sf, unit, steps, hint:null,
+      signature:['v_q',m.str,t1.str,t2.str].join('|'),
+      dbg:{kind:'v_q', m:m.v, t1:t1.v, t2:t2.v}};
+  }
+  if(diff==='medel'){
+    if(Math.random()<0.5){
+      const q=rndQ(), m=rndMassaVatten();
+      const answer=q.v/(C_VATTEN*m.v);
+      const sf=Math.min(q.sf, m.sf);
+      const steps=[
+        stepObj('Lös ut temperaturändringen ur q = c \u00b7 m \u00b7 \u0394T.',
+          `\u0394T = q / (c \u00b7 m)`),
+        stepObj('Sätt in värdena.',
+          `\u0394T = ${q.str} / (${C_VATTEN_STR} \u00b7 ${m.str}) = <b>${dh(answer,sf)} \u00b0C</b>`)
+      ];
+      return {tag:'q = cm\u0394T', qtext:`<b>${m.str} kg</b> vatten tillförs värmemängden <b>${q.str} kJ</b>. Hur mycket stiger vattnets temperatur?`,
+        rxn:null, given:[`c(vatten) = ${C_VATTEN_STR} kJ/(kg\u00b7\u00b0C)`],
+        ansLabel:'\u0394T =', answer, sf, unit:'\u00b0C', steps, hint:null,
+        signature:['v_dt',q.str,m.str].join('|'),
+        dbg:{kind:'v_dt', q:q.v, m:m.v}};
+    }
+    const q=rndQ(), dT=rndDT();
+    const answer=q.v/(C_VATTEN*dT.v);
+    const sf=Math.min(q.sf, dT.sf);
+    const steps=[
+      stepObj('Lös ut massan ur q = c \u00b7 m \u00b7 \u0394T.',
+        `m = q / (c \u00b7 \u0394T)`),
+      stepObj('Sätt in värdena.',
+        `m = ${q.str} / (${C_VATTEN_STR} \u00b7 ${dT.str}) = <b>${dh(answer,sf)} kg</b>`)
+    ];
+    return {tag:'q = cm\u0394T', qtext:`Hur stor massa vatten kan värmas <b>${dT.str} \u00b0C</b> med värmemängden <b>${q.str} kJ</b>?`,
+      rxn:null, given:[`c(vatten) = ${C_VATTEN_STR} kJ/(kg\u00b7\u00b0C)`],
+      ansLabel:'m =', answer, sf, unit:'kg', steps, hint:null,
+      signature:['v_m',q.str,dT.str].join('|'),
+      dbg:{kind:'v_m', q:q.v, dT:dT.v}};
+  }
+  /* svår: förbränning värmer vatten */
+  const br=pick(BRANSLEN);
+  if(Math.random()<0.5){
+    const n=rndN(), m=rndMassaVatten();
+    const q=n.v*Math.abs(br.dHc);
+    const answer=q/(C_VATTEN*m.v);
+    const sf=Math.min(n.sf, m.sf);
+    const steps=[
+      stepObj(`Förbränningen av ${n.str} mol ${br.namn} frigör värmemängden n \u00b7 |\u0394H|.`,
+        `q = ${n.str} \u00b7 ${Math.abs(br.dHc)} = ${fmt(q)} kJ`),
+      stepObj('All värme antas gå till vattnet. Lös ut \u0394T ur q = c \u00b7 m \u00b7 \u0394T.',
+        `\u0394T = ${fmt(q)} / (${C_VATTEN_STR} \u00b7 ${m.str}) = <b>${dh(answer,sf)} \u00b0C</b>`)
+    ];
+    return {tag:'q = cm\u0394T', qtext:`<b>${n.str} mol</b> ${br.namn} (${eqSub(br.f)}) förbränns fullständigt och all värme går till <b>${m.str} kg</b> vatten. Hur mycket stiger vattnets temperatur?`,
+      rxn:null, given:[`\u0394H(förbränning) = ${br.str} kJ/mol`, `c(vatten) = ${C_VATTEN_STR} kJ/(kg\u00b7\u00b0C)`],
+      ansLabel:'\u0394T =', answer, sf, unit:'\u00b0C', steps, hint:null,
+      signature:['v_forbr_dt',br.f,n.str,m.str].join('|'),
+      dbg:{kind:'v_forbr_dt', n:n.v, dHc:br.dHc, m:m.v}};
+  }
+  const m=rndMassaVatten(), dT=rndDT();
+  const M=molarMass(br.f);
+  const q=C_VATTEN*m.v*dT.v;
+  const n=q/Math.abs(br.dHc);
+  const answer=n*M;
+  const sf=Math.min(m.sf, dT.sf);
+  const comp=parseFormula(br.f);
+  const mDelar=Object.keys(comp).map(el=>comp[el]+' \u00b7 '+ATOMIC_STR[el]).join(' + ');
+  const steps=[
+    stepObj('Beräkna värmemängden som vattnet behöver.',
+      `q = ${C_VATTEN_STR} \u00b7 ${m.str} \u00b7 ${dT.str} = ${fmt(q)} kJ`),
+    stepObj('Substansmängden bränsle ges av q dividerat med förbränningsentalpins belopp.',
+      `n = ${fmt(q)} / ${Math.abs(br.dHc)} = ${fmt(n)} mol`),
+    stepObj(`Beräkna molmassan för ${br.namn}.`,
+      `M(${eqSub(br.f)}) = ${mDelar} = ${fmtM(M)} g/mol`),
+    stepObj('Massan är substansmängden gånger molmassan.',
+      `m = ${fmt(n)} \u00b7 ${fmtM(M)} = <b>${dh(answer,sf)} g</b>`)
+  ];
+  return {tag:'q = cm\u0394T', qtext:`Hur många gram ${br.namn} (${eqSub(br.f)}) måste förbrännas för att värma <b>${m.str} kg</b> vatten <b>${dT.str} \u00b0C</b>? All värme antas gå till vattnet.`,
+    rxn:null, given:[`\u0394H(förbränning) = ${br.str} kJ/mol`, `c(vatten) = ${C_VATTEN_STR} kJ/(kg\u00b7\u00b0C)`],
+    ansLabel:'m =', answer, sf, unit:'g', steps, hint:null,
+    signature:['v_forbr_m',br.f,m.str,dT.str].join('|'),
+    dbg:{kind:'v_forbr_m', m:m.v, dT:dT.v, dHc:br.dHc, M}};
+}
+
+function bildInsattning(rx){
+  const pr=rx.prod.map(a=>`${a.n} \u00b7 (${fmtFix(a.h,1)})`).join(' + ');
+  const re=rx.reak.map(a=>`${a.n} \u00b7 (${fmtFix(a.h,1)})`).join(' + ');
+  return `\u0394H = [ ${pr} ] \u2212 [ ${re} ]`;
+}
+function genBildning(diff){
+  if(diff!=='svar'){
+    const pool=BILDNING.filter(r=>r.niva===(diff==='latt'?'latt':'medel'));
+    const rx=pick(pool);
+    const answer=dHrOf(rx);
+    const sf=sfOfFixed(answer,1);
+    const elem=rx.prod.concat(rx.reak).filter(a=>a.h===0).map(a=>eqSub(a.f));
+    const givna=rx.prod.concat(rx.reak).filter(a=>a.h!==0)
+      .map(a=>`\u0394Hf(${eqSub(a.f)}) = ${fmtFix(a.h,1)} kJ/mol`);
+    const steps=[
+      stepObj('Reaktionsentalpin beräknas ur bildningsentalpierna.',
+        `\u0394H = \u03a3 \u0394Hf(produkter) \u2212 \u03a3 \u0394Hf(reaktanter)`)];
+    if(elem.length) steps.push(stepObj(
+      `Grundämnen i sina grundtillstånd har bildningsentalpin noll: ${elem.join(', ')}.`,
+      `\u0394Hf = 0 kJ/mol`));
+    steps.push(stepObj('Sätt in värdena med koefficienterna från reaktionsformeln.',
+      bildInsattning(rx)));
+    steps.push(stepObj(`Beräkna. ${answer<0?'Reaktionen är exoterm, \u0394H < 0.':'Reaktionen är endoterm, \u0394H > 0.'}`,
+      `\u0394H = <b>${dh(answer,sf)} kJ</b>`));
+    return {tag:'Bildningsentalpi', qtext:'Beräkna reaktionens entalpiändring \u0394H med hjälp av de givna bildningsentalpierna.',
+      rxn:eqSub(rx.eq), given:givna,
+      ansLabel:'\u0394H =', answer, sf, unit:'kJ', steps,
+      hint:'Kom ihåg tecknet: exoterm reaktion har \u0394H < 0. Skriv t.ex. <b>-890,3</b>',
+      signature:['bf',rx.id].join('|'),
+      dbg:{kind:'bf', id:rx.id, prod:rx.prod, reak:rx.reak}};
+  }
+  /* svår: okänd bildningsentalpi ur känd reaktionsentalpi */
+  const rx=pick(BILDNING.filter(r=>['metan','propan','etanol'].includes(r.id)));
+  const dHr=dHrOf(rx);
+  const okand=rx.reak.find(a=>a.h!==0);
+  const answer=okand.h;
+  const sf=sfOfFixed(answer,1);
+  const prodSum=rx.prod.reduce((s,a)=>s+a.n*a.h,0);
+  const givna=rx.prod.map(a=>`\u0394Hf(${eqSub(a.f)}) = ${fmtFix(a.h,1)} kJ/mol`);
+  givna.push(`\u0394H(reaktionen) = ${fmtFix(dHr,1)} kJ`);
+  const steps=[
+    stepObj('Utgå från sambandet mellan reaktionsentalpi och bildningsentalpier.',
+      `\u0394H = \u03a3 \u0394Hf(produkter) \u2212 \u03a3 \u0394Hf(reaktanter)`),
+    stepObj(`Syrgas är ett grundämne i grundtillstånd, så \u0394Hf(O2) = 0. Den enda okända är \u0394Hf(${eqSub(okand.f)}). Lös ut den.`,
+      `\u0394Hf(${eqSub(okand.f)}) = \u03a3 \u0394Hf(produkter) \u2212 \u0394H`),
+    stepObj('Beräkna summan av produkternas bildningsentalpier.',
+      `\u03a3 \u0394Hf(produkter) = ${rx.prod.map(a=>`${a.n} \u00b7 (${fmtFix(a.h,1)})`).join(' + ')} = ${fmtFix(prodSum,1)} kJ`),
+    stepObj('Sätt in och beräkna.',
+      `\u0394Hf(${eqSub(okand.f)}) = ${fmtFix(prodSum,1)} \u2212 (${fmtFix(dHr,1)}) = <b>${dh(answer,sf)} kJ/mol</b>`)
+  ];
+  return {tag:'Bildningsentalpi', qtext:`Reaktionens entalpiändring är känd. Beräkna bildningsentalpin för ${eqSub(okand.f)}.`,
+    rxn:eqSub(rx.eq), given:givna,
+    ansLabel:'\u0394Hf =', answer, sf, unit:'kJ/mol', steps,
+    hint:'Kom ihåg tecknet på \u0394Hf. Skriv t.ex. <b>-74,8</b>',
+    signature:['bf_rev',rx.id].join('|'),
+    dbg:{kind:'bf_rev', id:rx.id, dHr, prodSum}};
+}
+
+const BOKSTAV=['A','B','C'];
+function genHess(diff){
+  const pool=HESS.filter(h=>h.niva===diff);
+  const hx=pick(pool);
+  const answer=hessSvar(hx);
+  const sf=sfOfFixed(answer,1);
+  const givna=hx.given.map((g,i)=>`${BOKSTAV[i]}: ${eqSub(g.eq)}, \u0394H = ${fmtFix(g.h,1)} kJ`);
+  const steps=[
+    stepObj('Enligt Hess lag är reaktionsentalpin oberoende av reaktionsvägen. Målreaktionen byggs upp av de givna reaktionerna.',
+      `\u0394H(mål) = summan av de justerade reaktionernas \u0394H`)];
+  const delar=[];
+  hx.ops.forEach(op=>{
+    const g=hx.given[op.i];
+    const bok=BOKSTAV[op.i];
+    const val=op.mul*(op.rev?-g.h:g.h);
+    let text, math;
+    if(op.rev && op.mul===1){
+      text=`Vänd reaktion ${bok} så att den passar målreaktionen. När en reaktion vänds byter \u0394H tecken.`;
+      math=`\u0394H(${bok}, vänd) = ${fmtFix(-g.h,1)} kJ`;
+    } else if(!op.rev && op.mul>1){
+      text=`Multiplicera reaktion ${bok} med ${op.mul}. Då multipliceras även \u0394H med ${op.mul}.`;
+      math=`\u0394H = ${op.mul} \u00b7 (${fmtFix(g.h,1)}) = ${fmtFix(val,1)} kJ`;
+    } else if(op.rev && op.mul>1){
+      text=`Vänd reaktion ${bok} och multiplicera med ${op.mul}: \u0394H byter tecken och multipliceras.`;
+      math=`\u0394H = ${op.mul} \u00b7 (${fmtFix(-g.h,1)}) = ${fmtFix(val,1)} kJ`;
+    } else {
+      text=`Reaktion ${bok} används som den är.`;
+      math=`\u0394H(${bok}) = ${fmtFix(g.h,1)} kJ`;
+    }
+    delar.push(val<0 ? `(${fmtFix(val,1)})` : fmtFix(val,1));
+    steps.push(stepObj(text, math));
+  });
+  steps.push(stepObj(`Addera de justerade reaktionerna. Mellanprodukterna tar ut varandra och \u0394H-värdena adderas. ${answer<0?'Reaktionen är exoterm.':'Reaktionen är endoterm.'}`,
+    `\u0394H = ${delar.join(' + ')} = <b>${dh(answer,sf)} kJ</b>`));
+  return {tag:'Hess lag', qtext:'Beräkna entalpiändringen \u0394H för målreaktionen med hjälp av de givna reaktionerna (Hess lag).',
+    rxn:eqSub(hx.mal), given:givna,
+    ansLabel:'\u0394H =', answer, sf, unit:'kJ', steps,
+    hint:'Kom ihåg tecknet: exoterm reaktion har \u0394H < 0. Skriv t.ex. <b>-110,5</b>',
+    signature:['hess',hx.id].join('|'),
+    dbg:{kind:'hess', id:hx.id}};
+}
+
+function bindSummaText(lista){
+  return lista.map(b=>`${b.n} \u00b7 ${b.E}`).join(' + ');
+}
+function genBindning(diff){
+  if(diff!=='svar'){
+    const pool=BINDNING.filter(b=>b.niva===(diff==='latt'?'latt':'medel'));
+    const bx=pick(pool);
+    const answer=bindSvar(bx);
+    const sf=sfOfFixed(answer,0);
+    const bryts=bx.bryts.reduce((s,b)=>s+b.n*b.E,0);
+    const bildas=bx.bildas.reduce((s,b)=>s+b.n*b.E,0);
+    const alla={};
+    bx.bryts.concat(bx.bildas).forEach(b=>{ alla[b.b]=b.E; });
+    const givna=Object.keys(alla).map(b=>`E(${b}) = ${alla[b]} kJ/mol`);
+    const steps=[
+      stepObj('Reaktionsentalpin uppskattas ur bindningsenergierna. Att bryta bindningar kräver energi, att bilda bindningar frigör energi. Alla ämnen är i gasfas.',
+        `\u0394H = \u03a3 E(bindningar som bryts) \u2212 \u03a3 E(bindningar som bildas)`),
+      stepObj(`Bindningar som bryts i reaktanterna: ${bx.bryts.map(b=>b.n+' st '+b.b).join(', ')}.`,
+        `\u03a3 E(bryts) = ${bindSummaText(bx.bryts)} = ${bryts} kJ`),
+      stepObj(`Bindningar som bildas i produkterna: ${bx.bildas.map(b=>b.n+' st '+b.b).join(', ')}.`,
+        `\u03a3 E(bildas) = ${bindSummaText(bx.bildas)} = ${bildas} kJ`),
+      stepObj(`Beräkna skillnaden. ${answer<0?'Reaktionen är exoterm.':'Reaktionen är endoterm.'}`,
+        `\u0394H = ${bryts} \u2212 ${bildas} = <b>${dh(answer,sf)} kJ</b>`)
+    ];
+    return {tag:'Bindningsenergi', qtext:'Uppskatta reaktionens entalpiändring \u0394H med hjälp av de givna bindningsenergierna.',
+      rxn:eqSub(bx.eq), given:givna,
+      ansLabel:'\u0394H =', answer, sf, unit:'kJ', steps,
+      hint:'Kom ihåg tecknet: exoterm reaktion har \u0394H < 0. Skriv t.ex. <b>-185</b>',
+      signature:['bind',bx.id].join('|'),
+      dbg:{kind:'bind', id:bx.id}};
+  }
+  /* svår: okänd bindningsenergi ur känd reaktionsentalpi */
+  const bx=pick(BINDNING.filter(b=>['hcl','hf','nh3b','ch4b'].includes(b.id)));
+  const dH=bindSvar(bx);
+  const okand=bx.bildas[0];
+  const answer=okand.E;
+  const sf=sfOfFixed(answer,0);
+  const bryts=bx.bryts.reduce((s,b)=>s+b.n*b.E,0);
+  const ovrigaBildas=bx.bildas.slice(1);
+  const ovrigSum=ovrigaBildas.reduce((s,b)=>s+b.n*b.E,0);
+  const givna=bx.bryts.map(b=>`E(${b.b}) = ${b.E} kJ/mol`);
+  ovrigaBildas.forEach(b=>givna.push(`E(${b.b}) = ${b.E} kJ/mol`));
+  givna.push(`\u0394H(reaktionen) = ${fmtFix(dH,0)} kJ`);
+  const steps=[
+    stepObj('Utgå från sambandet för bindningsenergier.',
+      `\u0394H = \u03a3 E(bryts) \u2212 \u03a3 E(bildas)`),
+    stepObj(`Beräkna energin för bindningarna som bryts: ${bx.bryts.map(b=>b.n+' st '+b.b).join(', ')}.`,
+      `\u03a3 E(bryts) = ${bindSummaText(bx.bryts)} = ${bryts} kJ`),
+    stepObj('Lös ut summan av bindningarna som bildas.',
+      `\u03a3 E(bildas) = \u03a3 E(bryts) \u2212 \u0394H = ${bryts} \u2212 (${fmtFix(dH,0)}) = ${bryts-dH} kJ`)
+  ];
+  if(ovrigaBildas.length){
+    steps.push(stepObj(`Dra bort de kända bindningarna som bildas: ${ovrigaBildas.map(b=>b.n+' st '+b.b).join(', ')}.`,
+      `${okand.n} \u00b7 E(${okand.b}) = ${bryts-dH} \u2212 ${ovrigSum} = ${bryts-dH-ovrigSum} kJ`));
+  }
+  steps.push(stepObj(`Dividera med antalet ${okand.b}-bindningar (${okand.n} st).`,
+    `E(${okand.b}) = ${bryts-dH-ovrigSum} / ${okand.n} = <b>${dh(answer,sf)} kJ/mol</b>`));
+  return {tag:'Bindningsenergi', qtext:`Reaktionens entalpiändring är känd. Beräkna bindningsenergin E(${okand.b}).`,
+    rxn:eqSub(bx.eq), given:givna,
+    ansLabel:'E =', answer, sf, unit:'kJ/mol', steps,
+    hint:'Bindningsenergier är positiva tal.',
+    signature:['bind_rev',bx.id].join('|'),
+    dbg:{kind:'bind_rev', id:bx.id, dH, bryts, ovrigSum, nOkand:okand.n}};
+}
+
+const GENS = {varme:genVarme, bildning:genBildning, hess:genHess, bindning:genBindning};
+const MIXPOOL = ['varme','bildning','hess','bindning'];
+
+/* ---------- repetitionsskydd ---------- */
+const seenSignatures = new Set();
+const recentSigs = [];
+function generateFresh(type, diff){
+  let p = null;
+  for(let i=0;i<80;i++){
+    const t = type==='mix' ? pick(MIXPOOL) : type;
+    p = GENS[t](diff);
+    if(recentSigs.includes(p.signature)) continue;
+    break;
+  }
+  seenSignatures.add(p.signature);
+  recentSigs.push(p.signature);
+  if(recentSigs.length>6) recentSigs.shift();
+  /* I Blandat döljs uppgiftstypen så att studeranden själv väljer metod. */
+  p.displayTag = type==='mix' ? 'Blandat' : p.tag;
+  return p;
+}
+
+/* Export för testsviten (Node) */
+if(typeof module!=='undefined' && module.exports){
+  module.exports = {ATOMIC, ATOMIC_STR, C_VATTEN,
+    parseFormula, molarMass, countSF, roundSig, fmtSig, fmt, fmtFix, sfOfFixed,
+    parseNum, evaluate, eqSub,
+    BILDNING, HESS, BINDNING, BRANSLEN, dHrOf, hessSvar, bindSvar,
+    genVarme, genBildning, genHess, genBindning, generateFresh, seenSignatures};
+}
+
+/* ================================================================
+   UI: körs endast i webbläsaren
+   ================================================================ */
+if(typeof document!=='undefined'){
+
+const TYPES = [
+  {id:'varme', label:'q = cm\u0394T'},
+  {id:'bildning', label:'Bildningsentalpi'},
+  {id:'hess', label:'Hess lag'},
+  {id:'bindning', label:'Bindningsenergi'},
+  {id:'mix', label:'Blandat'}
+];
+const DIFFS = [
+  {id:'latt', label:'Lätt'},
+  {id:'medel', label:'Medel'},
+  {id:'svar', label:'Svår'}
+];
+let curType='varme', curDiff='latt';
+let problem=null, answered=false, revealed=false, stepIdx=0;
+let score={ok:0,tot:0,streak:0};
+let history=[];
+let histCounter=0;
+let currentEntry=null;
+let reviewing=false, savedState=null;
+
+const $ = id => document.getElementById(id);
+
+function buildChips(elId, items, cur, onSet){
+  const el = $(elId); el.innerHTML='';
+  items.forEach(it=>{
+    const b=document.createElement('button');
+    b.className='chip'+(it.id===cur?' on':'');
+    b.textContent=it.label;
+    b.onclick=()=>{ if(prov) return; onSet(it.id); };
+    el.appendChild(b);
+  });
+}
+function refreshChips(){
+  buildChips('typeChips',TYPES,curType,id=>{curType=id;newProblem();});
+  buildChips('diffChips',DIFFS,curDiff,id=>{curDiff=id;newProblem();});
+}
+
+function renderProblem(p, review){
+  $('qtag').textContent = (review ? p.tag : (p.displayTag||p.tag)) + ' · ' + (review?'Historik':DIFFS.find(d=>d.id===curDiff).label);
+  $('qtag').className = 'qtype-tag' + (review?' review-tag':'');
+  $('qtext').innerHTML = p.qtext;
+  const rx=$('rxn');
+  if(p.rxn){ rx.style.display='block'; rx.innerHTML=p.rxn; }
+  else rx.style.display='none';
+  const g=$('given');
+  g.innerHTML = p.given.map(x=>`<span>${x}</span>`).join('');
+  g.style.display = p.given.length?'flex':'none';
+  $('ansLabel').innerHTML = p.ansLabel;
+  $('unit').textContent = p.unit;
+  const hint=$('signHint');
+  if(p.hint && !review){ hint.className='hint show'; hint.innerHTML=p.hint; }
+  else hint.className='hint';
+  $('steps').innerHTML='';
+  $('feedback').className='feedback'; $('feedback').innerHTML='';
+  $('solution').className='solution';
+}
+
+function newProblem(){
+  reviewing=false; savedState=null;
+  refreshChips();
+  problem = generateFresh(curType, curDiff);
+  answered=false; revealed=false; stepIdx=0; currentEntry=null;
+  renderProblem(problem, false);
+  $('answer').value=''; $('answer').readOnly=false;
+  $('checkBtn').style.display='inline-block';
+  $('solBtn').style.display='inline-block';
+  $('nextBtn').style.display='inline-block';
+  $('backBtn').style.display='none';
+  $('stepBtn').style.display='inline-block';
+  if(prov){
+    $('solBtn').style.display='none';
+    $('provInfo').textContent='Uppgift '+(prov.i+1)+'/5';
+  }
+  $('answer').focus();
+}
+
+function ensureEntry(){
+  if(currentEntry) return currentEntry;
+  histCounter++;
+  currentEntry = {n:histCounter, problem, userAnswer:'', status:'fel'};
+  history.unshift(currentEntry);
+  renderHistory();
+  return currentEntry;
+}
+
+const STATUS_LABEL = {ok:'rätt ✓', warn:'rätt (avrundning)', fel:'fel ✗', reveal:'visade lösning'};
+
+function renderHistory(){
+  const panel=$('histPanel');
+  if(!history.length){ panel.style.display='none'; return; }
+  panel.style.display='block';
+  const list=$('histList'); list.innerHTML='';
+  history.forEach(e=>{
+    const b=document.createElement('button');
+    b.className='hist-item';
+    const plain=e.problem.qtext.replace(/<[^>]*>/g,'');
+    b.innerHTML=`<span class="hn">#${e.n}</span><span class="ht">${e.problem.tag}: ${plain}</span><span class="hs s-${e.status}">${STATUS_LABEL[e.status]}</span>`;
+    b.onclick=()=>openReview(e);
+    list.appendChild(b);
+  });
+}
+
+function facitStr(p){ return dh(p.answer,p.sf)+' '+p.unit; }
+
+function openReview(entry){
+  if(!reviewing){
+    savedState={problem, answered, revealed, stepIdx,
+      input:$('answer').value,
+      fbClass:$('feedback').className, fbHTML:$('feedback').innerHTML,
+      solOpen:$('solution').classList.contains('open'),
+      stepsHTML:$('steps').innerHTML, stepBtnVis:$('stepBtn').style.display};
+  }
+  reviewing=true;
+  renderProblem(entry.problem, true);
+  $('answer').value=entry.userAnswer; $('answer').readOnly=true;
+  $('checkBtn').style.display='none';
+  $('solBtn').style.display='none';
+  $('backBtn').style.display='inline-block';
+  const fb=$('feedback');
+  fb.className='feedback '+(entry.status==='ok'?'ok':entry.status==='fel'?'fel':'warn');
+  fb.innerHTML=`Resultat: ${STATUS_LABEL[entry.status]}. Rätt svar: <b>${facitStr(entry.problem)}</b>.<br>Klicka <b>&#8592; Fortsätt träna</b> för att återgå till din pågående uppgift, eller <b>Ny uppgift</b> för att börja en ny.`;
+  $('solution').className='solution open';
+  const st=$('steps'); st.innerHTML='';
+  entry.problem.steps.forEach((s,i)=>{
+    const div=document.createElement('div');
+    div.className='step';
+    div.innerHTML=`<span class="n">${i+1}</span><span class="t">${s.text}<span class="m">${s.math}</span></span>`;
+    st.appendChild(div);
+  });
+  $('stepBtn').style.display='none';
+  window.scrollTo({top:0});
+}
+
+function closeReview(){
+  reviewing=false;
+  const s=savedState; savedState=null;
+  if(!s){ newProblem(); return; }
+  problem=s.problem; answered=s.answered; revealed=s.revealed; stepIdx=s.stepIdx;
+  renderProblem(problem, false);
+  $('answer').value=s.input; $('answer').readOnly=false;
+  $('feedback').className=s.fbClass; $('feedback').innerHTML=s.fbHTML;
+  $('solution').className='solution'+(s.solOpen?' open':'');
+  $('steps').innerHTML=s.stepsHTML;
+  $('stepBtn').style.display=s.stepBtnVis;
+  $('checkBtn').style.display='inline-block';
+  $('solBtn').style.display='inline-block';
+  $('nextBtn').style.display='inline-block';
+  $('backBtn').style.display='none';
+  $('answer').focus();
+}
+
+function check(){
+  if(reviewing) return;
+  if(prov){ provCheck(); return; }
+  const raw = $('answer').value;
+  const res = evaluate(raw, problem.answer, problem.sf);
+  const fb = $('feedback');
+  if(res.status==='invalid'){ fb.className='feedback fel'; fb.innerHTML='Skriv in ett tal, t.ex. -890,3 eller 25,4'; return; }
+  const correct = res.status==='ok'||res.status==='warn';
+  if(!answered && !revealed){
+    score.tot++;
+    if(correct){ score.ok++; score.streak++; } else score.streak=0;
+    answered=true;
+    updateScore();
+  }
+  const entry=ensureEntry();
+  entry.userAnswer=raw;
+  if(entry.status!=='reveal'){
+    if(entry.status!=='ok') entry.status = res.status==='invalid'?'fel':res.status;
+  }
+  renderHistory();
+  const ansStr = `<b>${facitStr(problem)}</b>`;
+  if(res.status==='ok'){
+    fb.className='feedback ok';
+    fb.innerHTML=`Rätt! ✓ Svar: ${ansStr} (${problem.sf} gällande siffror)`;
+  } else if(res.status==='warn' && res.reason==='sf'){
+    fb.className='feedback warn';
+    fb.innerHTML=`Rätt beräknat, men ange svaret med <b>${problem.sf} gällande siffror</b>: ${ansStr}. Räknas som rätt.`;
+  } else if(res.status==='warn'){
+    fb.className='feedback warn';
+    fb.innerHTML=`Mycket nära! Kontrollera att du inte avrundat i mellanstegen. Räkna med fulla värden och avrunda först i slutsvaret: ${ansStr}. Räknas som rätt.`;
+  } else if(res.reason==='tecken'){
+    fb.className='feedback fel';
+    fb.innerHTML=`Rätt belopp men fel tecken. Kontrollera om reaktionen är exoterm (\u0394H < 0) eller endoterm (\u0394H > 0).`;
+  } else {
+    fb.className='feedback fel';
+    fb.textContent='Inte riktigt. Kontrollera dina mellansteg eller visa lösningen.';
+  }
+}
+
+function showStep(){
+  if(reviewing) return;
+  if(stepIdx===0) $('solution').className='solution open';
+  if(stepIdx < problem.steps.length){
+    const s = problem.steps[stepIdx];
+    const div=document.createElement('div');
+    div.className='step';
+    div.innerHTML=`<span class="n">${stepIdx+1}</span><span class="t">${s.text}<span class="m">${s.math}</span></span>`;
+    $('steps').appendChild(div);
+    stepIdx++;
+  }
+  if(stepIdx>=problem.steps.length) $('stepBtn').style.display='none';
+}
+
+function reveal(){
+  if(reviewing) return;
+  if(prov) return;
+  if(!answered){
+    const entry=ensureEntry();
+    entry.status='reveal';
+    renderHistory();
+  }
+  revealed=true;
+  if(stepIdx===0) showStep();
+  $('solution').className='solution open';
+}
+
+function updateScore(){
+  $('scoreOk').textContent=score.ok;
+  $('scoreTot').textContent=score.tot;
+  $('streak').textContent = score.streak>=2 ? `🔥 ${score.streak} i rad` : '';
+}
+
+let prov=null;
+
+function provToggle(){
+  if(prov){ provEnd(); newProblem(); return; }
+  prov={i:0,items:[],t0:Date.now()};
+  curType='mix';
+  $('provBtn').textContent='Avbryt provet';
+  newProblem();
+}
+function provEnd(){
+  prov=null;
+  $('provBtn').textContent='Provsimulering: 5 uppgifter';
+  $('provInfo').textContent='';
+  $('solBtn').style.display='inline-block';
+}
+function provCheck(){
+  const raw=$('answer').value;
+  const res=evaluate(raw, problem.answer, problem.sf);
+  const fb=$('feedback');
+  if(res.status==='invalid'){
+    fb.className='feedback warn';
+    fb.innerHTML='Skriv in ett tal innan du går vidare. Svaret räknas som fel om du lämnar tomt: skriv 0 för att hoppa över.';
+    if(raw.trim()==='0'){ } else return;
+  }
+  const korrekt = res.status==='ok'||res.status==='warn';
+  prov.items.push({problem, raw, korrekt});
+  prov.i++;
+  if(prov.i<5){
+    newProblem();
+  } else {
+    provSummary();
+  }
+}
+function provSummary(){
+  const items=prov.items;
+  const ratt=items.filter(x=>x.korrekt).length;
+  const sek=Math.round((Date.now()-prov.t0)/1000);
+  const min=Math.floor(sek/60), ss=sek%60;
+  score.tot+=5; score.ok+=ratt; updateScore();
+  items.forEach(it=>{
+    histCounter++;
+    history.unshift({n:histCounter, problem:it.problem, userAnswer:it.raw, status:it.korrekt?'ok':'fel'});
+  });
+  provEnd();
+  renderHistory();
+  const rows=items.map((it,i)=>
+    (i+1)+'. '+(it.korrekt?'✓':'✗')+' ditt svar: '+(it.raw||'(tomt)')+
+    ' · rätt: '+facitStr(it.problem)
+  ).join('<br>');
+  const fb=$('feedback');
+  fb.className='feedback '+(ratt>=4?'ok':(ratt>=2?'warn':'fel'));
+  fb.innerHTML='<b>Provsimulering klar: '+ratt+'/5 rätt på '+min+' min '+ss+' s.</b><br>'+rows+
+    '<br>Öppna uppgifterna i historiken för fullständiga lösningar.';
+}
+
+$('checkBtn').onclick=check;
+$('answer').addEventListener('keydown',e=>{ if(e.key==='Enter') check(); });
+$('solBtn').onclick=reveal;
+$('stepBtn').onclick=showStep;
+$('nextBtn').onclick=newProblem;
+$('backBtn').onclick=closeReview;
+$('provBtn').onclick=provToggle;
+
+window.__felContext=()=>problem?{
+  Uppgift: problem.qtext.replace(/<[^>]*>/g,'')+(problem.rxn?' | '+problem.rxn.replace(/<[^>]*>/g,''):''),
+  'Rätt svar': facitStr(problem),
+  Signatur: problem.signature
+}:null;
+
+newProblem();
+}
+</script>
+<button class="felknapp" id="felBtn">Hittade du ett fel?</button>
+<div class="felpanel" id="felPanel" hidden>
+  <h3>Rapportera ett fel</h3>
+  <textarea id="felText" placeholder="Beskriv felet: vad gjorde du, vad hände, vad förväntade du dig?"></textarea>
+  <div class="felmeta" id="felMeta"></div>
+  <div class="felrad">
+    <button class="btn-primary" id="felSkicka">Skicka via e-post</button>
+    <button class="btn-ghost" id="felKopiera">Kopiera rapporten</button>
+  </div>
+  <div class="felok" id="felOk"></div>
+</div>
+<script>
+(function(){
+const FELMAIL='kauremaa.aleksi@gmail.com';
+const $=id=>document.getElementById(id);
+function ctx(){ try{return (window.__felContext&&window.__felContext())||null;}catch(e){return null;} }
+function report(){
+  let s='Sida: '+document.title+'\nAdress: '+location.href+'\nTid: '+new Date().toLocaleString('sv-FI');
+  const c=ctx();
+  if(c){ for(const k in c) s+='\n'+k+': '+c[k]; }
+  s+='\nWebbläsare: '+navigator.userAgent;
+  return s;
+}
+$('felBtn').onclick=()=>{
+  const p=$('felPanel'); p.hidden=!p.hidden;
+  if(!p.hidden){ $('felMeta').textContent=report(); $('felOk').style.display='none'; }
+};
+$('felSkicka').onclick=()=>{
+  const body=($('felText').value||'(ingen beskrivning)')+'\n\n--- Automatisk information ---\n'+report();
+  location.href='mailto:'+FELMAIL+'?subject='+encodeURIComponent('Felrapport: '+document.title)+'&body='+encodeURIComponent(body);
+};
+$('felKopiera').onclick=async()=>{
+  const t=($('felText').value||'(ingen beskrivning)')+'\n\n--- Automatisk information ---\n'+report();
+  try{ await navigator.clipboard.writeText(t); $('felOk').textContent='Kopierad! Klistra in i Wilma eller e-post.'; }
+  catch(e){ $('felOk').textContent='Kopiering blockerades. Markera texten ovan och kopiera manuellt.'; }
+  $('felOk').style.display='block';
+};
+})();
+</script>
+</body>
+</html>

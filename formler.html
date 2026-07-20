@@ -163,13 +163,26 @@
     </div>
   </section>
 
+  <section aria-labelledby="r-termo">
+    <h2 class="alla" id="r-termo">Arbetsgång: termokemi</h2>
+    <div class="kort">
+      <ol>
+        <li>Börja alltid med tecknet. En exoterm reaktion frigör värme och har negativt &Delta;H, en endoterm reaktion tar upp värme och har positivt &Delta;H. Kontrollera att ditt slutsvar har rätt tecken.</li>
+        <li><b>Värmemängd:</b> q är lika med den specifika värmekapaciteten gånger massan gånger temperaturändringen. Håll koll på enheterna: med c i kJ per kilogram och grad ska massan vara i kilogram.</li>
+        <li><b>Bildningsentalpier:</b> reaktionsentalpin är summan av produkternas bildningsentalpier minus summan av reaktanternas, var och en multiplicerad med sin koefficient. Grundämnen i sina grundtillstånd har bildningsentalpin noll. Värdena slår du upp i Mafys tabeller.</li>
+        <li><b>Hess lag:</b> bygg upp målreaktionen av de givna reaktionerna. När en reaktion vänds byter &Delta;H tecken, när den multipliceras med ett tal multipliceras &Delta;H med samma tal. Addera till sist.</li>
+        <li><b>Bindningsenergier:</b> reaktionsentalpin uppskattas som energin för bindningarna som bryts minus energin för bindningarna som bildas. Metoden gäller ämnen i gasfas.</li>
+      </ol>
+    </div>
+  </section>
+
   <section aria-labelledby="r-ph">
     <h2 class="alla" id="r-ph">Arbetsgång: pH</h2>
     <div class="kort">
       <ol>
         <li><b>Stark syra:</b> syran protolyseras fullständigt, så oxoniumjonkoncentrationen är lika med syrans koncentration (för en tvåprotonig stark syra dubbelt så stor). Räkna pH som den negativa tiologaritmen av oxoniumjonkoncentrationen.</li>
         <li><b>Stark bas:</b> hydroxidjonkoncentrationen är lika med basens koncentration (dubbelt för en tvåvärd bas). Räkna först pOH och använd sedan att pH + pOH = 14,00 vid 25 grader.</li>
-        <li><b>Svag syra:</b> använd approximationen för oxoniumjonkoncentrationen som roten ur produkten av Ka och koncentrationen. Approximationen gäller när koncentrationen är mycket större än Ka. Ka slår du upp i Mafys tabeller.</li>
+        <li><b>Svag syra:</b> ställ upp en koncentrationstabell (vid start, förändring, vid jämvikt) med x som oxoniumjonkoncentrationen, sätt in jämviktskoncentrationerna i uttrycket för Ka och lös ekvationen med räknarens Solve-funktion. Den negativa roten förkastas. Ka slår du upp i Mafys tabeller. Samma arbetsgång gäller för en svag bas med Kb och hydroxidjonkoncentrationen.</li>
         <li><b>Buffertlösning:</b> använd Henderson-Hasselbalch-ekvationen, alltså pH som pKa plus tiologaritmen av kvoten mellan basens och syrans mängd. Eftersom syra och bas finns i samma volym kan du använda substansmängder direkt.</li>
       </ol>
     </div>
@@ -191,6 +204,7 @@
         <li>Att använda standardregeln för syre i en <b>peroxid</b> (H<sub>2</sub>O<sub>2</sub>, Na<sub>2</sub>O<sub>2</sub>), där syre har &minus;I, eller för väte i en <b>metallhydrid</b> (NaH, CaH<sub>2</sub>), där väte har &minus;I.</li>
         <li>Att förväxla oxidationsmedel med det ämne som oxideras. Oxidationsmedlet är tvärtom det som <b>reduceras</b>.</li>
         <li>Att räkna pOH men glömma sista steget pH = 14,00 &minus; pOH för en bas.</li>
+        <li>Att använda kvadratrotsapproximationen för en svag syra eller bas. En koncentrationstabell och Solve ger alltid rätt svar, approximationen bara ibland.</li>
         <li>Att ange pH med fel antal decimaler. Antalet decimaler i pH styrs av koncentrationens gällande siffror.</li>
       </ul>
     </div>
