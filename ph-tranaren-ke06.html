@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>pH-tränaren · KE06</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#F6F5FC;
@@ -25,9 +25,11 @@
     --card:#FFFFFF;
     --line:#D6D1E8;
     --radius:10px;
-    --mono:'IBM Plex Mono',ui-monospace,monospace;
-    --sans:'IBM Plex Sans',system-ui,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --head:'Poppins',system-ui,sans-serif;
+    --sans:'Inter',system-ui,sans-serif;
   }
+  h1,h2,h3{font-family:var(--head)}
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
   body{
@@ -121,6 +123,12 @@
   .step .t{flex:1}
   .step .t .m{font-family:var(--mono);font-size:14.5px;display:block;margin-top:3px;color:var(--ink);overflow-x:auto}
   .step sub{font-size:.7em} .step sup{font-size:.7em}
+  .ktab{border-collapse:collapse;font-family:var(--mono);font-size:13.5px;margin-top:6px;background:var(--card)}
+  .ktab th,.ktab td{border:1px solid var(--line);padding:5px 10px;text-align:center;white-space:nowrap}
+  .ktab th:first-child,.ktab td:first-child{text-align:left;color:var(--ink-soft)}
+  .ktab th{background:var(--accent-soft);font-weight:600;color:var(--accent)}
+  .ktab sub{font-size:.7em} .ktab sup{font-size:.7em}
+  .ktab-wrap{overflow-x:auto;max-width:100%}
 
   .hist-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
   .hist-note{font-size:12px;color:var(--ink-soft);font-family:var(--mono)}
@@ -342,40 +350,49 @@ const STARKA_BASER2 = [
   {f:'Ca(OH)2', namn:'kalciumhydroxid', nOH:2}
 ];
 const SVAGA_SYROR = [
-  {namn:'ättiksyra', formel:'CH3COOH', Ka:1.8e-5, KaStr:'1,8\u00b710\u207b\u2075'},
-  {namn:'myrsyra', formel:'HCOOH', Ka:1.8e-4, KaStr:'1,8\u00b710\u207b\u2074'},
-  {namn:'bensoesyra', formel:'C6H5COOH', Ka:6.3e-5, KaStr:'6,3\u00b710\u207b\u2075'},
-  {namn:'salpetersyrlighet', formel:'HNO2', Ka:4.5e-4, KaStr:'4,5\u00b710\u207b\u2074'},
-  {namn:'vätefluorid', formel:'HF', Ka:6.8e-4, KaStr:'6,8\u00b710\u207b\u2074'},
-  {namn:'mjölksyra', formel:'C3H6O3', Ka:1.4e-4, KaStr:'1,4\u00b710\u207b\u2074'}
+  {namn:'ättiksyra', formel:'CH3COOH', basF:'CH3COO', Ka:1.8e-5, KaStr:'1,8\u00b710\u207b\u2075'},
+  {namn:'myrsyra', formel:'HCOOH', basF:'HCOO', Ka:1.8e-4, KaStr:'1,8\u00b710\u207b\u2074'},
+  {namn:'bensoesyra', formel:'C6H5COOH', basF:'C6H5COO', Ka:6.3e-5, KaStr:'6,3\u00b710\u207b\u2075'},
+  {namn:'salpetersyrlighet', formel:'HNO2', basF:'NO2', Ka:4.5e-4, KaStr:'4,5\u00b710\u207b\u2074'},
+  {namn:'vätefluorid', formel:'HF', basF:'F', Ka:6.8e-4, KaStr:'6,8\u00b710\u207b\u2074'},
+  {namn:'mjölksyra', formel:'CH3CH(OH)COOH', basF:'CH3CH(OH)COO', Ka:1.4e-4, KaStr:'1,4\u00b710\u207b\u2074'}
 ];
 const SVAGA_BASER = [
-  {namn:'ammoniak', formel:'NH3', Kb:1.8e-5, KbStr:'1,8\u00b710\u207b\u2075'},
-  {namn:'metylamin', formel:'CH3NH2', Kb:4.4e-4, KbStr:'4,4\u00b710\u207b\u2074'}
+  {namn:'ammoniak', formel:'NH3', syraF:'NH4', Kb:1.8e-5, KbStr:'1,8\u00b710\u207b\u2075'},
+  {namn:'metylamin', formel:'CH3NH2', syraF:'CH3NH3', Kb:4.4e-4, KbStr:'4,4\u00b710\u207b\u2074'}
 ];
 const BUFFERTAR = [
-  {syra:'ättiksyra', bas:'acetatjon', Ka:1.8e-5},
-  {syra:'myrsyra', bas:'formiatjon', Ka:1.8e-4},
-  {syra:'ammoniumjon', bas:'ammoniak', Ka:5.6e-10},
-  {syra:'bensoesyra', bas:'bensoatjon', Ka:6.3e-5}
+  {syra:'ättiksyra', bas:'acetatjon', Ka:1.8e-5, KaStr:'1,8\u00b710\u207b\u2075'},
+  {syra:'myrsyra', bas:'formiatjon', Ka:1.8e-4, KaStr:'1,8\u00b710\u207b\u2074'},
+  {syra:'ammoniumjon', bas:'ammoniak', Ka:5.6e-10, KaStr:'5,6\u00b710\u207b\u00b9\u2070'},
+  {syra:'bensoesyra', bas:'bensoatjon', Ka:6.3e-5, KaStr:'6,3\u00b710\u207b\u2075'}
 ];
 const KA_SF = 2;              /* alla Ka anges med 2 gällande siffror */
-const MIN_RATIO = 100;        /* c/Ka för att approximationen ska gälla */
 
 /* ---------- pH-beräkningar ---------- */
 function phFromH(h){ return -log10(h); }
 function hFromPh(ph){ return Math.pow(10, -ph); }
 function phStarkSyra(c, nH){ return -log10(nH*c); }
 function phStarkBas(c, nOH){ return 14 + log10(nOH*c); }
-function phSvagSyra(Ka, c){ return -log10(Math.sqrt(Ka*c)); }
-function phSvagBas(Kb, c){ return 14 + log10(Math.sqrt(Kb*c)); }
+/* Svag syra/bas löses exakt ur koncentrationstabellen:
+   K = x²/(c − x)  =>  x² + K·x − K·c = 0  =>  x = (−K + √(K² + 4·K·c))/2.
+   Den negativa roten förkastas eftersom en koncentration är positiv. */
+function xJamvikt(K, c){ return (-K + Math.sqrt(K*K + 4*K*c))/2; }
+function phSvagSyra(Ka, c){ return -log10(xJamvikt(Ka, c)); }
+function phSvagBas(Kb, c){ return 14 + log10(xJamvikt(Kb, c)); }
+/* Kvadratrotsapproximationen används INTE i facit, men behålls för att
+   känna igen svar där studeranden använt den i stället för tabellen. */
+function phSvagSyraApprox(Ka, c){ return -log10(Math.sqrt(Ka*c)); }
+function phSvagBasApprox(Kb, c){ return 14 + log10(Math.sqrt(Kb*c)); }
 function pKa(Ka){ return -log10(Ka); }
 function phBuffert(Ka, nSyra, nBas){ return pKa(Ka) + log10(nBas/nSyra); }
 
 /* ---------- kontroll ---------- */
-function checkPh(exactPh, reqDec, userStr){
+function checkPh(exactPh, reqDec, userStr, approxPh){
   const v=parseNum(userStr);
   if(v==null) return {status:'invalid'};
+  if(approxPh!=null && Math.abs(approxPh-exactPh)>0.03 && Math.abs(v-approxPh)<=0.02)
+    return {status:'fel', skal:'approx'};
   if(Math.abs(v-exactPh)>0.06){
     if(Math.abs((14-v)-exactPh)<0.06) return {status:'fel', skal:'pohfel'};
     return {status:'fel', skal:'varde'};
@@ -471,9 +488,9 @@ function genStark(diff){
     const steps=[
       {text:`${bas.namn.charAt(0).toUpperCase()+bas.namn.slice(1)} är en stark bas, så hydroxidjonkoncentrationen är lika med basens koncentration.`,
         math:`[OH\u207b] = ${cc.str} mol/dm\u00b3`},
-      {text:'Beräkna först pOH.', math:`pOH = \u2212log(${cc.str}) = ${fmtPh(poh,cc.sf)}`},
+      {text:'Beräkna först pOH.', math:`pOH = \u2212log(${cc.str}) = ${fmtPh(poh,4)}`},
       {text:'Vid 25 °C gäller pH + pOH = 14,00. Lös ut pH.',
-        math:`pH = 14,00 \u2212 ${fmtPh(poh,cc.sf)} = ${fmtPh(ph,6)}`},
+        math:`pH = 14,00 \u2212 ${fmtPh(poh,4)} = ${fmtPh(ph,6)}`},
       {text:`Koncentrationen har ${cc.sf} gällande siffror, så pH anges med ${cc.sf} decimaler.`,
         math:`pH = <b>${fmtPh(ph,cc.sf)}</b>`}
     ];
@@ -502,15 +519,15 @@ function genStark(diff){
   }
   if(val==='sb2'){
     let bas, cc, sig;
-    for(let i=0;i<40;i++){ bas=pick(STARKA_BASER2); cc=pick(CONC.filter(c=>c.v<=0.2)); sig='sb2|'+bas.f+'|'+cc.str; if(fresh(sig))break; }
+    for(let i=0;i<40;i++){ bas=pick(STARKA_BASER2); cc=pick(CONC.filter(c=>c.v<=0.025)); sig='sb2|'+bas.f+'|'+cc.str; if(fresh(sig))break; }
     const poh=-log10(2*cc.v);
     const ph=phStarkBas(cc.v, 2);
     const steps=[
       {text:`${bas.namn.charAt(0).toUpperCase()+bas.namn.slice(1)} är en stark bas. Varje formelenhet ger två hydroxidjoner, så hydroxidjonkoncentrationen är dubbelt så stor som basens koncentration.`,
         math:`[OH\u207b] = 2 \u00b7 ${cc.str} = ${fmtNum(2*cc.v)} mol/dm\u00b3`},
-      {text:'Beräkna pOH.', math:`pOH = \u2212log(${fmtNum(2*cc.v)}) = ${fmtPh(poh,cc.sf)}`},
+      {text:'Beräkna pOH.', math:`pOH = \u2212log(${fmtNum(2*cc.v)}) = ${fmtPh(poh,4)}`},
       {text:'Vid 25 °C gäller pH + pOH = 14,00.',
-        math:`pH = 14,00 \u2212 ${fmtPh(poh,cc.sf)} = ${fmtPh(ph,6)}`},
+        math:`pH = 14,00 \u2212 ${fmtPh(poh,4)} = ${fmtPh(ph,6)}`},
       {text:`Koncentrationen har ${cc.sf} gällande siffror, så pH anges med ${cc.sf} decimaler.`,
         math:`pH = <b>${fmtPh(ph,cc.sf)}</b>`}
     ];
@@ -537,61 +554,82 @@ function genStark(diff){
     steps, signature:sig, dbg:{kind:'sa_rev', ph:phv, dec:pp.dec}};
 }
 
+/* Koncentrationstabell (ICE-tabell) som HTML. amne1 förbrukas, amne2 och amne3 bildas. */
+function iceTabell(cStr, amne1, amne2, amne3){
+  return `<div class="ktab-wrap"><table class="ktab">`+
+    `<tr><th>mol/dm\u00b3</th><th>${amne1}</th><th>${amne2}</th><th>${amne3}</th></tr>`+
+    `<tr><td>Vid start</td><td>${cStr}</td><td>0</td><td>0</td></tr>`+
+    `<tr><td>Förändring</td><td>\u2212x</td><td>+x</td><td>+x</td></tr>`+
+    `<tr><td>Vid jämvikt</td><td>${cStr} \u2212 x</td><td>x</td><td>x</td></tr>`+
+    `</table></div>`;
+}
+
 function genSvag(diff){
   if(diff!=='svar'){
-    let syra, cc, sig, ratio;
+    let syra, cc, sig;
     for(let i=0;i<80;i++){
       syra=pick(SVAGA_SYROR);
       const pool = (diff==='medel' && Math.random()<0.4) ? CONC3 : CONC;
       cc=pick(pool.filter(c=>c.v>=0.010));
-      ratio=cc.v/syra.Ka;
       sig='wa|'+syra.namn+'|'+cc.str;
-      if(ratio>=MIN_RATIO && fresh(sig)) break;
+      if(fresh(sig)) break;
     }
-    const h=Math.sqrt(syra.Ka*cc.v);
+    const syraF=sub(syra.formel), basF=sub(syra.basF)+'\u207b';
+    const x=xJamvikt(syra.Ka, cc.v);
     const ph=phSvagSyra(syra.Ka, cc.v);
     const reqDec=Math.min(KA_SF, cc.sf);
     const steps=[
-      {text:`${syra.namn.charAt(0).toUpperCase()+syra.namn.slice(1)} är en svag syra. För en svag syra gäller approximationen [H\u2083O\u207a] = \u221a(Ka \u00b7 c) när c är mycket större än Ka.`,
-        math:`c / Ka = ${cc.str} / ${syra.KaStr} \u2248 ${Math.round(ratio)} \u226b 1, alltså gäller approximationen`},
-      {text:'Sätt in Ka och koncentrationen.',
-        math:`[H\u2083O\u207a] = \u221a(${syra.KaStr} \u00b7 ${cc.str}) = ${fmtConc(h,4)} mol/dm\u00b3`},
-      {text:'Beräkna pH.', math:`pH = \u2212log(${fmtConc(h,4)}) = ${fmtPh(ph,6)}`},
+      {text:`${syra.namn.charAt(0).toUpperCase()+syra.namn.slice(1)} är en svag syra som protolyseras endast delvis. Skriv protolysreaktionen och jämviktsuttrycket.`,
+        math:`${syraF} + H\u2082O \u21cc ${basF} + H\u2083O\u207a &nbsp;&nbsp;&nbsp; Ka = [${basF}][H\u2083O\u207a] / [${syraF}]`},
+      {text:'Ställ upp en koncentrationstabell. Låt x vara oxoniumjonkoncentrationen vid jämvikt.',
+        math:iceTabell(cc.str, syraF, basF, 'H\u2083O\u207a')},
+      {text:'Sätt in jämviktskoncentrationerna i jämviktsuttrycket.',
+        math:`Ka = x\u00b2 / (${cc.str} \u2212 x) &nbsp;&nbsp;\u21d2&nbsp;&nbsp; ${syra.KaStr} = x\u00b2 / (${cc.str} \u2212 x)`},
+      {text:'Lös ekvationen med räknarens Solve-funktion. Ekvationen har två rötter, och den negativa förkastas eftersom en koncentration inte kan vara negativ.',
+        math:`solve( ${syra.KaStr} = x\u00b2 / (${cc.str} \u2212 x), x ) &nbsp;\u21d2&nbsp; x = ${fmtConc(x,4)} mol/dm\u00b3`},
+      {text:'Beräkna pH.',
+        math:`pH = \u2212log[H\u2083O\u207a] = \u2212log(${fmtConc(x,4)}) = ${fmtPh(ph,6)}`},
       {text:`Ka har ${KA_SF} gällande siffror och begränsar noggrannheten, så pH anges med ${reqDec} decimaler.`,
         math:`pH = <b>${fmtPh(ph,reqDec)}</b>`}
     ];
     return {mode:'svag', kind:'wa', ansType:'ph', answer:ph, reqDec,
+      approx:phSvagSyraApprox(syra.Ka, cc.v),
       qtext:`Beräkna pH i en lösning av ${syra.namn} (${sub(syra.formel)}).`,
       given:[`c = <b>${cc.str}</b> mol/dm\u00b3`, `Ka = <b>${syra.KaStr}</b>`],
-      steps, signature:sig, dbg:{kind:'wa', Ka:syra.Ka, c:cc.v, sf:cc.sf, ratio}};
+      steps, signature:sig, dbg:{kind:'wa', Ka:syra.Ka, c:cc.v, sf:cc.sf, x}};
   }
   /* svar: svag bas med Kb */
-  let bas, cc, sig, ratio;
+  let bas, cc, sig;
   for(let i=0;i<80;i++){
     bas=pick(SVAGA_BASER);
     cc=pick(CONC.filter(c=>c.v>=0.010));
-    ratio=cc.v/bas.Kb;
     sig='wb|'+bas.namn+'|'+cc.str;
-    if(ratio>=MIN_RATIO && fresh(sig)) break;
+    if(fresh(sig)) break;
   }
-  const oh=Math.sqrt(bas.Kb*cc.v);
-  const poh=-log10(oh);
+  const basF=sub(bas.formel), syraF=sub(bas.syraF)+'\u207a';
+  const x=xJamvikt(bas.Kb, cc.v);
+  const poh=-log10(x);
   const ph=phSvagBas(bas.Kb, cc.v);
   const reqDec=Math.min(KA_SF, cc.sf);
   const steps=[
-    {text:`${bas.namn.charAt(0).toUpperCase()+bas.namn.slice(1)} är en svag bas. För en svag bas gäller [OH\u207b] = \u221a(Kb \u00b7 c) när c är mycket större än Kb.`,
-      math:`c / Kb = ${cc.str} / ${bas.KbStr} \u2248 ${Math.round(ratio)} \u226b 1`},
-    {text:'Sätt in Kb och koncentrationen.',
-      math:`[OH\u207b] = \u221a(${bas.KbStr} \u00b7 ${cc.str}) = ${fmtConc(oh,4)} mol/dm\u00b3`},
-    {text:'Beräkna pOH och sedan pH.',
-      math:`pOH = \u2212log(${fmtConc(oh,4)}) = ${fmtPh(poh,reqDec)}<br>pH = 14,00 \u2212 ${fmtPh(poh,reqDec)} = ${fmtPh(ph,6)}`},
+    {text:`${bas.namn.charAt(0).toUpperCase()+bas.namn.slice(1)} är en svag bas som protolyseras endast delvis. Skriv protolysreaktionen och jämviktsuttrycket.`,
+      math:`${basF} + H\u2082O \u21cc ${syraF} + OH\u207b &nbsp;&nbsp;&nbsp; Kb = [${syraF}][OH\u207b] / [${basF}]`},
+    {text:'Ställ upp en koncentrationstabell. Låt x vara hydroxidjonkoncentrationen vid jämvikt.',
+      math:iceTabell(cc.str, basF, syraF, 'OH\u207b')},
+    {text:'Sätt in jämviktskoncentrationerna i jämviktsuttrycket.',
+      math:`Kb = x\u00b2 / (${cc.str} \u2212 x) &nbsp;&nbsp;\u21d2&nbsp;&nbsp; ${bas.KbStr} = x\u00b2 / (${cc.str} \u2212 x)`},
+    {text:'Lös ekvationen med räknarens Solve-funktion. Den negativa roten förkastas.',
+      math:`solve( ${bas.KbStr} = x\u00b2 / (${cc.str} \u2212 x), x ) &nbsp;\u21d2&nbsp; x = ${fmtConc(x,4)} mol/dm\u00b3`},
+    {text:'Beräkna pOH och sedan pH. Vid 25 \u00b0C gäller pH + pOH = 14,00.',
+      math:`pOH = \u2212log(${fmtConc(x,4)}) = ${fmtPh(poh,4)}<br>pH = 14,00 \u2212 ${fmtPh(poh,4)} = ${fmtPh(ph,6)}`},
     {text:`Kb har ${KA_SF} gällande siffror, så pH anges med ${reqDec} decimaler.`,
       math:`pH = <b>${fmtPh(ph,reqDec)}</b>`}
   ];
   return {mode:'svag', kind:'wb', ansType:'ph', answer:ph, reqDec,
+    approx:phSvagBasApprox(bas.Kb, cc.v),
     qtext:`Beräkna pH i en lösning av ${bas.namn} (${sub(bas.formel)}).`,
     given:[`c = <b>${cc.str}</b> mol/dm\u00b3`, `Kb = <b>${bas.KbStr}</b>`],
-    steps, signature:sig, dbg:{kind:'wb', Kb:bas.Kb, c:cc.v, sf:cc.sf, ratio}};
+    steps, signature:sig, dbg:{kind:'wb', Kb:bas.Kb, c:cc.v, sf:cc.sf, x}};
 }
 
 function genBuffert(diff){
@@ -607,7 +645,7 @@ function genBuffert(diff){
     const steps=[
       {text:'I en buffertlösning ges pH av Henderson-Hasselbalch-ekvationen.',
         math:'pH = pKa + log( [bas] / [syra] )'},
-      {text:'Beräkna pKa ur Ka.', math:`pKa = \u2212log(${buf.Ka<1e-6?'5,6\u00b710\u207b\u00b9\u2070':buf.Ka.toExponential(1).replace('.',',').replace('e','\u00b710')}) = ${pkStr}`},
+      {text:'Beräkna pKa ur Ka.', math:`pKa = \u2212log(${buf.KaStr}) = ${pkStr}`},
       {text:'Syran och basen har samma koncentration, så kvoten är 1 och logaritmen blir noll.',
         math:`pH = ${pkStr} + log(1) = ${pkStr}`},
       {text:'pKa anges med 2 decimaler, så pH anges med 2 decimaler.',
@@ -615,7 +653,7 @@ function genBuffert(diff){
     ];
     return {mode:'buffert', kind:'buf_lika', ansType:'ph', answer:ph, reqDec:2,
       qtext:`En buffertlösning innehåller lika stora koncentrationer av ${buf.syra} och ${buf.bas}. Beräkna pH.`,
-      given:[`c(${buf.syra}) = c(${buf.bas}) = <b>${c}</b> mol/dm\u00b3`, `pKa = <b>${pkStr}</b>`],
+      given:[`c(${buf.syra}) = c(${buf.bas}) = <b>${c}</b> mol/dm\u00b3`, `Ka = <b>${buf.KaStr}</b>`],
       steps, signature:sig, dbg:{kind:'buf', Ka:buf.Ka, rSyra:1, rBas:1}};
   }
   if(diff==='medel'){
@@ -626,6 +664,7 @@ function genBuffert(diff){
     const steps=[
       {text:'Använd Henderson-Hasselbalch-ekvationen.',
         math:'pH = pKa + log( [bas] / [syra] )'},
+      {text:'Beräkna pKa ur Ka.', math:`pKa = \u2212log(${buf.KaStr}) = ${pkStr}`},
       {text:'Sätt in koncentrationerna. Eftersom syra och bas finns i samma lösning kan koncentrationerna användas direkt.',
         math:`pH = ${pkStr} + log( ${cB} / ${cS} ) = ${pkStr} + log(${fmtNum(nB/nS)})`},
       {text:'Beräkna.', math:`pH = ${pkStr} + ${fmtPh(log10(nB/nS),4).replace('-','\u2212')} = ${fmtPh(ph,6)}`},
@@ -634,7 +673,7 @@ function genBuffert(diff){
     ];
     return {mode:'buffert', kind:'buf_c', ansType:'ph', answer:ph, reqDec:2,
       qtext:`En buffertlösning innehåller ${buf.syra} och ${buf.bas}. Beräkna pH.`,
-      given:[`c(${buf.syra}) = <b>${cS}</b> mol/dm\u00b3`, `c(${buf.bas}) = <b>${cB}</b> mol/dm\u00b3`, `pKa = <b>${pkStr}</b>`],
+      given:[`c(${buf.syra}) = <b>${cS}</b> mol/dm\u00b3`, `c(${buf.bas}) = <b>${cB}</b> mol/dm\u00b3`, `Ka = <b>${buf.KaStr}</b>`],
       steps, signature:sig, dbg:{kind:'buf', Ka:buf.Ka, rSyra:nS, rBas:nB}};
   }
   /* svar: substansmängder */
@@ -645,6 +684,7 @@ function genBuffert(diff){
   const steps=[
     {text:'I Henderson-Hasselbalch-ekvationen kan substansmängder användas i stället för koncentrationer, eftersom syra och bas finns i samma volym och volymen förkortas bort i kvoten.',
       math:'pH = pKa + log( n(bas) / n(syra) )'},
+    {text:'Beräkna pKa ur Ka.', math:`pKa = \u2212log(${buf.KaStr}) = ${pkStr}`},
     {text:'Sätt in substansmängderna.',
       math:`pH = ${pkStr} + log( ${nB} / ${nS} ) = ${pkStr} + log(${fmtNum(aB/aS)})`},
     {text:'Beräkna.', math:`pH = ${pkStr} + ${fmtPh(log10(aB/aS),4).replace('-','\u2212')} = ${fmtPh(ph,6)}`},
@@ -653,7 +693,7 @@ function genBuffert(diff){
   ];
   return {mode:'buffert', kind:'buf_n', ansType:'ph', answer:ph, reqDec:2,
     qtext:`En buffertlösning innehåller ${buf.syra} och ${buf.bas} lösta i samma volym. Beräkna pH.`,
-    given:[`n(${buf.syra}) = <b>${nS}</b> mol`, `n(${buf.bas}) = <b>${nB}</b> mol`, `pKa = <b>${pkStr}</b>`],
+    given:[`n(${buf.syra}) = <b>${nS}</b> mol`, `n(${buf.bas}) = <b>${nB}</b> mol`, `Ka = <b>${buf.KaStr}</b>`],
     steps, signature:sig, dbg:{kind:'buf', Ka:buf.Ka, rSyra:aS, rBas:aB}};
 }
 
@@ -672,8 +712,9 @@ function sub(f){ return String(f).replace(/(\d+)/g,'<sub>$1</sub>'); }
 if(typeof module!=='undefined' && module.exports){
   module.exports = {parseNum, countDecimals, countSF, mantissaSF, log10,
     fmtPh, fmtConc, fmtNum, supExp,
-    CONC, CONC3, NICE, PH_POOL, SVAGA_SYROR, SVAGA_BASER, BUFFERTAR, STARKA_BASER2, KA_SF, MIN_RATIO,
-    phFromH, hFromPh, phStarkSyra, phStarkBas, phSvagSyra, phSvagBas, pKa, phBuffert,
+    CONC, CONC3, NICE, PH_POOL, SVAGA_SYROR, SVAGA_BASER, BUFFERTAR, STARKA_BASER2, KA_SF,
+    phFromH, hFromPh, phStarkSyra, phStarkBas, xJamvikt, phSvagSyra, phSvagBas,
+    phSvagSyraApprox, phSvagBasApprox, pKa, phBuffert, iceTabell,
     checkPh, checkConc,
     genSamband, genStark, genSvag, genBuffert, generateFresh, seenSignatures};
 }
@@ -724,7 +765,7 @@ function renderSteps(p){
   p.steps.forEach((s,i)=>{
     const div=document.createElement('div');
     div.className='step';
-    div.innerHTML='<span class="n">'+(i+1)+'</span><span class="t">'+s.text+'<span class="m">'+s.math+'</span></span>';
+    div.innerHTML='<span class="n">'+(i+1)+'</span><div class="t">'+s.text+'<div class="m">'+s.math+'</div></div>';
     st.appendChild(div);
   });
 }
@@ -852,7 +893,7 @@ function check(){
   const raw=$('textsvar').value;
   const facit='<b>'+facitText(problem)+'</b>';
   if(problem.ansType==='ph'){
-    const res=checkPh(problem.answer, problem.reqDec, raw);
+    const res=checkPh(problem.answer, problem.reqDec, raw, problem.approx);
     if(res.status==='invalid'){
       fb.className='feedback fel';
       fb.innerHTML='Skriv pH som ett tal, t.ex. 2,00.'; return;
@@ -864,6 +905,9 @@ function check(){
     } else if(res.skal==='decimaler'){
       fb.className='feedback warn';
       fb.innerHTML='Rätt värde, men antalet decimaler ska följa koncentrationens gällande siffror: pH = '+facit+'. Räknas som rätt.';
+    } else if(res.skal==='approx'){
+      fb.className='feedback fel';
+      fb.innerHTML='Det där ser ut som kvadratrotsapproximationen \u221a(K \u00b7 c). Här skiljer den sig märkbart från det exakta svaret. Ställ upp en koncentrationstabell, sätt in i jämviktsuttrycket och lös ekvationen med Solve: pH = '+facit+'.';
     } else if(res.skal==='pohfel'){
       fb.className='feedback fel';
       fb.innerHTML='Det där ser ut som pOH, inte pH. Kom ihåg att pH + pOH = 14,00 vid 25 °C.';
