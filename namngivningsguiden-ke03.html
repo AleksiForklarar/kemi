@@ -69,6 +69,17 @@
   .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
   button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
+  /* nivåväljare */
+  .valchips{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .vlabel{font-size:12px;font-weight:600;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ink-soft)}
+  .chipset{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{font-family:var(--sans);font-size:14px;font-weight:500;
+    padding:7px 13px;border-radius:999px;border:1.5px solid var(--line);
+    background:var(--card);color:var(--ink);cursor:pointer;transition:all .12s}
+  .chip:hover{border-color:var(--accent)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
   /* exempelmolekylen överst */
   .exempelrad{display:flex;gap:16px;align-items:center;flex-wrap:wrap;
     background:var(--paper);border:1px solid var(--line);border-radius:8px;
@@ -128,6 +139,7 @@
   .priotext{font-size:14.5px;margin-bottom:8px}
   .priotext:last-child{margin-bottom:0}
   .priotext .m{font-family:var(--mono);font-weight:600}
+  .priofigur{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start;margin:4px 0 12px}
 
   /* tabellen */
   .tabellwrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
@@ -140,6 +152,10 @@
   .grupptabell tr:last-child td{border-bottom:none}
   .grupptabell tr:nth-child(even) td{background:var(--paper)}
   .t-klass{font-weight:600;white-space:nowrap}
+  .t-grupp .gbild{display:block;margin-bottom:6px}
+  .gsvg{display:block}
+  .gsvg line{stroke:var(--ink);stroke-width:1.8;stroke-linecap:round}
+  .gsvg text{font-family:var(--mono);font-size:12.5px;font-weight:600;fill:var(--ink);text-anchor:middle}
   .t-grupp .gf{font-family:var(--mono);font-weight:600;white-space:nowrap}
   .t-grupp .gn{display:block;font-size:12.5px;color:var(--ink-soft);margin-top:2px}
   .t-mono{font-family:var(--mono);font-size:13.5px}
@@ -153,11 +169,12 @@
 
   /* kom ihåg */
   .komihag{list-style:none}
-  .komihag li{padding-left:24px;position:relative;margin-bottom:8px;font-size:14.5px}
+  .komihag li{padding-left:24px;position:relative;margin-bottom:10px;font-size:14.5px}
   .komihag li:last-child{margin-bottom:0}
   .komihag li::before{content:'\2192';position:absolute;left:0;color:var(--accent);
     font-family:var(--mono);font-weight:700}
   .komihag .m{font-family:var(--mono);font-weight:600}
+  .komfigur{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start;margin-top:8px}
 
   /* länk till tränaren */
   .cta{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
@@ -206,7 +223,11 @@
 
   <div class="panel">
     <h2 class="panelrubrik">Namnge en molekyl steg för steg</h2>
-    <p class="panelsub">Vi namnger den här molekylen tillsammans. Följ samma fem steg varje gång, oavsett ämnesklass.</p>
+    <p class="panelsub">Välj nivå och följ samma fem steg varje gång, oavsett ämnesklass.</p>
+    <div class="valchips">
+      <span class="vlabel">Nivå</span>
+      <div class="chipset" id="nivaChips" role="group" aria-label="Exempelnivå"></div>
+    </div>
     <div class="exempelrad">
       <div id="exempelMol"></div>
       <div>
@@ -240,7 +261,7 @@
         <tbody id="tabellBody"></tbody>
       </table>
     </div>
-    <p class="tabellnot">Prefixet i tabellen används när en annan grupp med högre prioritet bestämmer ändelsen, till exempel <span class="m">2-hydroxipropansyra</span> (mjölksyra). Alla formler och tabellvärden hittar du i Mafys tabeller.</p>
+    <p class="tabellnot">Prefixet i tabellen används när en annan grupp med högre prioritet bestämmer ändelsen, till exempel <span class="m">2-hydroxipropansyra</span> (mjölksyra).</p>
   </div>
 
   <div class="panel">
@@ -248,6 +269,7 @@
     <p class="priotext">Om molekylen har mer än en funktionell grupp avgör gruppen med högst prioritet ändelsen. De andra grupperna anges som prefix, till exempel hydroxi- eller amino-.</p>
     <div class="priokedja" id="prioKedja"></div>
     <p class="priotext">Exempel: mjölksyra innehåller både <span class="m">-COOH</span> och <span class="m">-OH</span>. Syragruppen har högre prioritet och ger ändelsen, så namnet blir <span class="m">2-hydroxipropansyra</span>.</p>
+    <div class="priofigur" id="prioFigur"></div>
     <p class="priotext">Dubbel- och trippelbindningar syns i ändelsen tillsammans med huvudgruppen. Halogener, nitrogrupper och alkylgrupper anges alltid som prefix, aldrig som ändelse. Aromatiska föreningar och fenoler namnges oftast med etablerade namn.</p>
   </div>
 
@@ -255,10 +277,14 @@
     <h2 class="panelrubrik">Kom ihåg</h2>
     <ul class="komihag">
       <li>Lokanterna ska alltid bli så låga som möjligt. Prova båda numreringsriktningarna om du är osäker.</li>
-      <li>Skriv ut lokanten även när gruppen sitter på kolatom 1, till exempel <span class="m">but-1-en</span> och <span class="m">butan-1-ol</span>.</li>
+      <li>Skriv ut lokanten även när gruppen sitter på kolatom 1, till exempel <span class="m">but-1-en</span> och <span class="m">butan-1-ol</span>. Båda kan också namnges utan ettan (<span class="m">buten</span> och <span class="m">butanol</span>), men när du alltid skriver ut lokanten följer alla namn samma struktur.
+        <div class="komfigur" id="komLokant"></div>
+      </li>
       <li>Aldehyder och karboxylsyror behöver ingen lokant: gruppen sitter alltid i kedjans ände och är kolatom 1.</li>
       <li>Prefix ordnas alfabetiskt (etyl före metyl), och di- och tri- räknas inte med i ordningen.</li>
-      <li>Lika grupper slås ihop: två metylgrupper blir <span class="m">dimetyl</span> och varje grupp får en egen lokant, som i <span class="m">2,3-dimetylbutan</span>.</li>
+      <li>Lika grupper slås ihop: två metylgrupper blir <span class="m">dimetyl</span> och varje grupp får en egen lokant, som i <span class="m">2,3-dimetylbutan</span>.
+        <div class="komfigur" id="komDimetyl"></div>
+      </li>
     </ul>
   </div>
 
@@ -282,34 +308,89 @@
    LOGIK: ren och testbar
    ================================================================ */
 
-/* Exempelmolekylen som guiden bygger på: 4-metylpentan-2-ol.
-   Kedja med 5 kolatomer, OH på kolatom 2 och metyl på kolatom 4. */
-const EXEMPEL={
-  namn:'4-metylpentan-2-ol',
-  formel:'CH3CH(OH)CH2CH(CH3)CH3',
-  delar:[
-    {text:'4-metyl', typ:'prefix', label:'prefix + lokant'},
-    {text:'pentan', typ:'stam', label:'stam'},
-    {text:'-2-', typ:'lokant', label:'lokant'},
-    {text:'ol', typ:'andelse', label:'\u00e4ndelse'}
-  ]
+/* Tre exempel för steg för steg-guiden. Varje exempel har:
+   mol   - molekylen för ritaren: {n, b (bindningsordningar), subs:[[atomIndex, grupp]]}
+   grupp - highlight för huvudgruppen, gren - highlight för sidogruppen (eller null)
+   delar - namnets byggstenar, num - bildtexter för numreringssteget
+   steg  - de fem stegen med text och bildtyp */
+const EXEMPELN={
+  latt:{
+    namn:'butan-2-ol', formel:'CH3CH(OH)CH2CH3',
+    mol:{n:4, subs:[[1,'OH']]},
+    grupp:{typ:'grupp', i:1}, gren:null,
+    delar:[
+      {text:'butan', typ:'stam', label:'stam'},
+      {text:'-2-', typ:'lokant', label:'lokant'},
+      {text:'ol', typ:'andelse', label:'\u00e4ndelse'}],
+    num:{ok:'Fr\u00e5n v\u00e4nster: OH p\u00e5 kolatom 2', fel:'Fr\u00e5n h\u00f6ger: OH p\u00e5 kolatom 3'},
+    steg:[
+      {titel:'Hitta den funktionella gruppen', bild:'grupp',
+       text:'Leta f\u00f6rst efter den funktionella gruppen. H\u00e4r sitter en OH-grupp p\u00e5 kedjan: f\u00f6reningen \u00e4r en alkohol och namnet f\u00e5r \u00e4ndelsen -ol.'},
+      {titel:'Hitta den l\u00e4ngsta kolkedjan', bild:'kedja',
+       text:'R\u00e4kna kolatomerna i den l\u00e4ngsta kedjan som inneh\u00e5ller kolatomen med den funktionella gruppen. Varje brytpunkt och \u00e4ndpunkt i streckformeln \u00e4r en kolatom. H\u00e4r \u00e4r kedjan 4 kolatomer l\u00e5ng: stammen \u00e4r butan.'},
+      {titel:'Numrera kedjan', bild:'numrering',
+       text:'Numrera fr\u00e5n det h\u00e5ll som ger den funktionella gruppen l\u00e4gsta m\u00f6jliga lokant. Fr\u00e5n v\u00e4nster hamnar OH p\u00e5 kolatom 2, fr\u00e5n h\u00f6ger p\u00e5 kolatom 3. Allts\u00e5 numrerar vi fr\u00e5n v\u00e4nster: butan-2-ol.'},
+      {titel:'Namnge sidogrupperna', bild:'gren',
+       text:'H\u00e4r finns inga grenar eller andra sidogrupper: namnet beh\u00f6ver inga prefix.'},
+      {titel:'S\u00e4tt ihop namnet', bild:'namn',
+       text:'S\u00e4tt ihop namnet: stammen, lokanten och \u00e4ndelsen.'}]
+  },
+  medel:{
+    namn:'4-metylpentan-2-ol', formel:'CH3CH(OH)CH2CH(CH3)CH3',
+    mol:{n:5, subs:[[1,'OH'],[3,'CH3']]},
+    grupp:{typ:'grupp', i:1}, gren:{typ:'gren', i:3},
+    delar:[
+      {text:'4-metyl', typ:'prefix', label:'prefix + lokant'},
+      {text:'pentan', typ:'stam', label:'stam'},
+      {text:'-2-', typ:'lokant', label:'lokant'},
+      {text:'ol', typ:'andelse', label:'\u00e4ndelse'}],
+    num:{ok:'Fr\u00e5n v\u00e4nster: OH p\u00e5 kolatom 2', fel:'Fr\u00e5n h\u00f6ger: OH p\u00e5 kolatom 4'},
+    steg:[
+      {titel:'Hitta den funktionella gruppen', bild:'grupp',
+       text:'Leta f\u00f6rst efter den funktionella gruppen. H\u00e4r sitter en OH-grupp p\u00e5 kedjan: f\u00f6reningen \u00e4r en alkohol och namnet f\u00e5r \u00e4ndelsen -ol. Tabellen l\u00e4ngre ner visar alla grupper och deras \u00e4ndelser.'},
+      {titel:'Hitta den l\u00e4ngsta kolkedjan', bild:'kedja',
+       text:'R\u00e4kna kolatomerna i den l\u00e4ngsta kedjan som inneh\u00e5ller kolatomen med den funktionella gruppen. H\u00e4r \u00e4r kedjan 5 kolatomer l\u00e5ng: stammen \u00e4r pentan.'},
+      {titel:'Numrera kedjan', bild:'numrering',
+       text:'Numrera fr\u00e5n det h\u00e5ll som ger den funktionella gruppen l\u00e4gsta m\u00f6jliga lokant. Fr\u00e5n v\u00e4nster hamnar OH p\u00e5 kolatom 2, fr\u00e5n h\u00f6ger p\u00e5 kolatom 4. Allts\u00e5 numrerar vi fr\u00e5n v\u00e4nster: pentan-2-ol.'},
+      {titel:'Namnge sidogrupperna', bild:'gren',
+       text:'Grenar och andra sidogrupper anges som prefix med lokant. H\u00e4r sitter en metylgrupp p\u00e5 kolatom 4: prefixet blir 4-metyl. Flera olika prefix ordnas alfabetiskt (etyl f\u00f6re metyl), och lika grupper sl\u00e5s ihop med di- eller tri-.'},
+      {titel:'S\u00e4tt ihop namnet', bild:'namn',
+       text:'S\u00e4tt ihop namnet: prefix med lokant, sedan stammen och till sist \u00e4ndelsen med sin lokant.'}]
+  },
+  svar:{
+    namn:'3-metylbutan-2-on', formel:'CH3COCH(CH3)CH3',
+    mol:{n:4, subs:[[1,'=O'],[2,'CH3']]},
+    grupp:{typ:'grupp', i:1}, gren:{typ:'gren', i:2},
+    delar:[
+      {text:'3-metyl', typ:'prefix', label:'prefix + lokant'},
+      {text:'butan', typ:'stam', label:'stam'},
+      {text:'-2-', typ:'lokant', label:'lokant'},
+      {text:'on', typ:'andelse', label:'\u00e4ndelse'}],
+    num:{ok:'Fr\u00e5n v\u00e4nster: C=O p\u00e5 kolatom 2', fel:'Fr\u00e5n h\u00f6ger: C=O p\u00e5 kolatom 3'},
+    steg:[
+      {titel:'Hitta den funktionella gruppen', bild:'grupp',
+       text:'Karbonylgruppen C=O sitter h\u00e4r inne i kedjan, inte i \u00e4nden: f\u00f6reningen \u00e4r en keton och namnet f\u00e5r \u00e4ndelsen -on. Hade gruppen suttit i kedjans \u00e4nde hade det varit en aldehyd med \u00e4ndelsen -al.'},
+      {titel:'Hitta den l\u00e4ngsta kolkedjan', bild:'kedja',
+       text:'Karbonylkolet r\u00e4knas med i kedjan. H\u00e4r \u00e4r den l\u00e4ngsta kedjan 4 kolatomer: stammen \u00e4r butan.'},
+      {titel:'Numrera kedjan', bild:'numrering',
+       text:'Huvudgruppen styr numreringen, inte grenen. Fr\u00e5n v\u00e4nster hamnar C=O p\u00e5 kolatom 2, fr\u00e5n h\u00f6ger p\u00e5 kolatom 3. Allts\u00e5 numrerar vi fr\u00e5n v\u00e4nster: butan-2-on.'},
+      {titel:'Namnge sidogrupperna', bild:'gren',
+       text:'Med den numrering som huvudgruppen redan best\u00e4mt hamnar metylgruppen p\u00e5 kolatom 3: prefixet blir 3-metyl. Grenens lokant f\u00e5r inte \u00e4ndra numreringsriktningen.'},
+      {titel:'S\u00e4tt ihop namnet', bild:'namn',
+       text:'S\u00e4tt ihop namnet: prefix med lokant, sedan stammen och till sist \u00e4ndelsen med sin lokant.'}]
+  }
 };
 
-const GUIDE_STEPS=[
-  {titel:'Hitta den funktionella gruppen', bild:'oh',
-   text:'Leta f\u00f6rst efter den funktionella gruppen. H\u00e4r sitter en OH-grupp p\u00e5 kedjan: f\u00f6reningen \u00e4r en alkohol och namnet f\u00e5r \u00e4ndelsen -ol. Tabellen l\u00e4ngre ner visar alla grupper och deras \u00e4ndelser.'},
-  {titel:'Hitta den l\u00e4ngsta kolkedjan', bild:'kedja',
-   text:'R\u00e4kna kolatomerna i den l\u00e4ngsta kedjan som inneh\u00e5ller kolatomen med den funktionella gruppen. Varje brytpunkt och \u00e4ndpunkt i streckformeln \u00e4r en kolatom. H\u00e4r \u00e4r kedjan 5 kolatomer l\u00e5ng: stammen \u00e4r pentan.'},
-  {titel:'Numrera kedjan', bild:'numrering',
-   text:'Numrera kedjan fr\u00e5n det h\u00e5ll som ger den funktionella gruppen l\u00e4gsta m\u00f6jliga lokant. Fr\u00e5n v\u00e4nster hamnar OH p\u00e5 kolatom 2, fr\u00e5n h\u00f6ger p\u00e5 kolatom 4. Allts\u00e5 numrerar vi fr\u00e5n v\u00e4nster: pentan-2-ol.'},
-  {titel:'Namnge sidogrupperna', bild:'metyl',
-   text:'Grenar och andra sidogrupper anges som prefix med lokant. H\u00e4r sitter en metylgrupp p\u00e5 kolatom 4: prefixet blir 4-metyl. Flera olika prefix ordnas alfabetiskt (etyl f\u00f6re metyl), och lika grupper sl\u00e5s ihop med di- eller tri-.'},
-  {titel:'S\u00e4tt ihop namnet', bild:'namn',
-   text:'S\u00e4tt ihop namnet: prefix med lokant, sedan stammen och till sist \u00e4ndelsen med sin lokant.'}
-];
+/* sm\u00e5 figurer i Kom ih\u00e5g och prioritetspanelen */
+const SMAMOLEKYLER={
+  but1en:{mol:{n:4, b:[2,1,1]}, namn:'but-1-en'},
+  butan1ol:{mol:{n:4, subs:[[0,'OH']]}, namn:'butan-1-ol'},
+  dimetylbutan:{mol:{n:4, subs:[[1,'CH3'],[2,'CH3']]}, namn:'2,3-dimetylbutan'},
+  mjolksyra:{mol:{n:3, subs:[[1,'OH'],[2,'COOH']]}, namn:'2-hydroxipropansyra'}
+};
 
 const GRUPPTABELL=[
-  /* grupperna med suffixprioritet, högst först (samma ordning som prioritetskedjan) */
+  /* grupperna med suffixprioritet, h\u00f6gst f\u00f6rst (samma ordning som prioritetskedjan) */
   {klass:'Karboxylsyra', formel:'-COOH', gruppnamn:'karboxylgrupp',
    prefix:'ingen', andelse:'-syra', exNamn:'etansyra', exFormel:'CH3COOH',
    veta:'Sitter alltid i kedjans \u00e4nde och \u00e4r kolatom 1. Har h\u00f6gst prioritet av kursens grupper.'},
@@ -362,43 +443,210 @@ const GRUPPTABELL=[
 
 const PRIORITET=['Karboxylsyra','Ester','Amid','Aldehyd','Keton','Alkohol','Amin'];
 
-/* SVG-ritare f\u00f6r guidens exempelmolekyl (streckformel).
-   opts.highlight: 'oh' | 'kedja' | 'metyl' | null
-   opts.numbers:   'ltr' | 'rtl' | null  (rtl visar fel riktning i r\u00f6tt) */
-function guideSvg(opts){
+/* ================================================================
+   Streckformelritare f\u00f6r guidens molekyler.
+   mol  = {n, b (bindningsordningar, valfritt), subs:[[atomIndex, grupp]]}
+   grupp: 'OH' | 'CH3' | '=O' | 'COOH' (COOH bara p\u00e5 \u00e4ndkol)
+   opts = {highlight:{typ:'grupp'|'kedja'|'gren', i}, numbers:'ltr'|'rtl',
+           numClass (f\u00e4rg\u00f6verstyrning), alt}
+   ================================================================ */
+function guideSvg(mol, opts){
   opts=opts||{};
-  const DX=44, DY=26, N=5;
-  const px=i=>i*DX;
-  const py=i=>(i%2===0?DY:0);
+  const DX=44, DY=26, n=mol.n;
+  const bonds=mol.b||new Array(n-1).fill(1);
+  const subs=mol.subs||[];
+  const px=i=>i*DX, py=i=>(i%2===0?DY:0);
   const parts=[];
-  if(opts.highlight==='oh') parts.push('<circle class="hl" cx="44" cy="-33" r="18"/>');
-  if(opts.highlight==='metyl') parts.push('<circle class="hl" cx="132" cy="-19" r="17"/>');
-  const lineCls = opts.highlight==='kedja' ? ' class="hlk"' : '';
-  for(let i=0;i<N-1;i++){
-    parts.push('<line'+lineCls+' x1="'+px(i)+'" y1="'+py(i)+
-      '" x2="'+px(i+1)+'" y2="'+py(i+1)+'"/>');
+  let minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;
+  const ext=(x,y,rx,ry)=>{minx=Math.min(minx,x-rx);maxx=Math.max(maxx,x+rx);
+    miny=Math.min(miny,y-ry);maxy=Math.max(maxy,y+ry);};
+  function line(x1,y1,x2,y2,cls){
+    parts.push('<line'+(cls?' class="'+cls+'"':'')+' x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+
+      '" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'"/>');
+    ext(x1,y1,3,3); ext(x2,y2,3,3);
   }
-  /* OH p\u00e5 kolatom 2 (index 1) */
-  parts.push('<line x1="44" y1="-4" x2="44" y2="-22"/>');
-  parts.push('<text x="44" y="-28">OH</text>');
-  /* metylgren p\u00e5 kolatom 4 (index 3) */
-  parts.push('<line x1="132" y1="-4" x2="132" y2="-30"/>');
-  if(opts.numbers==='ltr' || opts.numbers==='rtl'){
-    const cls = opts.numbers==='rtl' ? 'num num-fel' : 'num num-ok';
-    for(let i=0;i<N;i++){
-      const nr = opts.numbers==='rtl' ? N-i : i+1;
-      const y = py(i)===0 ? 24 : 46;
-      parts.push('<text class="'+cls+'" x="'+px(i)+'" y="'+y+'">'+nr+'</text>');
+  function txt(x,y,html,len,cls){
+    parts.push('<text'+(cls?' class="'+cls+'"':'')+' x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+
+      '">'+html+'</text>');
+    ext(x,y,5+4.6*len,4); ext(x,y-10,5+4.6*len,4);
+  }
+  function ring(cx,cy,r){
+    parts.unshift('<circle class="hl" cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+
+      '" r="'+r+'"/>');
+    ext(cx,cy,r+2,r+2);
+  }
+  const hasSub=i=>subs.some(s=>s[0]===i);
+  const hl=opts.highlight||{};
+  /* kedjan */
+  const chainCls = hl.typ==='kedja' ? 'hlk' : null;
+  for(let i=0;i<n-1;i++){
+    const x1=px(i),y1=py(i),x2=px(i+1),y2=py(i+1);
+    if(bonds[i]===2){
+      const len=Math.hypot(x2-x1,y2-y1), ux=(x2-x1)/len, uy=(y2-y1)/len;
+      const nx=-uy, ny=ux;
+      line(x1+nx*2.6,y1+ny*2.6,x2+nx*2.6,y2+ny*2.6,chainCls);
+      line(x1-nx*2.6,y1-ny*2.6,x2-nx*2.6,y2-ny*2.6,chainCls);
+    } else {
+      line(x1,y1,x2,y2,chainCls);
     }
   }
-  const alt = opts.alt || 'Streckformel f\u00f6r 4-metylpentan-2-ol';
-  return '<svg class="guidesvg" role="img" aria-label="'+alt+
-    '" viewBox="-16 -56 210 112" width="252" height="134" xmlns="http://www.w3.org/2000/svg">'+
-    parts.join('')+'</svg>';
+  /* grupperna: toppkol ritas upp\u00e5t, bottenkol ner\u00e5t */
+  subs.forEach(s=>{
+    const i=s[0], g=s[1];
+    const x=px(i), y=py(i);
+    const d = py(i)===0 ? -1 : 1;
+    if(g==='OH'){
+      line(x,y+d*4,x,y+d*22);
+      const base = d<0 ? y+d*22-6 : y+d*22+14;
+      if(hl.typ==='grupp' && hl.i===i) ring(x, base-5, 18);
+      txt(x,base,'OH',2);
+    } else if(g==='CH3'){
+      line(x,y+d*4,x,y+d*28);
+      if(hl.typ==='gren' && hl.i===i) ring(x, y+d*19, 17);
+    } else if(g==='=O'){
+      line(x-2.6,y+d*4,x-2.6,y+d*20);
+      line(x+2.6,y+d*4,x+2.6,y+d*20);
+      const base = d<0 ? y+d*20-8 : y+d*20+14;
+      if(hl.typ==='grupp' && hl.i===i) ring(x, (y+d*12+base-5)/2, 20);
+      txt(x,base,'O',1);
+    } else if(g==='COOH'){
+      line(x-2.6,y+d*4,x-2.6,y+d*20);
+      line(x+2.6,y+d*4,x+2.6,y+d*20);
+      const base = d<0 ? y+d*20-8 : y+d*20+14;
+      txt(x,base,'O',1);
+      const k = i===0 ? -1 : n;
+      const qx=px(k), qy=py(k);
+      const len=Math.hypot(qx-x,qy-y), ux=(qx-x)/len, uy=(qy-y)/len;
+      line(x+ux*5,y+uy*5,qx-ux*14,qy-uy*14);
+      txt(qx,qy+4,'OH',2);
+      if(hl.typ==='grupp' && hl.i===i) ring(x, y+d*10, 26);
+    }
+  });
+  /* numrering: toppkol under; bottenkol under, eller ovanf\u00f6r om gruppen pekar ner */
+  if(opts.numbers==='ltr' || opts.numbers==='rtl'){
+    const cls=opts.numClass || (opts.numbers==='rtl' ? 'num num-fel' : 'num num-ok');
+    for(let i=0;i<n;i++){
+      const nr=opts.numbers==='rtl' ? n-i : i+1;
+      let ynum;
+      if(py(i)===0) ynum=24;
+      else ynum = hasSub(i) ? 15 : 46;
+      txt(px(i),ynum,String(nr),1,cls);
+    }
+  }
+  const alt=opts.alt||'Streckformel';
+  const W=maxx-minx+16, H=maxy-miny+16;
+  return '<svg class="guidesvg" role="img" aria-label="'+alt+'" viewBox="'+
+    (minx-8).toFixed(1)+' '+(miny-8).toFixed(1)+' '+W.toFixed(1)+' '+H.toFixed(1)+
+    '" width="'+Math.round(W*1.2)+'" height="'+Math.round(H*1.2)+
+    '" xmlns="http://www.w3.org/2000/svg">'+parts.join('')+'</svg>';
+}
+
+/* ================================================================
+   Sm\u00e5 streckformler f\u00f6r de funktionella grupperna i tabellen,
+   ritade som i kompendiet (med utskrivna C-, O- och N-atomer).
+   ================================================================ */
+function gruppSvg(klass){
+  const parts=[];
+  let minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;
+  const ext=(x,y,rx,ry)=>{minx=Math.min(minx,x-rx);maxx=Math.max(maxx,x+rx);
+    miny=Math.min(miny,y-ry);maxy=Math.max(maxy,y+ry);};
+  const L=(x1,y1,x2,y2)=>{
+    parts.push('<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+
+      '" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'"/>');
+    ext(x1,y1,2,2); ext(x2,y2,2,2);
+  };
+  /* T: cx, cy = mitten av tecknet */
+  const T=(cx,cy,html,len)=>{
+    parts.push('<text x="'+cx.toFixed(1)+'" y="'+(cy+4.3).toFixed(1)+'">'+html+'</text>');
+    ext(cx,cy,4.5*len+2,7);
+  };
+  /* dubbelbindning upp\u00e5t fr\u00e5n ett C i (x,y) till ett O */
+  const CO_upp=(x,y)=>{
+    L(x-2.4,y-8,x-2.4,y-19); L(x+2.4,y-8,x+2.4,y-19);
+    T(x,y-27,'O',1);
+  };
+  /* bindning ner\u00e5t-h\u00f6ger fr\u00e5n (x,y) mot ett tecken i (tx,ty) */
+  const bindNH=(x,y,tx,ty)=>{
+    const dx=tx-x, dy=ty-y, len=Math.hypot(dx,dy), ux=dx/len, uy=dy/len;
+    L(x+ux*7,y+uy*7,tx-ux*9,ty-uy*9);
+  };
+  if(klass==='Karboxylsyra'){
+    L(-30,0,-9,0); T(0,0,'C',1); CO_upp(0,0);
+    bindNH(0,0,20,15); T(20,15,'O',1);
+    L(27,15,34,15); T(41,15,'H',1);
+  } else if(klass==='Ester'){
+    L(-30,0,-9,0); T(0,0,'C',1); CO_upp(0,0);
+    bindNH(0,0,20,15); T(20,15,'O',1);
+    L(27,15,44,15);
+  } else if(klass==='Amid'){
+    L(-30,0,-9,0); T(0,0,'C',1); CO_upp(0,0);
+    bindNH(0,0,20,15); T(20,15,'N',1);
+    L(27,15,42,15); L(20,23,20,34);
+  } else if(klass==='Aldehyd'){
+    L(-30,0,-9,0); T(0,0,'C',1); CO_upp(0,0);
+    bindNH(0,0,20,15); T(20,15,'H',1);
+  } else if(klass==='Keton'){
+    T(0,0,'C',1); CO_upp(0,0);
+    L(-6,4,-19,13.5); L(6,4,19,13.5);
+  } else if(klass==='Alkohol'){
+    L(-26,-13,-6.5,-3.5); T(0,0,'O',1);
+    bindNH(0,0,19,14); T(19,14,'H',1);
+  } else if(klass==='Amin'){
+    T(0,0,'N',1);
+    L(-6,-4,-20,-13); L(-6,4,-20,13); L(7,0,24,0);
+  } else if(klass==='Alken'){
+    T(0,0,'C',1); T(26,0,'C',1);
+    L(7,-2.4,19,-2.4); L(7,2.4,19,2.4);
+    L(-5,-4,-18,-13); L(-5,4,-18,13);
+    L(31,-4,44,-13); L(31,4,44,13);
+  } else if(klass==='Alkyn'){
+    L(-32,0,-9,0); T(0,0,'C',1);
+    L(7,0,21,0); L(7,-3.4,21,-3.4); L(7,3.4,21,3.4);
+    T(28,0,'C',1); L(35,0,58,0);
+  } else if(klass==='Alkan'){
+    L(-30,0,-9,0); T(0,0,'C',1); L(7,0,19,0); T(26,0,'C',1); L(33,0,54,0);
+  } else if(klass==='Eter'){
+    L(-26,-13,-6,-3.5); T(0,0,'O',1); L(6,-3.5,26,-13);
+  } else if(klass==='Aromatisk f\u00f6rening' || klass==='Fenol'){
+    const R=19, v=[];
+    for(let k=0;k<6;k++){
+      const a=Math.PI/180*(60*k-90);
+      v.push([R*Math.cos(a), R*Math.sin(a)]);
+    }
+    for(let k=0;k<6;k++){
+      const a=v[k], b=v[(k+1)%6];
+      L(a[0],a[1],b[0],b[1]);
+      if(k%2===0){
+        const ia=[a[0]*0.68,a[1]*0.68], ib=[b[0]*0.68,b[1]*0.68];
+        L(ia[0]+(ib[0]-ia[0])*0.14, ia[1]+(ib[1]-ia[1])*0.14,
+          ib[0]-(ib[0]-ia[0])*0.14, ib[1]-(ib[1]-ia[1])*0.14);
+      }
+    }
+    if(klass==='Fenol'){
+      L(v[0][0]+2.3*Math.cos(-Math.PI/6), v[0][1]+2.3*Math.sin(-Math.PI/6),
+        v[0][0]+11*Math.cos(-Math.PI/6), v[0][1]+11*Math.sin(-Math.PI/6));
+      T(v[0][0]+22*Math.cos(-Math.PI/6), v[0][1]+22*Math.sin(-Math.PI/6),'OH',2);
+    }
+  } else if(klass==='Halogenf\u00f6rening'){
+    L(-44,-10,-31,-10); T(-24,-10,'F',1);
+    L(-2,-10,11,-10);  T(21,-10,'Cl',2);
+    L(-44,11,-31,11);  T(-21,11,'Br',2);
+    L(-2,11,11,11);    T(18,11,'I',1);
+  } else if(klass==='Nitrof\u00f6rening'){
+    L(-33,0,-16,0);
+    T(0,0,'NO<tspan dy="3" font-size="9">2</tspan>',3);
+  } else {
+    L(-14,0,14,0);
+  }
+  const W=maxx-minx+10, H=maxy-miny+10;
+  return '<svg class="gsvg" role="img" aria-label="Streckformel: '+klass+'" viewBox="'+
+    (minx-5).toFixed(1)+' '+(miny-5).toFixed(1)+' '+W.toFixed(1)+' '+H.toFixed(1)+
+    '" width="'+Math.round(W)+'" height="'+Math.round(H)+
+    '" xmlns="http://www.w3.org/2000/svg">'+parts.join('')+'</svg>';
 }
 
 if(typeof module!=='undefined' && module.exports){
-  module.exports={EXEMPEL, GUIDE_STEPS, GRUPPTABELL, PRIORITET, guideSvg};
+  module.exports={EXEMPELN, SMAMOLEKYLER, GRUPPTABELL, PRIORITET, guideSvg, gruppSvg};
 }
 
 /* ================================================================
@@ -409,56 +657,45 @@ if(typeof document!=='undefined'){
 const $=id=>document.getElementById(id);
 const fSub=str=>String(str).replace(/(\d+)/g,'<sub>$1</sub>');
 
-/* exempelmolekylen \u00f6verst */
-$('exempelMol').innerHTML=guideSvg({});
-$('exempelFormel').innerHTML=fSub(EXEMPEL.formel);
+/* ---------- steg f\u00f6r steg med niv\u00e5v\u00e4ljare ---------- */
+const NIVAER=[{id:'latt',label:'L\u00e4tt'},{id:'medel',label:'Medel'},{id:'svar',label:'Sv\u00e5r'}];
+let curNiva='latt', visade=0, stegDivs=[];
 
-/* bilderna f\u00f6r varje steg */
-function stegBild(bild){
-  if(bild==='oh') return guideSvg({highlight:'oh',
-    alt:'Streckformel d\u00e4r OH-gruppen \u00e4r inringad'});
-  if(bild==='kedja') return guideSvg({highlight:'kedja',
-    alt:'Streckformel d\u00e4r kolkedjan \u00e4r markerad'});
-  if(bild==='numrering'){
+function stegBild(ex, s){
+  if(s.bild==='grupp')
+    return guideSvg(ex.mol,{highlight:ex.grupp,
+      alt:'Streckformel d\u00e4r den funktionella gruppen \u00e4r inringad'});
+  if(s.bild==='kedja')
+    return guideSvg(ex.mol,{highlight:{typ:'kedja'},
+      alt:'Streckformel d\u00e4r kolkedjan \u00e4r markerad'});
+  if(s.bild==='numrering'){
     return '<div class="figur">'+
-        guideSvg({numbers:'ltr', alt:'Numrering fr\u00e5n v\u00e4nster: OH p\u00e5 kolatom 2'})+
-        '<span class="figtext ok">Fr\u00e5n v\u00e4nster: OH p\u00e5 kolatom 2 &#10003;</span></div>'+
+        guideSvg(ex.mol,{numbers:'ltr', alt:'R\u00e4tt numreringsriktning'})+
+        '<span class="figtext ok">'+ex.num.ok+' &#10003;</span></div>'+
       '<div class="figur">'+
-        guideSvg({numbers:'rtl', alt:'Numrering fr\u00e5n h\u00f6ger: OH p\u00e5 kolatom 4'})+
-        '<span class="figtext fel">Fr\u00e5n h\u00f6ger: OH p\u00e5 kolatom 4 &#10007;</span></div>';
+        guideSvg(ex.mol,{numbers:'rtl', alt:'Fel numreringsriktning'})+
+        '<span class="figtext fel">'+ex.num.fel+' &#10007;</span></div>';
   }
-  if(bild==='metyl') return guideSvg({highlight:'metyl', numbers:'ltr',
-    alt:'Streckformel d\u00e4r metylgruppen p\u00e5 kolatom 4 \u00e4r inringad'});
-  if(bild==='namn'){
-    let h='<div>';
-    h+='<div class="namnbygge">';
-    EXEMPEL.delar.forEach(d=>{
+  if(s.bild==='gren'){
+    const o={numbers:'ltr',
+      alt: ex.gren ? 'Streckformel d\u00e4r sidogruppen \u00e4r inringad'
+                   : 'Streckformel med numrering'};
+    if(ex.gren) o.highlight=ex.gren;
+    return guideSvg(ex.mol,o);
+  }
+  if(s.bild==='namn'){
+    let h='<div><div class="namnbygge">';
+    ex.delar.forEach(d=>{
       h+='<div class="namndel"><span class="dtext '+d.typ+'">'+d.text+
         '</span><span class="dlabel">'+d.label+'</span></div>';
     });
-    h+='</div>';
-    h+='<p class="slutnamn">Namnet blir <span class="m">'+EXEMPEL.namn+
-      '</span> &middot; <span class="m">'+fSub(EXEMPEL.formel)+'</span></p>';
-    h+='</div>';
+    h+='</div><p class="slutnamn">Namnet blir <span class="m">'+ex.namn+
+      '</span> &middot; <span class="m">'+fSub(ex.formel)+'</span></p></div>';
     return h;
   }
   return '';
 }
 
-/* bygg stegen */
-const stegDivs=[];
-GUIDE_STEPS.forEach((s,i)=>{
-  const div=document.createElement('div');
-  div.className='gstep';
-  div.innerHTML='<div class="gs-head"><span class="n">Steg '+(i+1)+' av '+GUIDE_STEPS.length+
-    '</span><span class="gs-titel">'+s.titel+'</span></div>'+
-    '<p class="gs-text">'+s.text+'</p>'+
-    '<div class="gs-bild">'+stegBild(s.bild)+'</div>';
-  $('stegContainer').appendChild(div);
-  stegDivs.push(div);
-});
-
-let visade=0;
 function uppdateraKnappar(){
   const alla = visade>=stegDivs.length;
   $('nastaBtn').style.display = alla ? 'none' : '';
@@ -472,28 +709,56 @@ function visaNasta(){
   }
   uppdateraKnappar();
 }
-function visaAlla(){
-  while(visade<stegDivs.length) visaNasta();
-}
+function visaAlla(){ while(visade<stegDivs.length) visaNasta(); }
 function borjaOm(){
   stegDivs.forEach(d=>d.classList.remove('visad'));
-  visade=0;
-  visaNasta();
+  visade=0; visaNasta();
   stegDivs[0].scrollIntoView({block:'nearest'});
+}
+
+function byggExempel(){
+  const ex=EXEMPELN[curNiva];
+  $('exempelMol').innerHTML=guideSvg(ex.mol,{alt:'Streckformel f\u00f6r '+ex.namn});
+  $('exempelFormel').innerHTML=fSub(ex.formel);
+  const cont=$('stegContainer'); cont.innerHTML='';
+  stegDivs=[];
+  ex.steg.forEach((s,i)=>{
+    const div=document.createElement('div');
+    div.className='gstep';
+    div.innerHTML='<div class="gs-head"><span class="n">Steg '+(i+1)+' av '+ex.steg.length+
+      '</span><span class="gs-titel">'+s.titel+'</span></div>'+
+      '<p class="gs-text">'+s.text+'</p>'+
+      '<div class="gs-bild">'+stegBild(ex,s)+'</div>';
+    cont.appendChild(div);
+    stegDivs.push(div);
+  });
+  visade=0; visaNasta();
+}
+function byggNivaChips(){
+  const el=$('nivaChips'); el.innerHTML='';
+  NIVAER.forEach(nv=>{
+    const b=document.createElement('button');
+    b.className='chip'+(nv.id===curNiva?' on':'');
+    b.textContent=nv.label;
+    b.onclick=()=>{ curNiva=nv.id; byggNivaChips(); byggExempel(); };
+    el.appendChild(b);
+  });
 }
 $('nastaBtn').onclick=visaNasta;
 $('allaBtn').onclick=visaAlla;
 $('omBtn').onclick=borjaOm;
-visaNasta();
+byggNivaChips();
+byggExempel();
 
-/* tabellen */
+/* ---------- tabellen ---------- */
 const tb=$('tabellBody');
 const nobreak=s=>String(s).split(' ').map(t=>'<span style="white-space:nowrap">'+t+'</span>').join(' ');
 GRUPPTABELL.forEach(r=>{
   const tr=document.createElement('tr');
   tr.innerHTML=
     '<td class="t-klass">'+r.klass+'</td>'+
-    '<td class="t-grupp"><span class="gf">'+fSub(r.formel)+'</span>'+
+    '<td class="t-grupp"><span class="gbild">'+gruppSvg(r.klass)+'</span>'+
+      '<span class="gf">'+fSub(r.formel)+'</span>'+
       '<span class="gn">'+r.gruppnamn+'</span></td>'+
     '<td class="t-mono">'+r.prefix+'</td>'+
     '<td class="t-andelse">'+nobreak(r.andelse)+'</td>'+
@@ -503,7 +768,7 @@ GRUPPTABELL.forEach(r=>{
   tb.appendChild(tr);
 });
 
-/* prioritetskedjan */
+/* ---------- prioritetskedjan ---------- */
 const pk=$('prioKedja');
 PRIORITET.forEach((namn,i)=>{
   const chip=document.createElement('span');
@@ -517,6 +782,22 @@ PRIORITET.forEach((namn,i)=>{
     pk.appendChild(pil);
   }
 });
+
+/* ---------- sm\u00e5 figurer ---------- */
+function smafigur(id, opts, caption){
+  const sm=SMAMOLEKYLER[id];
+  return '<div class="figur">'+
+    guideSvg(sm.mol, Object.assign({alt:'Streckformel f\u00f6r '+sm.namn}, opts||{}))+
+    '<span class="figtext">'+(caption||sm.namn)+'</span></div>';
+}
+$('komLokant').innerHTML =
+  smafigur('but1en',{numbers:'ltr'}) +
+  smafigur('butan1ol',{numbers:'ltr'});
+$('komDimetyl').innerHTML =
+  smafigur('dimetylbutan',{numbers:'ltr'});
+$('prioFigur').innerHTML =
+  smafigur('mjolksyra',{numbers:'rtl', numClass:'num num-ok'},
+    'mj\u00f6lksyra: COOH \u00e4r kolatom 1, OH blir prefixet 2-hydroxi');
 
 }
 </script>
