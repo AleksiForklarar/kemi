@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Träna empirisk formel ur masshalter och massor, molekylformel ur molmassan och kristallvatten i hydrat, med provsimulering. KE01/KE02.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg stroke='%2326241F' stroke-width='7' stroke-linecap='round'%3E%3Cline x1='14' y1='40' x2='37' y2='59'/%3E%3Cline x1='37' y1='59' x2='62' y2='40'/%3E%3Cline x1='62' y1='40' x2='87' y2='59'/%3E%3C/g%3E%3Ccircle cx='14' cy='40' r='13.5' fill='%231B9E6E'/%3E%3Ccircle cx='37' cy='59' r='13' fill='%23D9502B'/%3E%3Ccircle cx='62' cy='40' r='13' fill='%23E9A83C'/%3E%3Ccircle cx='87' cy='59' r='12' fill='%23D28FC4'/%3E%3C/svg%3E">
+
+<title>Formeltränaren · KE01/KE02</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF5F5;
+    --grid:#F2E0E1;
+    --grid-major:#EAD0D2;
+    --ink:#2E1617;
+    --ink-soft:#6B4749;
+    --accent:#E22A36;
+    --accent-hover:#C31B25;
+    --accent-soft:#F7E3E5;
+    --amber:#B25A0B;
+    --amber-soft:#FBEFE0;
+    --green:#1D7A33;
+    --green-soft:#E4F3E6;
+    --red:#A8332C;
+    --red-soft:#F8E7E5;
+    --card:#FFFFFF;
+    --line:#E0C6C8;
+    --radius:10px;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --head:'Poppins',system-ui,sans-serif;
+    --sans:'Inter',system-ui,sans-serif;
+  }
+  html[data-tema="mork"]{
+    --paper:#211414;
+    --grid:#2F1B1C;
+    --grid-major:#392022;
+    --ink:#EBE0E0;
+    --ink-soft:#BA9799;
+    --accent:#E22834;
+    --accent-hover:#E7555D;
+    --accent-soft:#43191D;
+    --amber:#F49948;
+    --amber-soft:#433019;
+    --green:#5AD878;
+    --green-soft:#1C4021;
+    --red:#DD837E;
+    --red-soft:#431E19;
+    --card:#222222;
+    --line:#593134;
+  }
+
+  h1,h2,h3{font-family:var(--head)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:var(--sans);color:var(--ink);
+    background-color:var(--paper);
+    background-image:
+      linear-gradient(var(--grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:100px 100px,100px 100px,20px 20px,20px 20px;
+    min-height:100vh;padding:24px 16px 64px;line-height:1.5;
+  }
+  .wrap{max-width:840px;margin:0 auto}
+  .hem{display:inline-block;font-family:var(--mono);font-size:13px;font-weight:600;
+    color:var(--ink-soft);text-decoration:none;margin-bottom:10px;padding:4px 0}
+  .hem:hover{color:var(--accent)}
+  .hem:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  header{margin-bottom:20px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-size:clamp(26px,5vw,36px);font-weight:700;letter-spacing:-.01em;line-height:1.15}
+  .sub{color:var(--ink-soft);font-size:15px;margin-top:4px}
+
+  .panel{background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:16px;margin-bottom:14px;
+    box-shadow:0 1px 3px rgba(27,24,48,.06)}
+  .controls{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+  .ctrl-group{display:flex;flex-direction:column;gap:6px}
+  .ctrl-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-family:var(--sans);font-size:14px;font-weight:500;
+    padding:7px 13px;border-radius:999px;border:1.5px solid var(--line);
+    background:var(--card);color:var(--ink);cursor:pointer;transition:all .12s}
+  .chip:hover{border-color:var(--accent)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .chip:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .scorebar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;
+    font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+  .scorebar b{color:var(--ink);font-weight:600}
+  .streak{color:var(--amber);font-weight:600}
+  .provinfo{font-family:var(--mono);font-size:14px;color:var(--accent);font-weight:600}
+
+  .qtype-tag{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;
+    color:var(--accent);background:var(--accent-soft);
+    padding:3px 10px;border-radius:6px;margin-bottom:12px;letter-spacing:.04em}
+  .review-tag{background:var(--amber-soft);color:var(--amber)}
+  .qtext{font-size:16.5px;margin-bottom:6px}
+  .qtext b{font-weight:600}
+  .qtext sub{font-size:.7em} .qtext sup{font-size:.7em}
+
+  .given{font-family:var(--mono);font-size:15px;color:var(--ink);
+    background:var(--accent-soft);border-radius:9px;padding:11px 14px;margin:12px 0 4px;
+    display:flex;flex-direction:column;gap:4px}
+  .given .rad{display:flex;gap:8px}
+  .given b{color:var(--accent)}
+  .given sub{font-size:.7em} .given sup{font-size:.7em}
+
+  .answer-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+  .svarfalt{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:17px;font-weight:600}
+  .svarfalt .etikett{color:var(--ink-soft)}
+  input.textsvar{font-family:var(--mono);font-size:18px;font-weight:600;
+    padding:10px 14px;border:1.5px solid var(--line);border-radius:8px;
+    width:190px;color:var(--ink);background:var(--card)}
+  input.textsvar:focus{border-color:var(--accent)}
+  input.textsvar[readonly]{background:var(--paper);color:var(--ink-soft)}
+  .enhet{font-family:var(--mono);font-size:15px;color:var(--ink-soft)}
+  .enhet sup{font-size:.7em}
+  button{font-family:var(--sans);font-size:15px;font-weight:600;
+    padding:10px 18px;border-radius:8px;cursor:pointer;border:1.5px solid transparent;transition:all .12s}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-hover)}
+  .btn-ghost{background:var(--card);border-color:var(--line);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .hint{font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-top:8px}
+
+  .feedback{margin-top:12px;padding:12px 14px;border-radius:8px;font-size:15px;display:none;font-weight:500}
+  .feedback.ok{display:block;background:var(--green-soft);color:var(--green);border:1px solid #BFE3C4}
+  .feedback.warn{display:block;background:var(--amber-soft);color:var(--amber);border:1px solid #EFD3B2}
+  .feedback.fel{display:block;background:var(--red-soft);color:var(--red);border:1px solid #EBC4C0}
+  .feedback sub{font-size:.7em} .feedback sup{font-size:.7em}
+
+  .solution{margin-top:14px;display:none}
+  .solution.open{display:block}
+  .sol-head{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:8px}
+  .step{background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    padding:10px 14px;margin-bottom:8px;font-size:15px;display:flex;gap:12px;align-items:baseline}
+  .step .n{font-family:var(--mono);font-weight:600;color:var(--accent);font-size:13px;flex-shrink:0}
+  .step .t{flex:1}
+  .step .t .m{font-family:var(--mono);font-size:14.5px;display:block;margin-top:3px;color:var(--ink);overflow-x:auto}
+  .step sub{font-size:.7em} .step sup{font-size:.7em}
+  .ktab{border-collapse:collapse;font-family:var(--mono);font-size:13.5px;margin-top:6px;background:var(--card)}
+  .ktab th,.ktab td{border:1px solid var(--line);padding:5px 10px;text-align:center;white-space:nowrap}
+  .ktab th:first-child,.ktab td:first-child{text-align:left;color:var(--ink-soft)}
+  .ktab th{background:var(--accent-soft);font-weight:600;color:var(--accent)}
+  .ktab sub{font-size:.7em} .ktab sup{font-size:.7em}
+  .ktab-wrap{overflow-x:auto;max-width:100%}
+
+  .hist-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
+  .hist-note{font-size:12px;color:var(--ink-soft);font-family:var(--mono)}
+  .hist-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+  .hist-item{display:flex;gap:10px;align-items:baseline;text-align:left;
+    font-family:var(--sans);font-size:14px;
+    background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;width:100%}
+  .hist-item:hover{border-color:var(--accent)}
+  .hist-item .hn{font-family:var(--mono);font-weight:600;color:var(--ink-soft);font-size:12px;flex-shrink:0}
+  .hist-item .ht{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hist-item .ht sub{font-size:.7em} .hist-item .ht sup{font-size:.7em}
+  .hist-item .hs{font-family:var(--mono);font-size:12px;font-weight:600;flex-shrink:0}
+  .hs.s-ok{color:var(--green)} .hs.s-warn{color:var(--amber)} .hs.s-fel{color:var(--red)} .hs.s-reveal{color:var(--ink-soft)}
+
+  .felknapp{position:fixed;right:16px;bottom:16px;z-index:50;font-size:13px;
+    background:var(--card);color:var(--ink-soft);border:1.5px solid var(--line);
+    border-radius:999px;padding:9px 14px;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+  .felknapp:hover{color:var(--accent);border-color:var(--accent)}
+  .felpanel{position:fixed;right:16px;bottom:64px;z-index:50;
+    width:min(340px,calc(100vw - 32px));background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:14px;
+    box-shadow:0 8px 28px rgba(0,0,0,.2)}
+  .felpanel h3{font-size:14px;margin-bottom:6px}
+  .felpanel textarea{width:100%;height:70px;font-family:var(--sans);font-size:13px;
+    padding:8px;border:1.5px solid var(--line);border-radius:8px;
+    background:var(--paper);color:var(--ink);resize:vertical}
+  .felmeta{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);
+    background:var(--paper);border-radius:6px;padding:6px 8px;margin:8px 0;
+    max-height:70px;overflow:auto;white-space:pre-wrap}
+  .felrad{display:flex;gap:6px}
+  .felrad button{flex:1;font-size:12.5px;padding:8px 6px}
+  .felok{font-size:12px;color:var(--green);margin-top:6px;display:none}
+
+  footer{margin-top:24px;font-size:13px;color:var(--ink-soft);text-align:center;
+    font-family:var(--mono);line-height:1.7}
+  @media (max-width:560px){
+    body{padding:16px 10px 48px}
+    .panel{padding:13px}
+    input.textsvar{width:100%}
+  }
+  @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+
+  .endast-print{display:none}
+  @media print{
+    body{background:#fff!important;background-image:none!important;padding:0}
+    body>*{display:none!important}
+    #printRapport{display:block!important;color:#000;padding:24px;max-width:720px}
+    #printRapport h1{font-size:20px;margin-bottom:4px}
+    #printRapport .pr-meta{font-size:13px;margin-bottom:14px}
+    #printRapport .pr-namn{font-size:14px;margin-bottom:14px}
+    #printRapport .pr-res{font-size:15px;margin-bottom:10px}
+    #printRapport ol{padding-left:22px;font-size:14px;line-height:1.9}
+  }
+
+  .temaknapp{position:fixed;top:14px;right:14px;z-index:60;width:40px;height:40px;
+    border-radius:50%;border:1.5px solid var(--line,var(--linje,#888));
+    background:var(--card,#fff);color:var(--ink,#222);cursor:pointer;font-size:17px;
+    line-height:1;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.18);padding:0}
+  .temaknapp:hover{transform:scale(1.07)}
+  @media print{.temaknapp{display:none!important}}
+</style>
+<script data-tema-init>
+(function(){
+  var rot=document.documentElement;
+  /* enda tillåtna lagringsnyckeln på sajten: temavalet.
+     Statistik och historik sparas medvetet aldrig. */
+  var sparat=null;
+  try{ sparat=localStorage.getItem('tema'); }catch(e){}
+  var systemMork=window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if(sparat==='mork' || (sparat!=='ljus' && systemMork)){
+    rot.dataset.tema='mork';
+  }
+  function uppdatera(btn){
+    var mork=rot.dataset.tema==='mork';
+    btn.textContent = mork ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    btn.setAttribute('aria-label', mork ? 'Byt till ljust l\u00e4ge' : 'Byt till m\u00f6rkt l\u00e4ge');
+    btn.title = mork ? 'Byt till ljust l\u00e4ge' : 'Byt till m\u00f6rkt l\u00e4ge';
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    var btn=document.getElementById('temaBtn');
+    if(!btn) return;
+    uppdatera(btn);
+    btn.onclick=function(){
+      var mork;
+      if(rot.dataset.tema==='mork'){ delete rot.dataset.tema; mork=false; }
+      else { rot.dataset.tema='mork'; mork=true; }
+      try{ localStorage.setItem('tema', mork?'mork':'ljus'); }catch(e){}
+      uppdatera(btn);
+    };
+  });
+})();
+</script>
+</head>
+<body>
+<button class="temaknapp" id="temaBtn" type="button">🌙</button>
+<div class="wrap">
+  <a class="hem" href="index.html">&#8592; Startsidan</a>
+  <header>
+    <div class="eyebrow">KE01/KE02 · Kemi och jag · Kemi och en hållbar framtid · GLP2019</div>
+    <h1>Formeltränaren</h1>
+    <div class="sub">Bestäm empirisk formel, molekylformel och antalet kristallvatten. Alla atommassor ges i uppgiften. Decimalkomma eller punkt går lika bra.</div>
+  </header>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="ctrl-group">
+        <span class="ctrl-label">Uppgiftstyp</span>
+        <div class="chips" id="typeChips" role="group" aria-label="Uppgiftstyp"></div>
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">Svårighetsgrad</span>
+        <div class="chips" id="diffChips" role="group" aria-label="Svårighetsgrad"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="scorebar">
+      <span>Rätt: <b id="scoreOk">0</b> / <b id="scoreTot">0</b></span>
+      <span class="streak" id="streak"></span>
+      <span class="provinfo" id="provInfo"></span>
+      <button class="btn-ghost" id="provBtn" style="margin-left:auto;font-size:13px;padding:8px 14px">Provsimulering: 5 uppgifter</button>
+      <button class="btn-ghost" id="statResetBtn" style="font-size:12px;padding:6px 10px" title="Nollställ statistiken för passet">Nollställ statistik</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <span class="qtype-tag" id="qtag"></span>
+    <div class="qtext" id="qtext"></div>
+    <div class="given" id="given" style="display:none"></div>
+
+    <div class="answer-row">
+      <div class="svarfalt">
+        <span class="etikett" id="svarEtikett">Empirisk formel =</span>
+        <input type="text" class="textsvar" id="textsvar" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Ditt svar">
+        <span class="enhet" id="svarEnhet"></span>
+      </div>
+    </div>
+    <div class="answer-row">
+      <button class="btn-primary" id="checkBtn">Kontrollera</button>
+      <button class="btn-ghost" id="solBtn">Visa lösning</button>
+      <button class="btn-ghost" id="nextBtn">Ny uppgift &#8594;</button>
+      <button class="btn-primary" id="backBtn" style="display:none">&#8592; Fortsätt träna</button>
+    </div>
+    <div class="hint" id="inputHint" style="display:none"></div>
+
+    <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+
+    <div class="solution" id="solution">
+      <div class="sol-head">Lösning steg för steg</div>
+      <div id="steps"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="histPanel" style="display:none">
+    <div class="hist-head">
+      <span class="ctrl-label">Historik</span>
+      <span class="hist-note">rensas när sidan laddas om</span>
+    </div>
+    <div class="hist-list" id="histList"></div>
+  </div>
+
+  <footer>
+    Empiriska formeln anger det minsta heltalsförhållandet mellan atomslagen.<br>
+    Molekylformeln är alltid en heltalsmultipel av den empiriska formeln.
+  </footer>
+</div>
+
+<script>
+'use strict';
+/* ================================================================
+   Formeltränaren KE01/KE02
+   Empirisk formel, molekylformel och kristallvatten.
+   Logikdel (testbar i Node) + UI-del bakom typeof document-vakt.
+   ================================================================ */
+
+/* ---------- talparsning (samma konventioner som övriga tränare) ---------- */
+const SUPMAP={'\u2070':'0','\u00b9':'1','\u00b2':'2','\u00b3':'3','\u2074':'4',
+  '\u2075':'5','\u2076':'6','\u2077':'7','\u2078':'8','\u2079':'9','\u207b':'-','\u207a':'+'};
+function parseNum(str){
+  if(str==null) return null;
+  let s=String(str).trim().toLowerCase().replace(/\s/g,'');
+  if(s==='') return null;
+  s=s.replace(/[\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079\u207b\u207a]/g, ch=>SUPMAP[ch]);
+  s=s.replace(/,/g,'.');
+  s=s.replace(/[\u00b7\u00d7x]10\^?/g,'e').replace(/\*10\^?/g,'e').replace(/\^/g,'');
+  if(!/^[-+]?\d*\.?\d+(e[-+]?\d+)?$/.test(s)) return null;
+  const v=parseFloat(s);
+  return isFinite(v)?v:null;
+}
+
+/* ---------- atommassor (visas alltid i uppgiften) ---------- */
+const ATOM={H:1.008, C:12.01, N:14.01, O:16.00, Na:22.99, Mg:24.31, Al:26.98,
+  Si:28.09, P:30.97, S:32.07, Cl:35.45, K:39.10, Ca:40.08, Cr:52.00,
+  Fe:55.85, Cu:63.55, Zn:65.38, Ba:137.33};
+const ATOMSTR={H:'1,008', C:'12,01', N:'14,01', O:'16,00', Na:'22,99', Mg:'24,31',
+  Al:'26,98', Si:'28,09', P:'30,97', S:'32,07', Cl:'35,45', K:'39,10', Ca:'40,08',
+  Cr:'52,00', Fe:'55,85', Cu:'63,55', Zn:'65,38', Ba:'137,33'};
+const M_H2O=2*ATOM.H+ATOM.O;          /* 18,016 */
+const M_H2O_STR='18,02';
+
+/* ---------- formatering ---------- */
+function fmtTal(x, sf){
+  const v=Number(Number(x).toPrecision(sf));
+  return String(v).replace('.', ',');
+}
+function sub(f){ return String(f).replace(/(\d+)/g,'<sub>$1</sub>'); }
+function fmtHydrat(saltF, x){ return sub(saltF)+'\u00b7'+x+'H<sub>2</sub>O'; }
+
+/* ---------- sammansättningar ---------- */
+function molmassa(comp){ let s=0; for(const el in comp) s+=ATOM[el]*comp[el]; return s; }
+function compEq(a,b){
+  const ka=Object.keys(a).sort(), kb=Object.keys(b).sort();
+  return ka.join()===kb.join() && ka.every(k=>a[k]===b[k]);
+}
+/* returnerar heltalet k>=2 om svar = k * facit, annars 0 */
+function faktor(svar, facit){
+  const ks=Object.keys(svar).sort(), kf=Object.keys(facit).sort();
+  if(ks.join()!==kf.join()) return 0;
+  const el0=kf[0];
+  if(svar[el0]%facit[el0]!==0) return 0;
+  const k=svar[el0]/facit[el0];
+  if(k<2) return 0;
+  return kf.every(el=>svar[el]===facit[el]*k) ? k : 0;
+}
+
+/* ---------- formelparser för svarsfältet ---------- */
+const SYMBOLER=Object.keys(ATOM);
+function parseComp(s, exakt){
+  let comp={}, i=0;
+  while(i<s.length){
+    let sym=null;
+    const two=s.slice(i,i+2), one=s.slice(i,i+1);
+    if(exakt){
+      if(ATOM[two]!==undefined) sym=two;
+      else if(ATOM[one]!==undefined) sym=one;
+    } else {
+      const t=SYMBOLER.find(k=>k.length===2 && k.toLowerCase()===two.toLowerCase());
+      const o=SYMBOLER.find(k=>k.length===1 && k.toLowerCase()===one.toLowerCase());
+      if(t) sym=t; else if(o) sym=o;
+    }
+    if(!sym) return null;
+    i+=sym.length;
+    let d='';
+    while(i<s.length && /\d/.test(s[i])){ d+=s[i]; i++; }
+    const antal=d?parseInt(d,10):1;
+    if(!(antal>=1)) return null;
+    comp[sym]=(comp[sym]||0)+antal;
+  }
+  return Object.keys(comp).length?comp:null;
+}
+const SUBSIFFROR={'\u2080':'0','\u2081':'1','\u2082':'2','\u2083':'3','\u2084':'4',
+  '\u2085':'5','\u2086':'6','\u2087':'7','\u2088':'8','\u2089':'9'};
+/* Returnerar {comp, x (kristallvatten eller null), versaler} eller null.
+   Accepterar CuSO4·5H2O med ·, *, . eller vanligt x-fritt skrivsätt. */
+function parseSvar(str){
+  if(str==null) return null;
+  let s=String(str).trim().replace(/\s+/g,'');
+  if(!s) return null;
+  s=s.replace(/[\u2080-\u2089]/g, ch=>SUBSIFFROR[ch]);
+  let x=null, saltStr=s, vDel=null;
+  const m=s.match(/^(.+?)[\u00b7*.](\d*)([Hh]2[Oo])$/);
+  if(m){ saltStr=m[1]; x=m[2]?parseInt(m[2],10):1; vDel=m[3]; }
+  let versaler=false;
+  let comp=parseComp(saltStr, true);
+  if(!comp){
+    comp=parseComp(saltStr, false);
+    if(!comp) return null;
+    versaler=true;
+  }
+  if(vDel!==null && vDel!=='H2O') versaler=true;
+  return {comp, x, versaler};
+}
+
+/* ---------- svarsbedömning ---------- */
+function evalAnswer(p, raw){
+  if(p.ansType==='tal'){
+    const v=parseNum(raw);
+    if(v==null || v<=0) return {status:'invalid'};
+    if(Math.abs(v-p.answer)<=0.25){
+      return (Number.isInteger(v) && v===p.answer) ? {status:'ok'} : {status:'warn', skal:'heltal'};
+    }
+    return {status:'fel', skal:'varde'};
+  }
+  const sv=parseSvar(raw);
+  if(!sv) return {status:'invalid'};
+  if(p.hydrat){
+    if(sv.x!==null){
+      if(compEq(sv.comp, p.facitComp) && sv.x===p.facitX)
+        return sv.versaler ? {status:'warn', skal:'versaler'} : {status:'ok'};
+      if(compEq(sv.comp, p.facitComp)) return {status:'fel', skal:'xfel'};
+      return {status:'fel', skal:'varde'};
+    }
+    const tot=Object.assign({}, p.facitComp);
+    tot.H=(tot.H||0)+2*p.facitX;
+    tot.O=(tot.O||0)+p.facitX;
+    if(compEq(sv.comp, tot)) return {status:'warn', skal:'hydratskrivsatt'};
+    return {status:'fel', skal:'varde'};
+  }
+  if(compEq(sv.comp, p.facitComp))
+    return sv.versaler ? {status:'warn', skal:'versaler'} : {status:'ok'};
+  const kUpp=faktor(sv.comp, p.facitComp);
+  if(kUpp) return p.mode==='molekyl'
+    ? {status:'fel', skal:'varde'}
+    : {status:'fel', skal:'multipel', k:kUpp};
+  const kNer=faktor(p.facitComp, sv.comp);
+  if(kNer && p.mode==='molekyl') return {status:'fel', skal:'empirisk'};
+  return {status:'fel', skal:'varde'};
+}
+
+/* ---------- uppgiftsbanker (facit lagras, all data genereras baklänges) ---------- */
+/* f = formelsträng med atomslagen i visningsordning, comp = sammansättning */
+function comp(f){ return parseComp(f, true); }
+
+const BANK_HALT=[
+  /* lätt: binära föreningar där kvoterna är (nästan) heltal direkt */
+  {f:'MgO',  namn:'magnesiumoxid', diff:'latt'},
+  {f:'CaO',  namn:'kalciumoxid', diff:'latt'},
+  {f:'CuO',  namn:'koppar(II)oxid', diff:'latt'},
+  {f:'ZnO',  namn:'zinkoxid', diff:'latt'},
+  {f:'SO2',  namn:'svaveldioxid', diff:'latt'},
+  {f:'SO3',  namn:'svaveltrioxid', diff:'latt'},
+  {f:'CO2',  namn:'koldioxid', diff:'latt'},
+  {f:'SiO2', namn:'kiseldioxid', diff:'latt'},
+  {f:'FeS',  namn:'j\u00e4rnsulfid', diff:'latt'},
+  {f:'MgCl2', namn:'magnesiumklorid', diff:'latt'},
+  {f:'CaCl2', namn:'kalciumklorid', diff:'latt'},
+  {f:'Na2O', namn:'natriumoxid', diff:'latt'},
+  {f:'K2O',  namn:'kaliumoxid', diff:'latt'},
+  {f:'Cu2O', namn:'koppar(I)oxid', diff:'latt'},
+  {f:'Fe2O3', namn:'j\u00e4rn(III)oxid', diff:'latt'},
+  /* medel: organiska föreningar med tre atomslag */
+  {f:'CH2O', namn:'en organisk f\u00f6rening', diff:'medel'},
+  {f:'CH4O', namn:'metanol', diff:'medel'},
+  {f:'C2H6O', namn:'etanol', diff:'medel'},
+  {f:'C3H8O', namn:'propanol', diff:'medel'},
+  {f:'CH4',  namn:'metan', diff:'medel'},
+  {f:'C3H8', namn:'propan', diff:'medel'},
+  {f:'CH3',  namn:'ett kolv\u00e4te', diff:'medel'},
+  {f:'C2H5', namn:'ett kolv\u00e4te', diff:'medel'},
+  {f:'CH2',  namn:'ett kolv\u00e4te', diff:'medel'},
+  {f:'CH',   namn:'ett kolv\u00e4te', diff:'medel'},
+  {f:'CH5N', namn:'metylamin', diff:'medel'},
+  {f:'CH4N2O', namn:'urea', diff:'medel'},
+  /* svår: kvoterna kräver multiplikation till heltal */
+  {f:'Fe3O4', namn:'en j\u00e4rnoxid', diff:'svar'},
+  {f:'Al2O3', namn:'aluminiumoxid', diff:'svar'},
+  {f:'P2O5', namn:'en fosforoxid', diff:'svar'},
+  {f:'Mg3N2', namn:'magnesiumnitrid', diff:'svar'},
+  {f:'Al2S3', namn:'aluminiumsulfid', diff:'svar'},
+  {f:'K2Cr2O7', namn:'kaliumdikromat', diff:'svar'},
+  {f:'C3H4O3', namn:'en organisk syra', diff:'svar'}
+];
+
+/* metall/icke-metall-par: X reagerar och bildar produkten */
+const BANK_MASSA=[
+  {f:'MgO', metall:'Mg', metallNamn:'magnesium', ickem:'O', ickemNamn:'syre', prodNamn:'magnesiumoxid', diff:'latt'},
+  {f:'CaO', metall:'Ca', metallNamn:'kalcium', ickem:'O', ickemNamn:'syre', prodNamn:'kalciumoxid', diff:'latt'},
+  {f:'CuO', metall:'Cu', metallNamn:'koppar', ickem:'O', ickemNamn:'syre', prodNamn:'en kopparoxid', diff:'latt'},
+  {f:'ZnO', metall:'Zn', metallNamn:'zink', ickem:'O', ickemNamn:'syre', prodNamn:'zinkoxid', diff:'latt'},
+  {f:'ZnS', metall:'Zn', metallNamn:'zink', ickem:'S', ickemNamn:'svavel', prodNamn:'zinksulfid', diff:'latt'},
+  {f:'FeS', metall:'Fe', metallNamn:'j\u00e4rn', ickem:'S', ickemNamn:'svavel', prodNamn:'en j\u00e4rnsulfid', diff:'latt'},
+  {f:'FeO', metall:'Fe', metallNamn:'j\u00e4rn', ickem:'O', ickemNamn:'syre', prodNamn:'en j\u00e4rnoxid', diff:'medel'},
+  {f:'Fe2O3', metall:'Fe', metallNamn:'j\u00e4rn', ickem:'O', ickemNamn:'syre', prodNamn:'en j\u00e4rnoxid', diff:'medel'},
+  {f:'Cu2O', metall:'Cu', metallNamn:'koppar', ickem:'O', ickemNamn:'syre', prodNamn:'en kopparoxid', diff:'medel'},
+  {f:'Na2O', metall:'Na', metallNamn:'natrium', ickem:'O', ickemNamn:'syre', prodNamn:'natriumoxid', diff:'medel'},
+  {f:'Al2O3', metall:'Al', metallNamn:'aluminium', ickem:'O', ickemNamn:'syre', prodNamn:'aluminiumoxid', diff:'svar'},
+  {f:'Cu2S', metall:'Cu', metallNamn:'koppar', ickem:'S', ickemNamn:'svavel', prodNamn:'en kopparsulfid', diff:'svar'},
+  {f:'Al2S3', metall:'Al', metallNamn:'aluminium', ickem:'S', ickemNamn:'svavel', prodNamn:'aluminiumsulfid', diff:'svar'},
+  {f:'Fe3O4', metall:'Fe', metallNamn:'j\u00e4rn', ickem:'O', ickemNamn:'syre', prodNamn:'en j\u00e4rnoxid', diff:'svar'}
+];
+
+const BANK_MOLEKYL=[
+  {emp:'CH2O', n:6, molF:'C6H12O6', molNamn:'glukos', diff:'latt'},
+  {emp:'CH2O', n:2, molF:'C2H4O2', molNamn:'\u00e4ttiksyra', diff:'latt'},
+  {emp:'CH',  n:6, molF:'C6H6',  molNamn:'bensen', diff:'latt'},
+  {emp:'CH',  n:2, molF:'C2H2',  molNamn:'etyn', diff:'latt'},
+  {emp:'HO',  n:2, molF:'H2O2',  molNamn:'v\u00e4teperoxid', diff:'latt'},
+  {emp:'CH3', n:2, molF:'C2H6',  molNamn:'etan', diff:'latt'},
+  {emp:'CH2', n:4, molF:'C4H8',  molNamn:'en alken', diff:'medel'},
+  {emp:'C2H5', n:2, molF:'C4H10', molNamn:'butan', diff:'medel'},
+  {emp:'NO2', n:2, molF:'N2O4',  molNamn:'dikv\u00e4vetetraoxid', diff:'medel'},
+  {emp:'P2O5', n:2, molF:'P4O10', molNamn:'fosforoxidens molekyl', diff:'medel'},
+  {emp:'C2H4O', n:2, molF:'C4H8O2', molNamn:'en ester', diff:'medel'},
+  {emp:'CH2O', n:3, molF:'C3H6O3', molNamn:'mj\u00f6lksyra', diff:'svar'},
+  {emp:'C3H4O3', n:2, molF:'C6H8O6', molNamn:'askorbinsyra (C-vitamin)', diff:'svar'},
+  {emp:'CH2', n:5, molF:'C5H10', molNamn:'ett kolv\u00e4te', diff:'svar'}
+];
+
+const BANK_HYDRAT=[
+  {saltF:'CuSO4', saltNamn:'kopparsulfat', x:5, diff:'latt'},
+  {saltF:'CaCl2', saltNamn:'kalciumklorid', x:2, diff:'latt'},
+  {saltF:'BaCl2', saltNamn:'bariumklorid', x:2, diff:'latt'},
+  {saltF:'CaSO4', saltNamn:'kalciumsulfat (gips)', x:2, diff:'latt'},
+  {saltF:'MgSO4', saltNamn:'magnesiumsulfat', x:7, diff:'medel'},
+  {saltF:'FeSO4', saltNamn:'j\u00e4rn(II)sulfat', x:7, diff:'medel'},
+  {saltF:'ZnSO4', saltNamn:'zinksulfat', x:7, diff:'medel'},
+  {saltF:'MgCl2', saltNamn:'magnesiumklorid', x:6, diff:'medel'},
+  {saltF:'Na2CO3', saltNamn:'natriumkarbonat', x:10, diff:'svar'},
+  {saltF:'Na2SO4', saltNamn:'natriumsulfat', x:10, diff:'svar'},
+  {saltF:'CuSO4', saltNamn:'kopparsulfat', x:5, diff:'svar'},
+  {saltF:'FeSO4', saltNamn:'j\u00e4rn(II)sulfat', x:7, diff:'svar'}
+];
+
+/* ---------- gemensamma hjälpare för generering ---------- */
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const recent=[];
+function fresh(sig){
+  if(recent.includes(sig)) return false;
+  recent.push(sig); if(recent.length>8) recent.shift();
+  return true;
+}
+function byDiff(bank, diff){
+  const d=bank.filter(e=>e.diff===diff);
+  return d.length?d:bank;
+}
+function atommassRad(comp){
+  return 'Atommassor (g/mol): '+Object.keys(comp).map(el=>el+' '+ATOMSTR[el]).join(' \u00b7 ');
+}
+/* masshalter i procent, avrundade till 3 gällande siffror, som tal + strängar */
+function halter(compObj){
+  const M=molmassa(compObj), ut={};
+  for(const el in compObj){
+    const v=Number((100*ATOM[el]*compObj[el]/M).toPrecision(3));
+    ut[el]=v;
+  }
+  return ut;
+}
+/* stegen "dividera med minsta" + ev. multiplikation, ur visade (avrundade) tal */
+function kvotSteg(nVal, facitComp, ordn){
+  const minN=Math.min(...ordn.map(el=>nVal[el]));
+  const kvot={}; ordn.forEach(el=>{ kvot[el]=nVal[el]/minN; });
+  const minIndex=Math.min(...ordn.map(el=>facitComp[el]));
+  const kvotStr=ordn.map(el=>el+': '+fmtTal(nVal[el],4)+' / '+fmtTal(minN,4)+' = '+fmtTal(kvot[el],3)).join(' \u00b7 ');
+  const steg=[{text:'Dividera alla substansm\u00e4ngder med den minsta.', math:kvotStr}];
+  if(minIndex>1){
+    steg.push({text:'Kvoterna \u00e4r inte heltal. Multiplicera alla med '+minIndex+' s\u00e5 att varje kvot blir ett heltal.',
+      math:'\u00d7'+minIndex+' \u21d2 '+ordn.map(el=>el+': '+facitComp[el]).join(' \u00b7 ')});
+  } else {
+    steg.push({text:'Kvoterna \u00e4r (n\u00e4ra) heltal: avrunda.',
+      math:ordn.map(el=>el+': '+facitComp[el]).join(' \u00b7 ')});
+  }
+  return steg;
+}
+function elOrdning(f){
+  const ordn=[]; const re=/([A-Z][a-z]?)/g; let m;
+  while((m=re.exec(f))!==null){ if(!ordn.includes(m[1])) ordn.push(m[1]); }
+  return ordn;
+}
+
+/* ---------- generatorer ---------- */
+function genHalt(diff){
+  let e, sig;
+  for(let i=0;i<40;i++){ e=pick(byDiff(BANK_HALT,diff)); sig='halt|'+e.f; if(fresh(sig)) break; }
+  const c=comp(e.f), ordn=elOrdning(e.f), h=halter(c);
+  const nVal={}; ordn.forEach(el=>{ nVal[el]=h[el]/ATOM[el]; });
+  const steps=[
+    {text:'Anta ett prov p\u00e5 exakt 100 g. D\u00e5 blir masshalterna i procent massor i gram.',
+      math:ordn.map(el=>'m('+el+') = '+fmtTal(h[el],3)+' g').join(' \u00b7 ')},
+    {text:'Ber\u00e4kna substansm\u00e4ngden av varje atomslag med atommassorna.',
+      math:ordn.map(el=>'n('+el+') = '+fmtTal(h[el],3)+' / '+ATOMSTR[el]+' = '+fmtTal(nVal[el],4)+' mol').join('<br>')},
+    ...kvotSteg(nVal, c, ordn),
+    {text:'Skriv den empiriska formeln med heltalen som index.',
+      math:'Empirisk formel: <b>'+sub(e.f)+'</b>'}
+  ];
+  return {mode:'halt', ansType:'formel', facitComp:c, facitStr:sub(e.f), etikett:'Empirisk formel =',
+    kort:e.namn, hydrat:false,
+    qtext:'En f\u00f6rening ('+e.namn+') har den angivna sammans\u00e4ttningen i massprocent. Best\u00e4m f\u00f6reningens empiriska formel.',
+    given:[ordn.map(el=>el+': <b>'+fmtTal(h[el],3)+'</b> %').join(' \u00b7 '), atommassRad(c)],
+    steps, signature:sig,
+    dbg:{kind:'halt', halter:h, facit:c}};
+}
+
+function genMassa(diff){
+  let e, sig;
+  for(let i=0;i<40;i++){ e=pick(byDiff(BANK_MASSA,diff)); sig='massa|'+e.f+'|'+diff; if(fresh(sig)) break; }
+  const c=comp(e.f), ordn=[e.metall, e.ickem];
+  const skala=pick([0.020, 0.025, 0.030, 0.040, 0.050, 0.060]);
+  const mMet=Number((skala*c[e.metall]*ATOM[e.metall]).toPrecision(3));
+  const mIck=Number((skala*c[e.ickem]*ATOM[e.ickem]).toPrecision(3));
+  const mProd=Number((skala*molmassa(c)).toPrecision(3));
+  const badaGivna = diff==='latt';
+  const mIckAnv = badaGivna ? mIck : Number((mProd-mMet).toFixed(4));
+  const nVal={ [e.metall]: mMet/ATOM[e.metall], [e.ickem]: mIckAnv/ATOM[e.ickem] };
+  const steps=[];
+  if(!badaGivna){
+    steps.push({text:'Massan '+e.ickemNamn+' \u00e4r skillnaden mellan produktens massa och metallens massa.',
+      math:'m('+e.ickem+') = '+fmtTal(mProd,4)+' \u2212 '+fmtTal(mMet,4)+' = '+fmtTal(mIckAnv,4)+' g'});
+  }
+  steps.push({text:'Ber\u00e4kna substansm\u00e4ngden av varje atomslag.',
+    math:'n('+e.metall+') = '+fmtTal(mMet,4)+' / '+ATOMSTR[e.metall]+' = '+fmtTal(nVal[e.metall],4)+' mol<br>'+
+         'n('+e.ickem+') = '+fmtTal(mIckAnv,4)+' / '+ATOMSTR[e.ickem]+' = '+fmtTal(nVal[e.ickem],4)+' mol'});
+  steps.push(...kvotSteg(nVal, c, ordn));
+  steps.push({text:'Skriv den empiriska formeln.', math:'Empirisk formel: <b>'+sub(e.f)+'</b>'});
+  const given = badaGivna
+    ? ['m('+e.metall+') = <b>'+fmtTal(mMet,3)+'</b> g', 'm('+e.ickem+') = <b>'+fmtTal(mIck,3)+'</b> g', atommassRad(c)]
+    : ['m('+e.metall+') = <b>'+fmtTal(mMet,3)+'</b> g', 'm(produkt) = <b>'+fmtTal(mProd,3)+'</b> g', atommassRad(c)];
+  const qtext = badaGivna
+    ? 'Ett prov av '+e.prodNamn+' inneh\u00e5ller de angivna massorna '+e.metallNamn+' och '+e.ickemNamn+'. Best\u00e4m f\u00f6reningens empiriska formel.'
+    : 'N\u00e4r '+fmtTal(mMet,3)+' g '+e.metallNamn+' reagerar fullst\u00e4ndigt med '+e.ickemNamn+' bildas '+fmtTal(mProd,3)+' g av '+e.prodNamn+'. Best\u00e4m f\u00f6reningens empiriska formel.';
+  return {mode:'massa', ansType:'formel', facitComp:c, facitStr:sub(e.f), etikett:'Empirisk formel =',
+    kort:e.prodNamn, hydrat:false,
+    qtext, given, steps, signature:sig,
+    dbg:{kind:'massa', mMet, mIck: badaGivna?mIck:null, mProd: badaGivna?null:mProd,
+         metall:e.metall, ickem:e.ickem, facit:c}};
+}
+
+function genMolekyl(diff){
+  let e, sig;
+  for(let i=0;i<40;i++){ e=pick(byDiff(BANK_MOLEKYL,diff)); sig='mol|'+e.molF; if(fresh(sig)) break; }
+  const cEmp=comp(e.emp), cMol=comp(e.molF);
+  const Mmol=Number(molmassa(cMol).toPrecision(4));
+  const Memp=molmassa(cEmp);
+  const ordnE=elOrdning(e.emp);
+  const mEmpStr=ordnE.map(el=>(cEmp[el]>1?cEmp[el]+' \u00b7 ':'')+ATOMSTR[el]).join(' + ');
+  if(diff!=='svar'){
+    const steps=[
+      {text:'Ber\u00e4kna den empiriska formelns molmassa.',
+        math:'M('+sub(e.emp)+') = '+mEmpStr+' = '+fmtTal(Memp,4)+' g/mol'},
+      {text:'Molekylformeln \u00e4r en heltalsmultipel av den empiriska formeln. Ber\u00e4kna multipeln n.',
+        math:'n = M(molekyl) / M(empirisk) = '+fmtTal(Mmol,4)+' / '+fmtTal(Memp,4)+' = '+fmtTal(Mmol/Memp,3)+' \u2248 '+e.n},
+      {text:'Multiplicera alla index i den empiriska formeln med n.',
+        math:sub(e.emp)+' \u00d7 '+e.n+' \u21d2 <b>'+sub(e.molF)+'</b>'}
+    ];
+    return {mode:'molekyl', ansType:'formel', facitComp:cMol, facitStr:sub(e.molF), etikett:'Molekylformel =',
+      kort:e.molNamn, hydrat:false,
+      qtext:'En f\u00f6rening ('+e.molNamn+') har den empiriska formeln '+sub(e.emp)+'. Best\u00e4m molekylformeln.',
+      given:['Empirisk formel: <b>'+sub(e.emp)+'</b>', 'M(molekyl) = <b>'+fmtTal(Mmol,4)+'</b> g/mol', atommassRad(cEmp)],
+      steps, signature:sig,
+      dbg:{kind:'molekyl', emp:cEmp, M:Mmol, facit:cMol, n:e.n}};
+  }
+  /* svår: masshalter + molmassa i två etapper */
+  const h=halter(cMol), ordn=elOrdning(e.molF);
+  const nVal={}; ordn.forEach(el=>{ nVal[el]=h[el]/ATOM[el]; });
+  const steps=[
+    {text:'Best\u00e4m f\u00f6rst den empiriska formeln. Anta 100 g prov och ber\u00e4kna substansm\u00e4ngderna.',
+      math:ordn.map(el=>'n('+el+') = '+fmtTal(h[el],3)+' / '+ATOMSTR[el]+' = '+fmtTal(nVal[el],4)+' mol').join('<br>')},
+    ...kvotSteg(nVal, cEmp, ordn),
+    {text:'Empiriska formeln och dess molmassa.',
+      math:'Empirisk formel: '+sub(e.emp)+' \u00b7 M = '+mEmpStr+' = '+fmtTal(Memp,4)+' g/mol'},
+    {text:'Ber\u00e4kna multipeln n ur molekylens molmassa.',
+      math:'n = '+fmtTal(Mmol,4)+' / '+fmtTal(Memp,4)+' = '+fmtTal(Mmol/Memp,3)+' \u2248 '+e.n},
+    {text:'Multiplicera alla index med n.',
+      math:sub(e.emp)+' \u00d7 '+e.n+' \u21d2 <b>'+sub(e.molF)+'</b>'}
+  ];
+  return {mode:'molekyl', ansType:'formel', facitComp:cMol, facitStr:sub(e.molF), etikett:'Molekylformel =',
+    kort:e.molNamn, hydrat:false,
+    qtext:'En f\u00f6rening ('+e.molNamn+') har den angivna sammans\u00e4ttningen i massprocent. Best\u00e4m molekylformeln.',
+    given:[ordn.map(el=>el+': <b>'+fmtTal(h[el],3)+'</b> %').join(' \u00b7 '),
+      'M(molekyl) = <b>'+fmtTal(Mmol,4)+'</b> g/mol', atommassRad(cMol)],
+    steps, signature:sig,
+    dbg:{kind:'molekyl_halt', halter:h, M:Mmol, emp:cEmp, facit:cMol, n:e.n}};
+}
+
+function genHydrat(diff){
+  let e, sig;
+  for(let i=0;i<40;i++){ e=pick(byDiff(BANK_HYDRAT,diff)); sig='hyd|'+e.saltF+'|'+e.x+'|'+diff; if(fresh(sig)) break; }
+  const cSalt=comp(e.saltF);
+  const Msalt=molmassa(cSalt);
+  const Mhyd=Msalt+e.x*M_H2O;
+  const skala=pick([0.0100, 0.0125, 0.0200, 0.0250, 0.0400, 0.0500]);
+  const mHyd=Number((skala*Mhyd).toPrecision(3));
+  const mSalt=Number((skala*Msalt).toPrecision(3));
+  const mVatten=Number((mHyd-mSalt).toFixed(4));
+  const ordnS=elOrdning(e.saltF);
+  const mSaltStr=ordnS.map(el=>(cSalt[el]>1?cSalt[el]+' \u00b7 ':'')+ATOMSTR[el]).join(' + ');
+  const nSalt=mSalt/Msalt, nVatten=mVatten/M_H2O;
+  const helForm = diff==='svar';
+  const steps=[
+    {text:'Massan kristallvatten \u00e4r skillnaden mellan hydratets massa och det vattenfria saltets massa.',
+      math:'m(H\u2082O) = '+fmtTal(mHyd,4)+' \u2212 '+fmtTal(mSalt,4)+' = '+fmtTal(mVatten,4)+' g'},
+    {text:'Ber\u00e4kna molmassan f\u00f6r det vattenfria saltet och dess substansm\u00e4ngd.',
+      math:'M('+sub(e.saltF)+') = '+mSaltStr+' = '+fmtTal(Msalt,5)+' g/mol<br>'+
+           'n(salt) = '+fmtTal(mSalt,4)+' / '+fmtTal(Msalt,5)+' = '+fmtTal(nSalt,4)+' mol'},
+    {text:'Ber\u00e4kna substansm\u00e4ngden vatten med M(H\u2082O) = '+M_H2O_STR+' g/mol.',
+      math:'n(H\u2082O) = '+fmtTal(mVatten,4)+' / '+M_H2O_STR+' = '+fmtTal(nVatten,4)+' mol'},
+    {text:'x \u00e4r f\u00f6rh\u00e5llandet mellan substansm\u00e4ngderna, avrundat till heltal.',
+      math:'x = n(H\u2082O) / n(salt) = '+fmtTal(nVatten,4)+' / '+fmtTal(nSalt,4)+' = '+fmtTal(nVatten/nSalt,3)+' \u2248 <b>'+e.x+'</b>'},
+    {text:'Skriv hydratets formel.', math:'<b>'+fmtHydrat(e.saltF, e.x)+'</b>'}
+  ];
+  const gemensamt={
+    mode:'hydrat', kort:e.saltNamn+'hydrat',
+    qtext:'Ett prov av ett hydrat av '+e.saltNamn+' ('+sub(e.saltF)+'\u00b7xH<sub>2</sub>O) v\u00e4ger '+
+      fmtTal(mHyd,3)+' g. Efter upphettning, n\u00e4r allt kristallvatten avg\u00e5tt, \u00e5terst\u00e5r '+
+      fmtTal(mSalt,3)+' g vattenfritt salt. '+(helForm?'Best\u00e4m hydratets formel.':'Best\u00e4m antalet kristallvatten x.'),
+    given:['m(hydrat) = <b>'+fmtTal(mHyd,3)+'</b> g', 'm(vattenfritt salt) = <b>'+fmtTal(mSalt,3)+'</b> g',
+      atommassRad(cSalt)],
+    steps, signature:sig,
+    dbg:{kind:'hydrat', mHyd, mSalt, salt:cSalt, x:e.x}};
+  if(helForm){
+    return Object.assign(gemensamt, {ansType:'formel', hydrat:true,
+      facitComp:cSalt, facitX:e.x, facitStr:fmtHydrat(e.saltF, e.x),
+      etikett:'Hydratets formel ='});
+  }
+  return Object.assign(gemensamt, {ansType:'tal', hydrat:false,
+    answer:e.x, facitStr:String(e.x), etikett:'x ='});
+}
+
+const GENS={halt:genHalt, massa:genMassa, molekyl:genMolekyl, hydrat:genHydrat};
+const MIXPOOL=['halt','massa','molekyl','hydrat'];
+function generateFresh(type, diff){
+  const t = type==='mix' ? pick(MIXPOOL) : type;
+  const p=GENS[t](diff);
+  p.displayTag = type==='mix' ? 'Blandat' : null;
+  return p;
+}
+
+if(typeof module!=='undefined' && module.exports){
+  module.exports={ATOM, ATOMSTR, M_H2O, parseNum, fmtTal, sub, fmtHydrat,
+    molmassa, compEq, faktor, parseComp, parseSvar, evalAnswer, halter, comp,
+    BANK_HALT, BANK_MASSA, BANK_MOLEKYL, BANK_HYDRAT,
+    genHalt, genMassa, genMolekyl, genHydrat, generateFresh};
+}
+
+/* ================================================================
+   UI
+   ================================================================ */
+if(typeof document!=='undefined'){
+
+const TYPES=[
+  {id:'halt', label:'Ur masshalter'},
+  {id:'massa', label:'Ur massor'},
+  {id:'molekyl', label:'Molekylformel'},
+  {id:'hydrat', label:'Kristallvatten'},
+  {id:'mix', label:'Blandat'}
+];
+const DIFFS=[
+  {id:'latt', label:'L\u00e4tt'},
+  {id:'medel', label:'Medel'},
+  {id:'svar', label:'Sv\u00e5r'}
+];
+const MODENAMN={halt:'Empirisk formel ur masshalter', massa:'Empirisk formel ur massor',
+  molekyl:'Molekylformel', hydrat:'Kristallvatten'};
+let curType='halt', curDiff='latt';
+let problem=null, answered=false, revealed=false;
+let score={ok:0,tot:0,streak:0};
+let history=[], histCounter=0, currentEntry=null;
+let reviewing=false, savedState=null;
+
+const $ = id => document.getElementById(id);
+
+function buildChips(elId, items, cur, onSet){
+  const el=$(elId); el.innerHTML='';
+  items.forEach(it=>{
+    const b=document.createElement('button');
+    b.className='chip'+(it.id===cur?' on':'');
+    b.innerHTML=it.label;
+    b.onclick=()=>onSet(it.id);
+    el.appendChild(b);
+  });
+}
+function refreshChips(){
+  buildChips('typeChips',TYPES,curType,id=>{if(prov)return; curType=id;newProblem();});
+  buildChips('diffChips',DIFFS,curDiff,id=>{if(prov)return; curDiff=id;newProblem();});
+}
+
+function renderSteps(p){
+  const st=$('steps'); st.innerHTML='';
+  p.steps.forEach((s,i)=>{
+    const div=document.createElement('div');
+    div.className='step';
+    div.innerHTML='<span class="n">'+(i+1)+'</span><div class="t">'+s.text+'<div class="m">'+s.math+'</div></div>';
+    st.appendChild(div);
+  });
+}
+
+function renderProblem(p, review){
+  const tag = review ? 'Historik' : DIFFS.find(d=>d.id===curDiff).label;
+  $('qtag').innerHTML = MODENAMN[p.mode]+' \u00b7 '+tag;
+  $('qtag').className='qtype-tag'+(review?' review-tag':'');
+  $('qtext').innerHTML=p.qtext;
+  const g=$('given');
+  if(p.given && p.given.length){
+    g.style.display='flex';
+    g.innerHTML=p.given.map(x=>'<div class="rad">'+x+'</div>').join('');
+  } else g.style.display='none';
+  $('svarEtikett').innerHTML=p.etikett;
+  $('svarEnhet').innerHTML='';
+  const hint=$('inputHint');
+  if(!review){
+    hint.style.display='block';
+    if(p.ansType==='tal') hint.innerHTML='Skriv x som ett heltal, t.ex. 5.';
+    else if(p.hydrat) hint.innerHTML='Skriv formeln med vanliga siffror och punkt, stj\u00e4rna eller \u00b7 f\u00f6re kristallvattnet, t.ex. CuSO4*5H2O.';
+    else hint.innerHTML='Skriv formeln med vanliga siffror, t.ex. Fe2O3.';
+  } else hint.style.display='none';
+  $('feedback').className='feedback'; $('feedback').innerHTML='';
+  $('solution').className='solution';
+}
+
+function newProblem(){
+  reviewing=false; savedState=null;
+  refreshChips();
+  problem=generateFresh(curType, curDiff);
+  answered=false; revealed=false; currentEntry=null;
+  renderProblem(problem, false);
+  $('textsvar').value=''; $('textsvar').readOnly=false;
+  $('textsvar').setAttribute('inputmode', problem.ansType==='tal' ? 'numeric' : 'text');
+  $('checkBtn').style.display='inline-block';
+  $('solBtn').style.display='inline-block';
+  $('nextBtn').style.display='inline-block';
+  $('backBtn').style.display='none';
+  if(prov){
+    $('solBtn').style.display='none';
+    $('provInfo').textContent='Uppgift '+(prov.i+1)+'/5';
+  }
+  $('textsvar').focus();
+}
+
+const STATUS_LABEL={ok:'r\u00e4tt \u2713', warn:'r\u00e4tt (skrivs\u00e4tt)', fel:'fel \u2717', reveal:'visade l\u00f6sning'};
+function facitText(p){ return p.facitStr; }
+function kortText(p){ return MODENAMN[p.mode]+': '+p.kort; }
+
+function ensureEntry(){
+  if(currentEntry) return currentEntry;
+  histCounter++;
+  currentEntry={n:histCounter, problem, user:'', status:'fel'};
+  history.unshift(currentEntry);
+  renderHistory();
+  return currentEntry;
+}
+function renderHistory(){
+  const panel=$('histPanel');
+  if(!history.length){ panel.style.display='none'; return; }
+  panel.style.display='block';
+  const list=$('histList'); list.innerHTML='';
+  history.forEach(e=>{
+    const b=document.createElement('button');
+    b.className='hist-item';
+    b.innerHTML='<span class="hn">#'+e.n+'</span><span class="ht">'+kortText(e.problem)+' = '+facitText(e.problem)+'</span><span class="hs s-'+e.status+'">'+STATUS_LABEL[e.status]+'</span>';
+    b.onclick=()=>openReview(e);
+    list.appendChild(b);
+  });
+}
+
+function openReview(entry){
+  if(!reviewing){
+    savedState={problem, answered, revealed,
+      input:$('textsvar').value,
+      fbClass:$('feedback').className, fbHTML:$('feedback').innerHTML,
+      solOpen:$('solution').classList.contains('open')};
+  }
+  reviewing=true;
+  problem=entry.problem;
+  renderProblem(problem, true);
+  $('textsvar').value=entry.user; $('textsvar').readOnly=true;
+  $('checkBtn').style.display='none';
+  $('solBtn').style.display='none';
+  $('backBtn').style.display='inline-block';
+  const fb=$('feedback');
+  fb.className='feedback '+(entry.status==='ok'?'ok':entry.status==='fel'?'fel':'warn');
+  fb.innerHTML='Resultat: '+STATUS_LABEL[entry.status]+'. Facit: <b>'+facitText(problem)+'</b>.<br>Klicka <b>\u2190 Forts\u00e4tt tr\u00e4na</b> f\u00f6r att \u00e5terg\u00e5, eller <b>Ny uppgift</b> f\u00f6r att b\u00f6rja en ny.';
+  $('solution').className='solution open';
+  renderSteps(problem);
+  window.scrollTo({top:0});
+}
+function closeReview(){
+  reviewing=false;
+  const s=savedState; savedState=null;
+  if(!s){ newProblem(); return; }
+  problem=s.problem; answered=s.answered; revealed=s.revealed;
+  renderProblem(problem, false);
+  $('textsvar').value=s.input; $('textsvar').readOnly=false;
+  $('feedback').className=s.fbClass; $('feedback').innerHTML=s.fbHTML;
+  $('solution').className='solution'+(s.solOpen?' open':'');
+  if(s.solOpen) renderSteps(problem);
+  $('checkBtn').style.display='inline-block';
+  $('solBtn').style.display='inline-block';
+  $('backBtn').style.display='none';
+}
+
+function registrera(res, userRepr){
+  const korrekt = res.status!=='fel';
+  if(!answered && !revealed){
+    score.tot++;
+    if(korrekt){ score.ok++; score.streak++; } else score.streak=0;
+    answered=true; updateScore();
+  }
+  const entry=ensureEntry();
+  entry.user=userRepr;
+  if(entry.status!=='reveal' && entry.status!=='ok')
+    entry.status = res.status==='fel' ? 'fel' : (res.status==='warn' ? 'warn' : 'ok');
+  renderHistory();
+}
+
+function check(){
+  if(reviewing) return;
+  if(prov){ provCheck(); return; }
+  const fb=$('feedback');
+  const raw=$('textsvar').value;
+  const res=evalAnswer(problem, raw);
+  const facit='<b>'+facitText(problem)+'</b>';
+  if(res.status==='invalid'){
+    fb.className='feedback fel';
+    fb.innerHTML = problem.ansType==='tal'
+      ? 'Skriv x som ett positivt heltal, t.ex. 5.'
+      : 'Det d\u00e4r kunde inte tolkas som en kemisk formel. Anv\u00e4nd atomslagens beteckningar och vanliga siffror, t.ex. Fe2O3.';
+    return;
+  }
+  registrera(res, raw);
+  if(res.status==='ok'){
+    fb.className='feedback ok';
+    fb.innerHTML='R\u00e4tt! \u2713 '+facit+'.';
+  } else if(res.skal==='versaler'){
+    fb.className='feedback warn';
+    fb.innerHTML='R\u00e4tt f\u00f6rening, men kontrollera stora och sm\u00e5 bokst\u00e4ver i atomslagen: formeln skrivs '+facit+'. R\u00e4knas som r\u00e4tt.';
+  } else if(res.skal==='hydratskrivsatt'){
+    fb.className='feedback warn';
+    fb.innerHTML='R\u00e4tt sammans\u00e4ttning, men skriv hydratet med kristallvattnet separat: '+facit+'. R\u00e4knas som r\u00e4tt.';
+  } else if(res.skal==='heltal'){
+    fb.className='feedback warn';
+    fb.innerHTML='N\u00e4stan: antalet kristallvatten \u00e4r alltid ett heltal, s\u00e5 avrunda till x = '+facit+'. R\u00e4knas som r\u00e4tt.';
+  } else if(res.skal==='multipel'){
+    fb.className='feedback fel';
+    fb.innerHTML='Det d\u00e4r \u00e4r en multipel av den empiriska formeln. Den empiriska formeln anger det <b>minsta</b> heltalsf\u00f6rh\u00e5llandet mellan atomslagen: f\u00f6rkorta alla index med '+res.k+'.';
+  } else if(res.skal==='empirisk'){
+    fb.className='feedback fel';
+    fb.innerHTML='Det d\u00e4r \u00e4r den empiriska formeln, inte molekylformeln. Ber\u00e4kna multipeln n = M(molekyl) / M(empirisk formel) och multiplicera alla index med n.';
+  } else if(res.skal==='xfel'){
+    fb.className='feedback fel';
+    fb.innerHTML='Saltets formel st\u00e4mmer, men antalet kristallvatten \u00e4r fel. Kontrollera substansm\u00e4ngderna av salt och vatten.';
+  } else {
+    fb.className='feedback fel';
+    fb.innerHTML='Inte riktigt. Kontrollera ber\u00e4kningen steg f\u00f6r steg. Facit f\u00e5r du med Visa l\u00f6sning.';
+  }
+}
+
+function reveal(){
+  if(reviewing) return;
+  if(prov) return;
+  if(!answered){
+    const entry=ensureEntry();
+    entry.status='reveal';
+    renderHistory();
+  }
+  revealed=true;
+  $('textsvar').value=$('textsvar').value;
+  $('solution').className='solution open';
+  renderSteps(problem);
+}
+
+function updateScore(){
+  $('scoreOk').textContent=score.ok;
+  $('scoreTot').textContent=score.tot;
+  $('streak').textContent = score.streak>=2 ? '\ud83d\udd25 '+score.streak+' i rad' : '';
+}
+
+function byggProvrapport(items, ratt, tidStr, facitFn){
+  const esc=x=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const d=new Date();
+  const datum=d.toLocaleDateString('sv-FI')+' kl. '+d.toLocaleTimeString('sv-FI',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('printRapport').innerHTML=
+    '<h1>'+esc(document.title)+'</h1>'+
+    '<p class="pr-meta">Provsimulering \u00b7 '+datum+'</p>'+
+    '<p class="pr-namn">Namn: ________________________________</p>'+
+    '<p class="pr-res">Resultat: <b>'+ratt+'/'+items.length+' r\u00e4tt</b> p\u00e5 '+tidStr+'</p>'+
+    '<ol>'+items.map(it=>'<li>'+(it.korrekt?'\u2713 r\u00e4tt':'\u2717 fel')+
+      ' \u00b7 ditt svar: '+esc(it.raw||'(tomt)')+
+      ' \u00b7 r\u00e4tt svar: '+facitFn(it)+'</li>').join('')+'</ol>';
+}
+
+let prov=null;
+
+function provToggle(){
+  if(prov){ provEnd(); newProblem(); return; }
+  prov={i:0,items:[],t0:Date.now()};
+  curType='mix';
+  $('provBtn').textContent='Avbryt provet';
+  newProblem();
+}
+function provEnd(){
+  prov=null;
+  $('provBtn').textContent='Provsimulering: 5 uppgifter';
+  $('provInfo').textContent='';
+  $('solBtn').style.display='inline-block';
+}
+function provCheck(){
+  const raw=$('textsvar').value;
+  const res=evalAnswer(problem, raw);
+  const fb=$('feedback');
+  if(res.status==='invalid' && raw.trim()!=='0'){
+    fb.className='feedback warn';
+    fb.innerHTML='Skriv in ett svar innan du g\u00e5r vidare. Svaret r\u00e4knas som fel om du l\u00e4mnar tomt: skriv 0 f\u00f6r att hoppa \u00f6ver.';
+    return;
+  }
+  const korrekt = res.status==='ok'||res.status==='warn';
+  prov.items.push({problem, raw, korrekt});
+  prov.i++;
+  if(prov.i<5){
+    newProblem();
+  } else {
+    provSummary();
+  }
+}
+function provSummary(){
+  const items=prov.items;
+  const ratt=items.filter(x=>x.korrekt).length;
+  const sek=Math.round((Date.now()-prov.t0)/1000);
+  const min=Math.floor(sek/60), ss=sek%60;
+  score.tot+=5; score.ok+=ratt; updateScore();
+  items.forEach(it=>{
+    histCounter++;
+    history.unshift({n:histCounter, problem:it.problem, user:it.raw, status:it.korrekt?'ok':'fel'});
+  });
+  provEnd();
+  renderHistory();
+  byggProvrapport(items, ratt, min+' min '+ss+' s', it=>facitText(it.problem));
+  const rows=items.map((it,i)=>
+    (i+1)+'. '+(it.korrekt?'\u2713':'\u2717')+' ditt svar: '+(it.raw||'(tomt)')+
+    ' \u00b7 r\u00e4tt: '+facitText(it.problem)
+  ).join('<br>');
+  const fb=$('feedback');
+  fb.className='feedback '+(ratt>=4?'ok':(ratt>=2?'warn':'fel'));
+  fb.innerHTML='<b>Provsimulering klar: '+ratt+'/5 r\u00e4tt p\u00e5 '+min+' min '+ss+' s.</b><br>'+rows+
+    '<br>\u00d6ppna uppgifterna i historiken f\u00f6r fullst\u00e4ndiga l\u00f6sningar.'+
+    ' <button class="btn-ghost" style="margin-top:8px;font-size:13px;padding:7px 12px" onclick="window.print()">Spara som PDF</button>';
+}
+
+$('checkBtn').onclick=check;
+$('textsvar').addEventListener('keydown',e=>{ if(e.key==='Enter') check(); });
+$('solBtn').onclick=reveal;
+$('nextBtn').onclick=newProblem;
+$('statResetBtn').onclick=()=>{ score.ok=0; score.tot=0; score.streak=0; updateScore(); };
+$('backBtn').onclick=closeReview;
+$('provBtn').onclick=provToggle;
+
+newProblem();
+updateScore();
+
+}
+</script>
+<div id="printRapport" class="endast-print" aria-hidden="true"></div>
+<button class="felknapp" id="felBtn">Hittade du ett fel?</button>
+<div class="felpanel" id="felPanel" hidden>
+  <h3>Rapportera ett fel</h3>
+  <textarea id="felText" placeholder="Beskriv felet: vad gjorde du, vad hände, vad förväntade du dig?"></textarea>
+  <div class="felmeta" id="felMeta"></div>
+  <div class="felrad">
+    <button class="btn-primary" id="felSkicka">Skicka via e-post</button>
+    <button class="btn-ghost" id="felKopiera">Kopiera rapporten</button>
+  </div>
+  <div class="felok" id="felOk"></div>
+</div>
+<script>
+(function(){
+const FELMAIL='kauremaa.aleksi@gmail.com';
+const $=id=>document.getElementById(id);
+function ctx(){ try{return (window.__felContext&&window.__felContext())||null;}catch(e){return null;} }
+function report(){
+  let s='Sida: '+document.title+'\nAdress: '+location.href+'\nTid: '+new Date().toLocaleString('sv-FI');
+  const c=ctx();
+  if(c){ for(const k in c) s+='\n'+k+': '+c[k]; }
+  s+='\nWebbläsare: '+navigator.userAgent;
+  return s;
+}
+$('felBtn').onclick=()=>{
+  const p=$('felPanel'); p.hidden=!p.hidden;
+  if(!p.hidden){ $('felMeta').textContent=report(); $('felOk').style.display='none'; }
+};
+$('felSkicka').onclick=()=>{
+  const body=($('felText').value||'(ingen beskrivning)')+'\n\n--- Automatisk information ---\n'+report();
+  location.href='mailto:'+FELMAIL+'?subject='+encodeURIComponent('Felrapport: '+document.title)+'&body='+encodeURIComponent(body);
+};
+$('felKopiera').onclick=async()=>{
+  const t=($('felText').value||'(ingen beskrivning)')+'\n\n--- Automatisk information ---\n'+report();
+  try{ await navigator.clipboard.writeText(t); $('felOk').textContent='Kopierad! Klistra in i Wilma eller e-post.'; }
+  catch(e){ $('felOk').textContent='Kopiering blockerades. Markera texten ovan och kopiera manuellt.'; }
+  $('felOk').style.display='block';
+};
+})();
+</script>
+</body>
+</html>
