@@ -251,7 +251,12 @@
 <script data-tema-init>
 (function(){
   var rot=document.documentElement;
-  if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
+  /* enda tillåtna lagringsnyckeln på sajten: temavalet.
+     Statistik och historik sparas medvetet aldrig. */
+  var sparat=null;
+  try{ sparat=localStorage.getItem('tema'); }catch(e){}
+  var systemMork=window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if(sparat==='mork' || (sparat!=='ljus' && systemMork)){
     rot.dataset.tema='mork';
   }
   function uppdatera(btn){
@@ -265,8 +270,10 @@
     if(!btn) return;
     uppdatera(btn);
     btn.onclick=function(){
-      if(rot.dataset.tema==='mork') delete rot.dataset.tema;
-      else rot.dataset.tema='mork';
+      var mork;
+      if(rot.dataset.tema==='mork'){ delete rot.dataset.tema; mork=false; }
+      else { rot.dataset.tema='mork'; mork=true; }
+      try{ localStorage.setItem('tema', mork?'mork':'ljus'); }catch(e){}
       uppdatera(btn);
     };
   });
