@@ -206,6 +206,18 @@
     #printRapport .pr-namn{font-size:14px;margin-bottom:14px}
     #printRapport .pr-res{font-size:15px;margin-bottom:10px}
     #printRapport ol{padding-left:22px;font-size:14px;line-height:1.9}
+    #printRapport .pr-uppg{border-top:1px solid #999;padding:10px 0 6px;margin-top:10px;
+      page-break-inside:avoid}
+    #printRapport .pr-head{display:flex;justify-content:space-between;align-items:baseline;
+      font-size:15px;margin-bottom:4px}
+    #printRapport .pr-poang{font-weight:600;font-size:13.5px}
+    #printRapport .pr-fraga{font-size:13.5px;margin:2px 0 4px;line-height:1.5}
+    #printRapport .pr-given{font-size:12.5px;margin:0 0 4px;padding-left:12px;line-height:1.6}
+    #printRapport .pr-svar{font-size:13.5px;margin:2px 0 4px}
+    #printRapport .pr-losning{font-size:12px;line-height:1.45}
+    #printRapport .pr-losning ol{margin:2px 0 0;padding-left:18px;font-size:12px;line-height:1.45}
+    #printRapport .pr-losning li{margin:3px 0}
+    #printRapport .pr-m{font-family:var(--mono);font-size:11.5px;margin:1px 0 2px;color:#222}
   }
 
   .temaknapp{position:fixed;top:14px;right:14px;z-index:60;width:40px;height:40px;
@@ -1045,14 +1057,26 @@ function byggProvrapport(items, ratt, tidStr, facitFn){
   const esc=x=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
   const d=new Date();
   const datum=d.toLocaleDateString('sv-FI')+' kl. '+d.toLocaleTimeString('sv-FI',{hour:'2-digit',minute:'2-digit'});
+  const upp=items.map((it,i)=>{
+    const p=it.problem;
+    const given=(p.given&&p.given.length)
+      ? '<div class="pr-given">'+p.given.map(g=>'<div>'+g+'</div>').join('')+'</div>' : '';
+    const steg=(p.steps||[]).map(s=>'<li>'+s.text+
+      (s.math?'<div class="pr-m">'+s.math+'</div>':'')+'</li>').join('');
+    return '<div class="pr-uppg">'+
+      '<div class="pr-head"><b>Uppgift '+(i+1)+'</b>'+
+        '<span class="pr-poang">'+(it.korrekt?'\u2713 r\u00e4tt \u00b7 1 p':'\u2717 fel \u00b7 0 p')+'</span></div>'+
+      '<p class="pr-fraga">'+p.qtext+'</p>'+given+
+      '<p class="pr-svar">Ditt svar: <b>'+esc(it.raw||'(tomt)')+'</b> \u00b7 R\u00e4tt svar: <b>'+facitFn(it)+'</b></p>'+
+      '<div class="pr-losning">L\u00f6sning steg f\u00f6r steg:<ol>'+steg+'</ol></div>'+
+    '</div>';
+  }).join('');
   document.getElementById('printRapport').innerHTML=
     '<h1>'+esc(document.title)+'</h1>'+
     '<p class="pr-meta">Provsimulering \u00b7 '+datum+'</p>'+
     '<p class="pr-namn">Namn: ________________________________</p>'+
-    '<p class="pr-res">Resultat: <b>'+ratt+'/'+items.length+' r\u00e4tt</b> p\u00e5 '+tidStr+'</p>'+
-    '<ol>'+items.map(it=>'<li>'+(it.korrekt?'\u2713 r\u00e4tt':'\u2717 fel')+
-      ' \u00b7 ditt svar: '+esc(it.raw||'(tomt)')+
-      ' \u00b7 r\u00e4tt svar: '+facitFn(it)+'</li>').join('')+'</ol>';
+    '<p class="pr-res">Resultat: <b>'+ratt+'/'+items.length+' r\u00e4tt \u00b7 '+ratt+'/'+items.length+' p</b> p\u00e5 '+tidStr+'</p>'+
+    upp;
 }
 
 let prov=null;
